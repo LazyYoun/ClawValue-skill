@@ -6330,6 +6330,162 @@
                 display: none;
             }
         }
+        
+        /* ============================================
+           v11.0 环形进度条属性面板
+           ============================================ */
+        
+        .attr-panel-v11 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .attr-panel-v11::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-highlight));
+        }
+        
+        .attr-ring-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border-radius: var(--border-radius-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .attr-ring-item:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-5px);
+        }
+        
+        .progress-ring {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin-bottom: 12px;
+        }
+        
+        .progress-ring svg {
+            transform: rotate(-90deg);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+        
+        .progress-ring-bg {
+            fill: none;
+            stroke: var(--bg-card-hover);
+            stroke-width: 10;
+        }
+        
+        .progress-ring-fill {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 301.593;
+            stroke-dashoffset: 301.593;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease;
+        }
+        
+        .skill-ring {
+            stroke: var(--accent-primary);
+        }
+        
+        .auto-ring {
+            stroke: var(--color-success);
+        }
+        
+ .integ-ring {
+            stroke: var(--accent-secondary);
+        }
+        
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        
+        .attr-ring-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .attr-ring-label span:last-child {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* 综合战力显示 */
+        .power-display {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(79, 172, 254, 0.1));
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px dashed var(--accent-primary);
+        }
+        
+        .power-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        
+        .power-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .power-rank {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .attr-panel-v11 {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .progress-ring {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .progress-ring svg {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .progress-ring-text {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -6547,43 +6703,64 @@
             </div>
         </div>
 
-        <!-- 评分详情区域 -->
+        <!-- 评分详情区域 - v11.0 游戏风格 -->
         <div class="score-breakdown-section">
             <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
                 <span>🎯</span>
-                <span>评分详情</span>
+                <span>属性面板</span>
             </div>
-            <div class="score-grid">
-                <div class="score-item">
-                    <div class="score-item-header">
-                        <span style="font-size: 1.2rem;">🛠️</span>
-                        <span style="color: var(--text-secondary);">技能得分</span>
+            <div class="attr-panel-v11">
+                <div class="attr-ring-item">
+                    <div class="progress-ring">
+                        <svg width="110" height="110">
+                            <circle class="progress-ring-bg" cx="55" cy="55" r="48"></circle>
+                            <circle class="progress-ring-fill skill-ring" cx="55" cy="55" r="48" id="skill-ring"></circle>
+                        </svg>
+                        <div class="progress-ring-text">
+                            <span id="skill-score-v11">--</span>
+                        </div>
                     </div>
-                    <div class="score-value" id="skill-score" style="color: var(--color-info);">--</div>
-                    <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="skill-score-bar" class="progress-fill progress-shine" style="width: 0%;"></div>
-                    </div>
-                </div>
-                <div class="score-item">
-                    <div class="score-item-header">
-                        <span style="font-size: 1.2rem;">⚡</span>
-                        <span style="color: var(--text-secondary);">自动化得分</span>
-                    </div>
-                    <div class="score-value" id="automation-score" style="color: var(--color-success);">--</div>
-                    <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="automation-score-bar" class="progress-fill progress-shine" style="width: 0%;"></div>
+                    <div class="attr-ring-label">
+                        <span style="font-size: 1.3rem;">🛠️</span>
+                        <span>技能</span>
                     </div>
                 </div>
-                <div class="score-item">
-                    <div class="score-item-header">
-                        <span style="font-size: 1.2rem;">🔗</span>
-                        <span style="color: var(--text-secondary);">集成得分</span>
+                <div class="attr-ring-item">
+                    <div class="progress-ring">
+                        <svg width="110" height="110">
+                            <circle class="progress-ring-bg" cx="55" cy="55" r="48"></circle>
+                            <circle class="progress-ring-fill auto-ring" cx="55" cy="55" r="48" id="auto-ring"></circle>
+                        </svg>
+                        <div class="progress-ring-text">
+                            <span id="automation-score-v11">--</span>
+                        </div>
                     </div>
-                    <div class="score-value" id="integration-score" style="color: var(--accent-primary);">--</div>
-                    <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="integration-score-bar" class="progress-fill progress-shine" style="width: 0%;"></div>
+                    <div class="attr-ring-label">
+                        <span style="font-size: 1.3rem;">⚡</span>
+                        <span>自动化</span>
                     </div>
                 </div>
+                <div class="attr-ring-item">
+                    <div class="progress-ring">
+                        <svg width="110" height="110">
+                            <circle class="progress-ring-bg" cx="55" cy="55" r="48"></circle>
+                            <circle class="progress-ring-fill integ-ring" cx="55" cy="55" r="48" id="integ-ring"></circle>
+                        </svg>
+                        <div class="progress-ring-text">
+                            <span id="integration-score-v11">--</span>
+                        </div>
+                    </div>
+                    <div class="attr-ring-label">
+                        <span style="font-size: 1.3rem;">🔗</span>
+                        <span>集成</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 综合战力 -->
+            <div class="power-display" id="power-display" style="display: none;">
+                <div class="power-label">综合战力</div>
+                <div class="power-value" id="power-value">--</div>
+                <div class="power-rank" id="power-rank"></div>
             </div>
         </div>
 
@@ -8054,32 +8231,69 @@
             radarChart.data.datasets[0].data = scores;
             radarChart.update();
 
-            document.getElementById('skill-score').textContent = Math.round(eval.skill_score || 0);
-            document.getElementById('automation-score').textContent = Math.round(eval.automation_score || 0);
-            document.getElementById('integration-score').textContent = Math.round(eval.integration_score || 0);
+            // 更新环形进度条 - v11.0
+            updateRingProgress('skill-ring', 'skill-score-v11', eval.skill_score || 0);
+            updateRingProgress('auto-ring', 'automation-score-v11', eval.automation_score || 0);
+            updateRingProgress('integ-ring', 'integration-score-v11', eval.integration_score || 0);
             
-            // 动态设置进度条颜色（高分绿色，低分红色）
-            const getScoreColor = (score) => {
-                if (score >= 70) return 'linear-gradient(90deg, #10ac84, #1dd1a1)';
-                if (score >= 40) return 'linear-gradient(90deg, #feca57, #ff9f43)';
-                return 'linear-gradient(90deg, #ee5253, #ff6b6b)';
-            };
+            // 计算并显示综合战力
+            const avgScore = Math.round(((eval.skill_score || 0) + (eval.automation_score || 0) + (eval.integration_score || 0)) / 3);
+            const powerDisplay = document.getElementById('power-display');
+            const powerValue = document.getElementById('power-value');
+            const powerRank = document.getElementById('power-rank');
             
-            const skillBar = document.getElementById('skill-score-bar');
-            const autoBar = document.getElementById('automation-score-bar');
-            const integBar = document.getElementById('integration-score-bar');
-            
-            skillBar.style.width = `${eval.skill_score || 0}%`;
-            skillBar.style.background = getScoreColor(eval.skill_score || 0);
-            
-            autoBar.style.width = `${eval.automation_score || 0}%`;
-            autoBar.style.background = getScoreColor(eval.automation_score || 0);
-            
-            integBar.style.width = `${eval.integration_score || 0}%`;
-            integBar.style.background = getScoreColor(eval.integration_score || 0);
+            if (powerDisplay && powerValue && powerRank) {
+                powerDisplay.style.display = 'block';
+                powerValue.textContent = avgScore;
+                powerRank.textContent = avgScore >= 70 ? '🔥 强者!' : avgScore >= 40 ? '📈 成长中' : '🌱 新手';
+            }
             
             // v6.0 数据趋势展示
             updateTrendIndicators(data);
+        }
+        
+        // v11.0 环形进度条更新
+        function updateRingProgress(ringId, textId, score) {
+            const ring = document.getElementById(ringId);
+            const text = document.getElementById(textId);
+            
+            if (ring && text) {
+                // 计算周长和偏移量
+                const circumference = 2 * Math.PI * 48; // r=48
+                const offset = circumference - (score / 100) * circumference;
+                
+                ring.style.strokeDasharray = circumference;
+                ring.style.strokeDashoffset = offset;
+                
+                // 动画数值
+                animateNumber(textId, score, 800);
+            }
+        }
+        
+        // 环形进度条动画数值
+        function animateNumber(elementId, target, duration) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 缓动函数
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(start + (target - start) * easeOut);
+                
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
         }
         
         // v6.0 趋势指示器更新
