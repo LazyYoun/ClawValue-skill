@@ -562,6 +562,176 @@ def health_check():
     })
 
 
+@app.route('/api/generate-image', methods=['POST'])
+def generate_image():
+    """
+    生成龙虾主题图片
+    
+    使用阿里云万象 API 生成个性化图片。
+    
+    Request Body:
+        - level: 用户等级 (1-5)
+        - style: 风格名称 (可选): cyberpunk, minimalist, cartoon, realistic, fantasy
+        - achievements: 成就列表 (可选)
+    
+    Returns:
+        - success: 是否成功
+        - image_url: 图片 URL
+        - style: 使用的风格
+        - prompt: 使用的提示词
+    """
+    try:
+        # 导入图片生成模块
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib'))
+        from image_generator import WanxImageGenerator, LobsterPromptTemplates
+        
+        # 解析请求
+        data = request.get_json() or {}
+        level = data.get('level', 1)
+        style = data.get('style')
+        achievements = data.get('achievements', [])
+        
+        # 生成图片
+        generator = WanxImageGenerator()
+        result = generator.generate_lobster(
+            level=level,
+            style=style,
+            achievements=achievements
+        )
+        
+        if result.success:
+            return jsonify({
+                'success': True,
+                'data': {
+                    'image_url': result.image_url,
+                    'style': result.style,
+                    'prompt': result.prompt,
+                    'request_id': result.request_id
+                }
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': result.error
+            }), 500
+            
+    except Exception as e:
+        import traceback
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }), 500
+
+
+@app.route('/api/image-styles', methods=['GET'])
+def get_image_styles():
+    """
+    获取可用的图片风格列表
+    
+    Returns:
+        - styles: 风格列表
+    """
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib'))
+        from image_generator import LobsterPromptTemplates
+        
+        styles = []
+        for key, info in LobsterPromptTemplates.STYLES.items():
+            styles.append({
+                'id': key,
+                'name': info['name']
+            })
+        
+        return jsonify({
+            'success': True,
+            'data': {'styles': styles}
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/share-card', methods=['POST'])
+def generate_share_card():
+    """
+    生成分享卡片数据
+    
+    返回用于生成分享海报的所有数据，包括：
+    - 用户等级和评估结果
+    - 趣味文案
+    - 推荐的分享格式
+    
+    Returns:
+        - share_card: 分享卡片数据
+    """
+    try:
+        # 获取当前评估数据
+        collector = DataCollector()
+        data = collector.collect()
+        data_dict = data.to_dict()
+        
+        engine = EvaluationEngine()
+        evaluation = engine.generate_full_evaluation(data_dict)
+        
+        # 计算等级
+        total_score = evaluation.get('total_score', 0)
+        level = 1
+        for lvl, threshold in sorted(DepthLevel.SCORE_THRESHOLDS.items()):
+            if total_score >= threshold:
+                level = lvl
+        
+        # 等级信息
+        level_names = {
+            1: ('🐣', '入门小白', '刚刚接触 OpenClaw'),
+            2: ('🎮', '初级玩家', '开始使用基本功能'),
+            3: ('💻', '中级开发者', '熟练使用各种技能'),
+            4: ('🚀', '高级工程师', '自定义技能，深度集成'),
+            5: ('🦞', '龙虾大师', '达到专家级别')
+        }
+        
+        emoji, name, desc = level_names.get(level, level_names[1])
+        
+        # 趣味文案
+        fun_messages = [
+            f"我用 OpenClaw 省了 ¥{(data.log_stats.tool_calls * 10):,}！",
+            f"我是 {name}，你是什么等级？",
+            f"🦞 龙虾能力 Lv.{level}，来挑战我吧！",
+            f"解锁了 {len(evaluation.get('achievements', []))} 个成就，你呢？"
+        ]
+        
+        # 生成分享卡片数据
+        share_card = {
+            'level': level,
+            'level_emoji': emoji,
+            'level_name': name,
+            'level_desc': desc,
+            'total_score': total_score,
+            'skill_count': data.total_skills,
+            'custom_skills': data.custom_skills,
+            'achievements': evaluation.get('achievements', [])[:3],  # 最多展示3个
+            'value_estimate': evaluation.get('value_estimate', '0元'),
+            'fun_messages': fun_messages,
+            'share_text': f"🦞 我的 OpenClaw 龙虾等级：{emoji} Lv.{level} {name}\n\n💰 价值估算：{evaluation.get('value_estimate', '0元')}\n🛠️ 技能数量：{data.total_skills} 个\n🏆 成就：{len(evaluation.get('achievements', []))} 个已解锁\n\n来测测你的「龙虾能力」吧！",
+            'generated_at': datetime.now().isoformat()
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': share_card
+        })
+        
+    except Exception as e:
+        import traceback
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'traceback': traceback.format_exc()
+        }), 500
+
+
 @app.route('/api/', methods=['GET'])
 @app.route('/api/dashboard', methods=['GET'])
 @cached(30)  # 仪表盘数据缓存30秒

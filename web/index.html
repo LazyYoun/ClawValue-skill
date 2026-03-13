@@ -1,11 +1,560 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="deep-sea">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v1.0</title>
+    <title>🦞 龙虾能力估值 Skill v4.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        /* ============================================
+           主题系统 - CSS 变量定义
+           ============================================ */
+        
+        /* 主题 1: 深海龙虾 (默认) */
+        :root,
+        [data-theme="deep-sea"] {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a3e;
+            --bg-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #16213e 100%);
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            
+            --text-primary: #e0e0e0;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            
+            --accent-primary: #ff6b6b;
+            --accent-secondary: #4facfe;
+            --accent-highlight: #feca57;
+            --accent-gradient: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #ff6b6b);
+            
+            --color-success: #43e97b;
+            --color-warning: #feca57;
+            --color-error: #ff6b6b;
+            --color-info: #4facfe;
+            
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+            
+            --shadow-card: 0 20px 40px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 30px rgba(255, 107, 107, 0.3);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        /* 主题 2: 清新田园 */
+        [data-theme="fresh-garden"] {
+            --bg-primary: #f0f9f0;
+            --bg-secondary: #e8f5e9;
+            --bg-gradient: linear-gradient(135deg, #f0f9f0 0%, #e8f5e9 50%, #c8e6c9 100%);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-card-hover: rgba(255, 255, 255, 0.95);
+            
+            --text-primary: #2e7d32;
+            --text-secondary: #558b2f;
+            --text-muted: #81c784;
+            
+            --accent-primary: #43e97b;
+            --accent-secondary: #38f9d7;
+            --accent-highlight: #ff9800;
+            --accent-gradient: linear-gradient(90deg, #43e97b, #38f9d7, #00bcd4, #43e97b);
+            
+            --color-success: #4caf50;
+            --color-warning: #ff9800;
+            --color-error: #e53935;
+            --color-info: #00bcd4;
+            
+            --border-color: rgba(46, 125, 50, 0.15);
+            --border-radius: 24px;
+            --border-radius-sm: 16px;
+            
+            --shadow-card: 0 10px 30px rgba(46, 125, 50, 0.12);
+            --shadow-glow: 0 0 20px rgba(67, 233, 123, 0.2);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(8px);
+            --header-align: center;
+        }
+        
+        /* 主题 3: 赛博霓虹 */
+        [data-theme="cyber-neon"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-gradient: linear-gradient(180deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+            --bg-card: rgba(20, 20, 30, 0.9);
+            --bg-card-hover: rgba(30, 30, 45, 0.95);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --text-muted: #666666;
+            
+            --accent-primary: #ff00ff;
+            --accent-secondary: #00ffff;
+            --accent-highlight: #ffff00;
+            --accent-gradient: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            
+            --color-success: #00ff00;
+            --color-warning: #ffff00;
+            --color-error: #ff0055;
+            --color-info: #00ffff;
+            
+            --border-color: rgba(255, 0, 255, 0.3);
+            --border-radius: 4px;
+            --border-radius-sm: 2px;
+            
+            --shadow-card: 0 0 30px rgba(255, 0, 255, 0.2), 0 0 60px rgba(0, 255, 255, 0.1);
+            --shadow-glow: 0 0 40px rgba(255, 0, 255, 0.5);
+            
+            --font-display: 'Courier New', monospace;
+            --font-body: 'Courier New', monospace;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        /* 主题 4: 复古打字机 */
+        [data-theme="retro-type"] {
+            --bg-primary: #f5e6d3;
+            --bg-secondary: #ebe0d0;
+            --bg-gradient: linear-gradient(180deg, #f5e6d3 0%, #ebe0d0 100%);
+            --bg-card: rgba(255, 250, 240, 0.9);
+            --bg-card-hover: rgba(255, 255, 255, 0.95);
+            
+            --text-primary: #3e2723;
+            --text-secondary: #5d4037;
+            --text-muted: #8d6e63;
+            
+            --accent-primary: #8b4513;
+            --accent-secondary: #d2691e;
+            --accent-highlight: #b8860b;
+            --accent-gradient: linear-gradient(90deg, #8b4513, #d2691e, #b8860b, #8b4513);
+            
+            --color-success: #558b2f;
+            --color-warning: #f57f17;
+            --color-error: #c62828;
+            --color-info: #1565c0;
+            
+            --border-color: rgba(139, 69, 19, 0.2);
+            --border-radius: 8px;
+            --border-radius-sm: 4px;
+            
+            --shadow-card: 4px 4px 0 rgba(139, 69, 19, 0.2);
+            --shadow-glow: none;
+            
+            --font-display: 'Noto Serif SC', Georgia, serif;
+            --font-body: 'Noto Serif SC', Georgia, serif;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        /* 主题 5: 极简水墨 */
+        [data-theme="minimal-ink"] {
+            --bg-primary: #fafafa;
+            --bg-secondary: #f5f5f5;
+            --bg-gradient: linear-gradient(180deg, #fafafa 0%, #f0f0f0 100%);
+            --bg-card: rgba(255, 255, 255, 0.98);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            
+            --accent-primary: #2c2c2c;
+            --accent-secondary: #666666;
+            --accent-highlight: #c41e3a;
+            --accent-gradient: linear-gradient(90deg, #2c2c2c, #666666, #c41e3a, #2c2c2c);
+            
+            --color-success: #2e7d32;
+            --color-warning: #f57f17;
+            --color-error: #c41e3a;
+            --color-info: #1565c0;
+            
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-radius: 2px;
+            --border-radius-sm: 1px;
+            
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-glow: none;
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+            
+            --card-blur: blur(0px);
+            --header-align: left;
+        }
+        
+        /* 主题 6: 暗夜森林 */
+        [data-theme="dark-forest"] {
+            --bg-primary: #0d1b2a;
+            --bg-secondary: #1b263b;
+            --bg-gradient: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #2d3a4a 100%);
+            --bg-card: rgba(82, 183, 136, 0.08);
+            --bg-card-hover: rgba(82, 183, 136, 0.15);
+            
+            --text-primary: #e0e1dd;
+            --text-secondary: #778da9;
+            --text-muted: #415a77;
+            
+            --accent-primary: #52b788;
+            --accent-secondary: #40916c;
+            --accent-highlight: #d4a373;
+            --accent-gradient: linear-gradient(90deg, #52b788, #40916c, #d4a373, #52b788);
+            
+            --color-success: #52b788;
+            --color-warning: #d4a373;
+            --color-error: #e63946;
+            --color-info: #457b9d;
+            
+            --border-color: rgba(82, 183, 136, 0.2);
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 50px rgba(82, 183, 136, 0.1);
+            --shadow-glow: 0 0 20px rgba(82, 183, 136, 0.3);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(8px);
+            --header-align: center;
+        }
+        
+        /* 主题 7: 夏日海滩 */
+        [data-theme="summer-beach"] {
+            --bg-primary: #fefae0;
+            --bg-secondary: #dda15e;
+            --bg-gradient: linear-gradient(180deg, #fefae0 0%, #faedcd 50%, #dda15e 100%);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(255, 255, 255, 0.98);
+            
+            --text-primary: #283618;
+            --text-secondary: #606c38;
+            --text-muted: #9c8d6c;
+            
+            --accent-primary: #606c38;
+            --accent-secondary: #283618;
+            --accent-highlight: #bc6c25;
+            --accent-gradient: linear-gradient(90deg, #606c38, #bc6c25, #dda15e, #606c38);
+            
+            --color-success: #606c38;
+            --color-warning: #bc6c25;
+            --color-error: #9b2226;
+            --color-info: #0077b6;
+            
+            --border-color: rgba(96, 108, 56, 0.2);
+            --border-radius: 28px;
+            --border-radius-sm: 18px;
+            
+            --shadow-card: 0 8px 32px rgba(188, 108, 37, 0.15);
+            --shadow-glow: 0 0 30px rgba(221, 161, 94, 0.2);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(5px);
+            --header-align: center;
+        }
+        
+        /* 主题 8: 糖果乐园 */
+        [data-theme="candy-land"] {
+            --bg-primary: #fff0f5;
+            --bg-secondary: #ffb6c1;
+            --bg-gradient: linear-gradient(135deg, #fff0f5 0%, #ffb6c1 50%, #ffc0cb 100%);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            
+            --text-primary: #db7093;
+            --text-secondary: #c71585;
+            --text-muted: #dda0dd;
+            
+            --accent-primary: #ff69b4;
+            --accent-secondary: #ff1493;
+            --accent-highlight: #87ceeb;
+            --accent-gradient: linear-gradient(90deg, #ff69b4, #ff1493, #da70d6, #87ceeb, #ff69b4);
+            
+            --color-success: #98d8c8;
+            --color-warning: #f7dc6f;
+            --color-error: #e74c3c;
+            --color-info: #87ceeb;
+            
+            --border-color: rgba(255, 105, 180, 0.25);
+            --border-radius: 32px;
+            --border-radius-sm: 20px;
+            
+            --shadow-card: 0 10px 40px rgba(255, 105, 180, 0.2);
+            --shadow-glow: 0 0 30px rgba(255, 182, 193, 0.4);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        /* 主题 9: 暗黑哥特 */
+        [data-theme="dark-gothic"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a0a0a;
+            --bg-gradient: linear-gradient(180deg, #0a0a0a 0%, #1a0a0a 50%, #0d0d0d 100%);
+            --bg-card: rgba(30, 10, 10, 0.9);
+            --bg-card-hover: rgba(40, 15, 15, 0.95);
+            
+            --text-primary: #c0c0c0;
+            --text-secondary: #808080;
+            --text-muted: #505050;
+            
+            --accent-primary: #8b0000;
+            --accent-secondary: #4a0a0a;
+            --accent-highlight: #c0c0c0;
+            --accent-gradient: linear-gradient(90deg, #8b0000, #4a0a0a, #c0c0c0, #8b0000);
+            
+            --color-success: #228b22;
+            --color-warning: #daa520;
+            --color-error: #8b0000;
+            --color-info: #4169e1;
+            
+            --border-color: rgba(139, 0, 0, 0.4);
+            --border-radius: 6px;
+            --border-radius-sm: 3px;
+            
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 0, 0, 0.2);
+            --shadow-glow: 0 0 15px rgba(139, 0, 0, 0.4);
+            
+            --font-display: 'Times New Roman', serif;
+            --font-body: Georgia, serif;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        /* 主题 10: 蒸汽波 */
+        [data-theme="vaporwave"] {
+            --bg-primary: #0d0221;
+            --bg-secondary: #2d1b4e;
+            --bg-gradient: linear-gradient(135deg, #0d0221 0%, #2d1b4e 50%, #1a0a2e 100%);
+            --bg-card: rgba(45, 27, 78, 0.7);
+            --bg-card-hover: rgba(61, 38, 102, 0.85);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #b967ff;
+            --text-muted: #7b2cbf;
+            
+            --accent-primary: #ff71ce;
+            --accent-secondary: #01cdfe;
+            --accent-highlight: #05ffa1;
+            --accent-gradient: linear-gradient(90deg, #ff71ce, #b967ff, #01cdfe, #05ffa1, #ff71ce);
+            
+            --color-success: #05ffa1;
+            --color-warning: #fffb96;
+            --color-error: #ff71ce;
+            --color-info: #01cdfe;
+            
+            --border-color: rgba(255, 113, 206, 0.3);
+            --border-radius: 0px;
+            --border-radius-sm: 0px;
+            
+            --shadow-card: 0 0 40px rgba(255, 113, 206, 0.2), 0 0 80px rgba(1, 205, 254, 0.1);
+            --shadow-glow: 0 0 30px rgba(185, 103, 255, 0.5);
+            
+            --font-display: 'Courier New', monospace;
+            --font-body: 'Courier New', monospace;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        /* 主题 11: 樱花物语 */
+        [data-theme="sakura-bloom"] {
+            --bg-primary: #fff5f8;
+            --bg-secondary: #ffd6e0;
+            --bg-gradient: linear-gradient(135deg, #fff5f8 0%, #ffd6e0 50%, #ffb6c1 100%);
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-card-hover: rgba(255, 255, 255, 0.98);
+            
+            --text-primary: #c44569;
+            --text-secondary: #e17055;
+            --text-muted: #fab1a0;
+            
+            --accent-primary: #ff6b9d;
+            --accent-secondary: #c44569;
+            --accent-highlight: #fd79a8;
+            --accent-gradient: linear-gradient(90deg, #ff6b9d, #fd79a8, #e84393, #c44569, #ff6b9d);
+            
+            --color-success: #00b894;
+            --color-warning: #fdcb6e;
+            --color-error: #e84393;
+            --color-info: #74b9ff;
+            
+            --border-color: rgba(255, 107, 157, 0.25);
+            --border-radius: 28px;
+            --border-radius-sm: 18px;
+            
+            --shadow-card: 0 8px 32px rgba(255, 107, 157, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            --shadow-glow: 0 0 25px rgba(255, 107, 157, 0.3);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+            
+            --card-blur: blur(5px);
+            --header-align: center;
+        }
+        
+        /* 主题 12: 像素游戏 */
+        [data-theme="pixel-game"] {
+            --bg-primary: #1a1c2c;
+            --bg-secondary: #262b44;
+            --bg-gradient: linear-gradient(180deg, #1a1c2c 0%, #262b44 50%, #3e2731 100%);
+            --bg-card: rgba(38, 43, 68, 0.95);
+            --bg-card-hover: rgba(62, 39, 49, 0.95);
+            
+            --text-primary: #f4f4f4;
+            --text-secondary: #5fcde4;
+            --text-muted: #5a6988;
+            
+            --accent-primary: #29adff;
+            --accent-secondary: #00e436;
+            --accent-highlight: #ffec27;
+            --accent-gradient: linear-gradient(90deg, #29adff, #00e436, #ffec27, #ff77a8, #29adff);
+            
+            --color-success: #00e436;
+            --color-warning: #ffec27;
+            --color-error: #ff004d;
+            --color-info: #29adff;
+            
+            --border-color: #5a6988;
+            --border-radius: 0px;
+            --border-radius-sm: 0px;
+            
+            --shadow-card: 4px 4px 0 #000, 0 0 0 2px #5a6988 inset;
+            --shadow-glow: 0 0 10px #29adff;
+            
+            --font-display: 'Courier New', monospace;
+            --font-body: 'Courier New', monospace;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        /* 主题 13: 海洋深处 */
+        [data-theme="ocean-deep"] {
+            --bg-primary: #001f3f;
+            --bg-secondary: #003366;
+            --bg-gradient: linear-gradient(180deg, #001f3f 0%, #003366 40%, #004080 100%);
+            --bg-card: rgba(0, 64, 128, 0.4);
+            --bg-card-hover: rgba(0, 80, 140, 0.6);
+            
+            --text-primary: #e0f7fa;
+            --text-secondary: #80deea;
+            --text-muted: #4dd0e1;
+            
+            --accent-primary: #00bcd4;
+            --accent-secondary: #ff6f61;
+            --accent-highlight: #ff9800;
+            --accent-gradient: linear-gradient(90deg, #00bcd4, #4dd0e1, #ff6f61, #ff9800, #00bcd4);
+            
+            --color-success: #4caf50;
+            --color-warning: #ff9800;
+            --color-error: #ff5722;
+            --color-info: #00bcd4;
+            
+            --border-color: rgba(0, 188, 212, 0.3);
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+            
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 188, 212, 0.1);
+            --shadow-glow: 0 0 20px rgba(0, 188, 212, 0.4);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(8px);
+            --header-align: center;
+        }
+        
+        /* 主题 14: 音乐律动 */
+        [data-theme="music-rhythm"] {
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #1a1a2e;
+            --bg-gradient: linear-gradient(135deg, #0d0d0d 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
+            --bg-card: rgba(26, 26, 46, 0.85);
+            --bg-card-hover: rgba(15, 52, 96, 0.9);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #a8dadc;
+            --text-muted: #457b9d;
+            
+            --accent-primary: #e63946;
+            --accent-secondary: #457b9d;
+            --accent-highlight: #f1faee;
+            --accent-gradient: linear-gradient(90deg, #e63946, #a8dadc, #457b9d, #1d3557, #e63946);
+            
+            --color-success: #2a9d8f;
+            --color-warning: #e9c46a;
+            --color-error: #e63946;
+            --color-info: #457b9d;
+            
+            --border-color: rgba(168, 218, 220, 0.2);
+            --border-radius: 16px;
+            --border-radius-sm: 8px;
+            
+            --shadow-card: 0 0 30px rgba(230, 57, 70, 0.15), 0 10px 40px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 20px rgba(230, 57, 70, 0.3);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        /* 主题 15: 雪山之巅 */
+        [data-theme="snow-peak"] {
+            --bg-primary: #e8f4f8;
+            --bg-secondary: #d4e5ed;
+            --bg-gradient: linear-gradient(180deg, #e8f4f8 0%, #d4e5ed 50%, #a8c8dc 100%);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            
+            --text-primary: #1e3a5f;
+            --text-secondary: #3d6a8f;
+            --text-muted: #7fa4c4;
+            
+            --accent-primary: #2e86de;
+            --accent-secondary: #54a0ff;
+            --accent-highlight: #feca57;
+            --accent-gradient: linear-gradient(90deg, #2e86de, #54a0ff, #feca57, #ff9f43, #2e86de);
+            
+            --color-success: #10ac84;
+            --color-warning: #feca57;
+            --color-error: #ee5253;
+            --color-info: #2e86de;
+            
+            --border-color: rgba(46, 134, 222, 0.2);
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+            
+            --shadow-card: 0 8px 32px rgba(30, 58, 95, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            --shadow-glow: 0 0 20px rgba(46, 134, 222, 0.2);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(3px);
+            --header-align: center;
+        }
+        
+        /* ============================================
+           基础样式
+           ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -13,34 +562,772 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: var(--font-body);
+            background: var(--bg-gradient);
             min-height: 100vh;
-            color: #e0e0e0;
+            color: var(--text-primary);
             padding: 20px;
+            transition: background 0.5s ease, color 0.3s ease;
+        }
+        
+        /* ============================================
+           页面入场动画
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .animate-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .animate-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .animate-in-delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .animate-in-delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .animate-in-delay-5 { animation-delay: 0.5s; opacity: 0; }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .animate-in,
+            .animate-in-delay-1,
+            .animate-in-delay-2,
+            .animate-in-delay-3,
+            .animate-in-delay-4,
+            .animate-in-delay-5 {
+                animation: none;
+                opacity: 1;
+            }
+        }
+        
+        /* 高级卡片效果 */
+        .card-enhanced {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .card-enhanced:hover::before {
+            left: 100%;
+        }
+        
+        /* 数值闪烁高亮 */
+        @keyframes valueHighlight {
+            0%, 100% { text-shadow: none; }
+            50% { text-shadow: 0 0 20px var(--accent-primary); }
+        }
+        
+        .value-highlight {
+            animation: valueHighlight 2s ease-in-out infinite;
+        }
+        
+        /* 图表容器增强 */
+        .chart-container {
+            position: relative;
+        }
+        
+        .chart-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: var(--border-radius);
+            pointer-events: none;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 等级徽章动画 */
+        @keyframes levelBadge {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        .level-badge {
+            animation: levelBadge 3s ease-in-out infinite;
+        }
+        
+        /* 分享按钮悬浮效果 */
+        .share-btn-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* 粒子背景 */
+        #particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 霓虹文字效果 */
+        .neon-text {
+            text-shadow: 
+                0 0 5px var(--accent-primary),
+                0 0 10px var(--accent-primary),
+                0 0 20px var(--accent-primary),
+                0 0 40px var(--accent-primary);
+        }
+        
+        /* 渐变文字动画 */
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .gradient-text-animate {
+            background: var(--accent-gradient);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 3s linear infinite;
+        }
+        
+        /* 主题面板增强 */
+        .theme-panel-enhanced {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        /* Toast 通知增强 */
+        .toast-enhanced {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 成就卡片弹跳 */
+        @keyframes achievementBounce {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .achievement-bounce {
+            animation: achievementBounce 0.5s ease-out forwards;
+        }
+        
+        /* 分享按钮发光效果 */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 5px var(--accent-primary), 0 0 10px var(--accent-primary); }
+            50% { box-shadow: 0 0 15px var(--accent-primary), 0 0 25px var(--accent-primary); }
+        }
+        
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        /* 副标题样式优化 */
+        .card-subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+        
+        /* 主操作区域增强 */
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .header-actions .btn-primary {
+            font-weight: 600;
+            padding: 10px 20px;
+        }
+        
+        /* 赛博霓虹特殊效果 */
+        [data-theme="cyber-neon"] body {
+            position: relative;
+        }
+        
+        [data-theme="cyber-neon"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 2px,
+                rgba(0, 255, 255, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* 复古打字机纸张纹理 */
+        [data-theme="retro-type"] body {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+        
+        /* 暗夜森林星空效果 */
+        [data-theme="dark-forest"] body {
+            position: relative;
+        }
+        
+        [data-theme="dark-forest"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.5), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(212, 163, 115, 0.9), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1px 1px at 160px 120px, rgba(255, 255, 255, 0.7), transparent);
+            background-size: 200px 200px;
+            animation: twinkle 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* 夏日海滩波浪效果 */
+        [data-theme="summer-beach"] body {
+            position: relative;
+        }
+        
+        [data-theme="summer-beach"] body::before {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(180deg, transparent, rgba(96, 108, 56, 0.1));
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 糖果乐园爱心效果 */
+        [data-theme="candy-land"] .card {
+            position: relative;
+            overflow: visible;
+        }
+        
+        [data-theme="candy-land"] .card::after {
+            content: '💕';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 20px;
+            opacity: 0.6;
+            animation: floatHeart 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0) rotate(-10deg); }
+            50% { transform: translateY(-5px) rotate(10deg); }
+        }
+        
+        /* 暗黑哥特烛光效果 */
+        [data-theme="dark-gothic"] body {
+            position: relative;
+        }
+        
+        [data-theme="dark-gothic"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(139, 0, 0, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: flicker 4s ease-in-out infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 0.8; }
+            25% { opacity: 0.9; }
+            50% { opacity: 0.7; }
+            75% { opacity: 0.85; }
+        }
+        
+        /* 蒸汽波网格效果 */
+        [data-theme="vaporwave"] body {
+            position: relative;
+        }
+        
+        [data-theme="vaporwave"] body::before {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: 
+                linear-gradient(90deg, rgba(1, 205, 254, 0.1) 1px, transparent 1px),
+                linear-gradient(rgba(1, 205, 254, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: bottom;
+            pointer-events: none;
+            z-index: 0;
+            animation: gridMove 10s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+        
+        /* 樱花物语花瓣效果 */
+        [data-theme="sakura-bloom"] body {
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        [data-theme="sakura-bloom"] body::before {
+            content: '';
+            position: fixed;
+            top: -50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 107, 157, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(253, 121, 168, 0.12) 0%, transparent 25%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="sakura-bloom"] .card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        [data-theme="sakura-bloom"] .card::after {
+            content: '🌸';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 14px;
+            opacity: 0.5;
+            animation: petalFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes petalFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translateY(-3px) rotate(10deg); opacity: 0.8; }
+        }
+        
+        /* 像素游戏效果 */
+        [data-theme="pixel-game"] .card {
+            border: 3px solid var(--border-color);
+            box-shadow: 4px 4px 0 #000;
+        }
+        
+        [data-theme="pixel-game"] .card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
+        }
+        
+        [data-theme="pixel-game"] .btn {
+            border: 2px solid var(--accent-primary);
+            box-shadow: 2px 2px 0 #000;
+        }
+        
+        [data-theme="pixel-game"] .btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #000;
+        }
+        
+        [data-theme="pixel-game"] .stat-value {
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        [data-theme="pixel-game"] header h1 {
+            background: none;
+            -webkit-text-fill-color: var(--text-primary);
+            text-shadow: 3px 3px 0 #000;
+            animation: none;
+        }
+        
+        /* 海洋深处气泡效果 */
+        [data-theme="ocean-deep"] body {
+            position: relative;
+        }
+        
+        [data-theme="ocean-deep"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 15% 85%, rgba(255, 111, 97, 0.08) 0%, transparent 20%),
+                radial-gradient(circle at 85% 15%, rgba(0, 188, 212, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 50%, rgba(77, 208, 225, 0.05) 0%, transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="ocean-deep"] body::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(0deg, rgba(0, 64, 128, 0.3) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes bubbleRise {
+            0% { transform: translateY(0) scale(1); opacity: 0.6; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+        
+        /* 音乐律动效果 */
+        [data-theme="music-rhythm"] body {
+            position: relative;
+        }
+        
+        [data-theme="music-rhythm"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(168, 218, 220, 0.03) 50px,
+                    rgba(168, 218, 220, 0.03) 51px
+                );
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="music-rhythm"] header h1 {
+            text-shadow: 0 0 20px rgba(230, 57, 70, 0.5), 0 0 40px rgba(168, 218, 220, 0.3);
+        }
+        
+        [data-theme="music-rhythm"] .card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        [data-theme="music-rhythm"] .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: scanLine 3s linear infinite;
+        }
+        
+        /* 雪山之巅雪花效果 */
+        [data-theme="snow-peak"] body {
+            position: relative;
+        }
+        
+        [data-theme="snow-peak"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.8) 0%, transparent 100%),
+                radial-gradient(1px 1px at 40% 70%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 60% 20%, rgba(255, 255, 255, 0.7) 0%, transparent 100%),
+                radial-gradient(2px 2px at 80% 60%, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+            background-size: 200px 200px;
+            animation: snowfall 10s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes snowfall {
+            0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+            100% { background-position: 200px 200px, 200px 200px, 200px 200px, 200px 200px; }
+        }
+        
+        [data-theme="snow-peak"] .card {
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        [data-theme="snow-peak"] header h1 {
+            -webkit-text-fill-color: var(--text-primary);
+            background: none;
+            text-shadow: 2px 2px 4px rgba(30, 58, 95, 0.2);
+            animation: none;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ============================================
+           全局视觉增强
+           ============================================ */
+        
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 选中文本颜色 */
+        ::selection {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+        
+        /* Focus 样式增强 */
+        *:focus {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+        
+        *:focus:not(:focus-visible) {
+            outline: none;
+        }
+        
+        *:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+        
+        /* 图片优化 */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* 链接过渡 */
+        a {
+            transition: color 0.2s ease;
+        }
+        
+        a:hover {
+            color: var(--accent-primary);
+        }
+        
+        /* ============================================
+           导航栏
+           ============================================ */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        
+        .nav-brand {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast, 0.2s ease);
+        }
+        
+        .nav-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        
+        [data-theme="cyber-neon"] .nav-btn:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary);
         }
 
         header {
-            text-align: center;
+            text-align: var(--header-align);
             padding: 40px 20px;
             margin-bottom: 30px;
         }
 
         header h1 {
+            font-family: var(--font-display);
             font-size: 2.5rem;
-            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #ff6b6b);
+            background: var(--accent-gradient);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
             margin-bottom: 10px;
             animation: gradientFlow 3s ease infinite;
+        }
+        
+        [data-theme="minimal-ink"] header h1 {
+            -webkit-text-fill-color: var(--text-primary);
+            background: none;
+            animation: none;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+        }
+        
+        [data-theme="retro-type"] header h1 {
+            -webkit-text-fill-color: var(--text-primary);
+            background: none;
+            animation: none;
+        }
+        
+        /* 新主题标题特殊效果 */
+        [data-theme="dark-forest"] header h1 {
+            text-shadow: 0 0 30px rgba(82, 183, 136, 0.5);
+        }
+        
+        [data-theme="summer-beach"] header h1 {
+            text-shadow: 2px 2px 0 rgba(188, 108, 37, 0.3);
+        }
+        
+        [data-theme="candy-land"] header h1 {
+            -webkit-text-fill-color: var(--accent-primary);
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+            animation: gradientFlow 4s ease infinite;
+        }
+        
+        [data-theme="dark-gothic"] header h1 {
+            -webkit-text-fill-color: #8b0000;
+            background: none;
+            text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+            animation: none;
+        }
+        
+        [data-theme="vaporwave"] header h1 {
+            text-shadow: 0 0 20px rgba(255, 113, 206, 0.6), 0 0 40px rgba(1, 205, 254, 0.4);
         }
 
         @keyframes gradientFlow {
@@ -50,10 +1337,170 @@
         }
 
         header p {
-            color: #888;
+            color: var(--text-secondary);
             font-size: 1rem;
         }
+        
+        .header-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: var(--header-align) == 'left' ? flex-start : center;
+        }
+        
+        [data-theme="minimal-ink"] .header-actions {
+            justify-content: flex-start;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-body);
+        }
+        
+        .btn-primary {
+            background: var(--accent-gradient);
+            background-size: 200% auto;
+            color: white;
+        }
+        
+        [data-theme="fresh-garden"] .btn-primary {
+            color: #1b5e20;
+        }
+        
+        [data-theme="retro-type"] .btn-primary {
+            background: var(--accent-primary);
+            color: #fff8f0;
+        }
+        
+        [data-theme="minimal-ink"] .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        [data-theme="cyber-neon"] .btn-primary:hover {
+            box-shadow: 0 0 20px var(--accent-primary);
+        }
+        
+        [data-theme="dark-forest"] .btn-primary {
+            background: linear-gradient(90deg, #52b788, #40916c);
+            color: #e0e1dd;
+        }
+        
+        [data-theme="dark-forest"] .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(82, 183, 136, 0.5);
+        }
+        
+        [data-theme="summer-beach"] .btn-primary {
+            background: linear-gradient(90deg, #606c38, #bc6c25);
+            color: #fefae0;
+        }
+        
+        [data-theme="candy-land"] .btn-primary {
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+            color: white;
+        }
+        
+        [data-theme="candy-land"] .btn-primary:hover {
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        }
+        
+        [data-theme="dark-gothic"] .btn-primary {
+            background: #8b0000;
+            color: #c0c0c0;
+        }
+        
+        [data-theme="dark-gothic"] .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.6);
+        }
+        
+        [data-theme="vaporwave"] .btn-primary {
+            background: linear-gradient(90deg, #ff71ce, #b967ff);
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        [data-theme="vaporwave"] .btn-primary:hover {
+            box-shadow: 0 0 25px rgba(255, 113, 206, 0.6);
+        }
+        
+        /* 樱花物语按钮 */
+        [data-theme="sakura-bloom"] .btn-primary {
+            background: linear-gradient(90deg, #ff6b9d, #fd79a8);
+            color: white;
+        }
+        
+        [data-theme="sakura-bloom"] .btn-primary:hover {
+            box-shadow: 0 5px 20px rgba(255, 107, 157, 0.4);
+        }
+        
+        /* 像素游戏按钮 */
+        [data-theme="pixel-game"] .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            border: 3px solid var(--accent-primary);
+        }
+        
+        [data-theme="pixel-game"] .btn-primary:hover {
+            background: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 15px var(--accent-primary);
+        }
+        
+        /* 海洋深处按钮 */
+        [data-theme="ocean-deep"] .btn-primary {
+            background: linear-gradient(90deg, #00bcd4, #4dd0e1);
+            color: #001f3f;
+        }
+        
+        [data-theme="ocean-deep"] .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(0, 188, 212, 0.5);
+        }
+        
+        /* 音乐律动按钮 */
+        [data-theme="music-rhythm"] .btn-primary {
+            background: linear-gradient(90deg, #e63946, #a8dadc);
+            color: white;
+        }
+        
+        [data-theme="music-rhythm"] .btn-primary:hover {
+            box-shadow: 0 0 25px rgba(230, 57, 70, 0.5);
+        }
+        
+        /* 雪山之巅按钮 */
+        [data-theme="snow-peak"] .btn-primary {
+            background: linear-gradient(90deg, #2e86de, #54a0ff);
+            color: white;
+        }
+        
+        [data-theme="snow-peak"] .btn-primary:hover {
+            box-shadow: 0 5px 20px rgba(46, 134, 222, 0.4);
+        }
+        
+        .shortcut-hint {
+            margin-left: 15px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
 
+        /* ============================================
+           仪表盘卡片
+           ============================================ */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -62,17 +1509,217 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: var(--bg-card);
+            backdrop-filter: var(--card-blur);
+            border-radius: var(--border-radius);
             padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-card);
+            background: var(--bg-card-hover);
+        }
+        
+        [data-theme="cyber-neon"] .card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        [data-theme="cyber-neon"] .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: scanLine 3s infinite;
+        }
+        
+        @keyframes scanLine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* 骨架屏加载效果 */
+        .skeleton {
+            background: linear-gradient(90deg, 
+                var(--bg-card) 25%, 
+                var(--bg-card-hover) 50%, 
+                var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--border-radius-sm);
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .skeleton-text {
+            height: 1em;
+            margin: 8px 0;
+        }
+        
+        .skeleton-title {
+            height: 1.5em;
+            width: 60%;
+            margin-bottom: 15px;
+        }
+        
+        .skeleton-value {
+            height: 2.5em;
+            width: 40%;
+            margin: 15px 0;
+        }
+        
+        .skeleton-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        
+        .card.loading .skeleton {
+            display: block;
+        }
+        
+        .card.loading .card-header *,
+        .card.loading .stat-value,
+        .card.loading .stat-label {
+            visibility: hidden;
+        }
+        
+        /* 加载状态动画 */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, 
+                var(--bg-card) 25%, 
+                var(--bg-card-hover) 50%, 
+                var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        /* 全局加载指示器 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-lobster {
+            font-size: 4rem;
+            animation: lobsterBounce 1s ease-in-out infinite;
+        }
+        
+        @keyframes lobsterBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            75% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        [data-theme="minimal-ink"] .card:hover {
+            transform: none;
+            box-shadow: var(--shadow-card);
+            border-color: var(--text-muted);
+        }
+        
+        [data-theme="retro-type"] .card:hover {
+            transform: none;
+            box-shadow: 6px 6px 0 rgba(139, 69, 19, 0.25);
+        }
+        
+        /* 暗夜森林卡片效果 */
+        [data-theme="dark-forest"] .card {
+            border-color: rgba(82, 183, 136, 0.3);
+            box-shadow: 0 0 30px rgba(82, 183, 136, 0.1);
+        }
+        
+        [data-theme="dark-forest"] .card:hover {
+            box-shadow: 0 0 50px rgba(82, 183, 136, 0.2), 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 夏日海滩卡片效果 */
+        [data-theme="summer-beach"] .card {
+            border: 2px solid rgba(188, 108, 37, 0.2);
+        }
+        
+        [data-theme="summer-beach"] .card:hover {
+            box-shadow: 0 15px 40px rgba(188, 108, 37, 0.2);
+        }
+        
+        /* 糖果乐园卡片效果 */
+        [data-theme="candy-land"] .card {
+            border: 2px solid rgba(255, 105, 180, 0.3);
+        }
+        
+        [data-theme="candy-land"] .card-icon {
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #da70d6);
+            border-radius: 50%;
+        }
+        
+        /* 暗黑哥特卡片效果 */
+        [data-theme="dark-gothic"] .card {
+            border: 1px solid rgba(139, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        [data-theme="dark-gothic"] .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8b0000, transparent);
+        }
+        
+        [data-theme="dark-gothic"] .card:hover {
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+        }
+        
+        /* 蒸汽波卡片效果 */
+        [data-theme="vaporwave"] .card {
+            border: 1px solid transparent;
+            background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+                        linear-gradient(90deg, #ff71ce, #b967ff, #01cdfe) border-box;
+        }
+        
+        [data-theme="vaporwave"] .card:hover {
+            box-shadow: 0 0 30px rgba(255, 113, 206, 0.3), 0 0 60px rgba(1, 205, 254, 0.2);
         }
 
         .card-header {
@@ -85,39 +1732,49 @@
         .card-icon {
             width: 50px;
             height: 50px;
-            border-radius: 12px;
+            border-radius: var(--border-radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+            background: var(--accent-gradient);
+        }
+        
+        [data-theme="minimal-ink"] .card-icon {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
         }
 
         .card-title {
+            font-family: var(--font-display);
             font-size: 1.1rem;
             font-weight: 600;
-            color: #fff;
+            color: var(--text-primary);
         }
 
         .card-subtitle {
             font-size: 0.85rem;
-            color: #888;
+            color: var(--text-secondary);
         }
 
         .stat-value {
+            font-family: var(--font-display);
             font-size: 2.5rem;
             font-weight: 700;
             margin: 15px 0;
+            color: var(--accent-primary);
         }
 
         .stat-label {
             font-size: 0.9rem;
-            color: #aaa;
+            color: var(--text-secondary);
         }
 
         .progress-bar {
             width: 100%;
             height: 8px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--bg-card);
             border-radius: 4px;
             overflow: hidden;
             margin-top: 15px;
@@ -127,23 +1784,25 @@
             height: 100%;
             border-radius: 4px;
             transition: width 1s ease;
+            background: var(--accent-gradient);
+            background-size: 200% auto;
+        }
+        
+        [data-theme="minimal-ink"] .progress-fill {
+            background: var(--text-primary);
+        }
+        
+        [data-theme="retro-type"] .progress-fill {
+            background: var(--accent-primary);
         }
 
-        /* Card specific colors */
-        .card-depth .card-icon { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .card-depth .stat-value { color: #667eea; }
-        .card-depth .progress-fill { background: linear-gradient(90deg, #667eea, #764ba2); }
+        /* 卡片特定颜色 */
+        .card-depth .stat-value { color: var(--accent-secondary); }
+        .card-value .stat-value { color: var(--accent-primary); }
+        .card-skills .stat-value { color: var(--color-info); }
+        .card-sessions .stat-value { color: var(--color-success); }
 
-        .card-value .card-icon { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .card-value .stat-value { color: #f5576c; }
-
-        .card-skills .card-icon { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-        .card-skills .stat-value { color: #4facfe; }
-
-        .card-sessions .card-icon { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-        .card-sessions .stat-value { color: #43e97b; }
-
-        /* Depth levels */
+        /* 深度等级 */
         .depth-levels {
             display: flex;
             flex-direction: column;
@@ -156,8 +1815,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius-sm);
             font-size: 0.9rem;
         }
 
@@ -174,19 +1833,21 @@
             font-weight: 600;
         }
 
-        .depth-1 { background: #2d3436; color: #dfe6e9; }
-        .depth-2 { background: #0984e3; color: #fff; }
-        .depth-3 { background: #00b894; color: #fff; }
-        .depth-4 { background: #fdcb6e; color: #2d3436; }
-        .depth-5 { background: #e17055; color: #fff; }
+        .depth-1 { background: var(--text-muted); color: var(--bg-primary); }
+        .depth-2 { background: var(--color-info); color: #fff; }
+        .depth-3 { background: var(--color-success); color: #fff; }
+        .depth-4 { background: var(--color-warning); color: #333; }
+        .depth-5 { background: var(--accent-primary); color: #fff; }
 
-        /* Roast section */
+        /* ============================================
+           调侃话术区域
+           ============================================ */
         .roast-section {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: var(--bg-card);
+            backdrop-filter: var(--card-blur);
+            border-radius: var(--border-radius);
             padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             margin-bottom: 30px;
         }
 
@@ -199,21 +1860,38 @@
 
         .roast-icon {
             font-size: 2rem;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .roast-icon:hover {
+            transform: rotate(360deg) scale(1.2);
         }
 
         .roast-title {
+            font-family: var(--font-display);
             font-size: 1.3rem;
             font-weight: 600;
         }
 
         .roast-content {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius-sm);
             padding: 20px;
-            border-left: 4px solid #ff6b6b;
+            border-left: 4px solid var(--accent-primary);
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #feca57;
+            color: var(--accent-highlight);
+        }
+        
+        [data-theme="minimal-ink"] .roast-content {
+            border-left: 2px solid var(--text-primary);
+            color: var(--text-primary);
+        }
+        
+        [data-theme="cyber-neon"] .roast-content {
+            border-left: 2px solid var(--accent-primary);
+            box-shadow: inset 0 0 20px rgba(255, 0, 255, 0.1);
         }
 
         .roast-content p {
@@ -224,41 +1902,248 @@
             margin-bottom: 0;
         }
 
-        /* Achievements section */
+        /* ============================================
+           成就系统 - 徽章化设计 v2
+           ============================================ */
         .achievements-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .achievements-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
         .achievements-title {
-            font-size: 1.1rem;
+            font-family: var(--font-display);
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 15px;
-            color: #feca57;
-        }
-
-        .achievements-list {
+            color: var(--accent-highlight);
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            gap: 8px;
         }
 
-        .achievement-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 12px 16px;
+        .achievements-count {
+            background: var(--accent-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement-badge {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-sm);
+            padding: 16px;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .achievement-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .achievement-badge.unlocked {
+            border-color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 107, 107, 0.1) 100%);
+        }
+
+        .achievement-badge.unlocked::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: badgeGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes badgeGlow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .achievement-badge.locked {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+        }
+
+        .achievement-badge.locked:hover {
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .achievement-badge.unlocked .badge-icon {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-highlight));
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            animation: badgeBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes badgeBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .achievement-badge.locked .badge-icon {
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+        }
+
+        .badge-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge-name {
+            font-weight: 600;
             font-size: 0.95rem;
-            color: #e0e0e0;
-            border-left: 3px solid #feca57;
-            animation: fadeInUp 0.4s ease forwards;
+            color: var(--text-primary);
+            margin-bottom: 6px;
         }
 
-        .achievement-item:nth-child(1) { animation-delay: 0.1s; }
-        .achievement-item:nth-child(2) { animation-delay: 0.2s; }
-        .achievement-item:nth-child(3) { animation-delay: 0.3s; }
+        .badge-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
 
-        /* Charts section */
+        .badge-progress {
+            margin-top: 10px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .badge-progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-highlight));
+            transition: width 0.5s ease;
+        }
+
+        .badge-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .achievement-badge.unlocked .badge-status {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .achievement-badge.locked .badge-status {
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 成就分类标签 */
+        .achievement-category {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .category-skill { border-color: var(--color-info); color: var(--color-info); }
+        .category-automation { border-color: var(--color-success); color: var(--color-success); }
+        .category-integration { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .category-special { border-color: var(--accent-highlight); color: var(--accent-highlight); }
+
+        /* 成就展示动画 */
+        .achievement-badge.pop-in {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 新解锁成就特效 */
+        .achievement-badge.new-unlock::after {
+            content: 'NEW';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--color-success);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            animation: newPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes newPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 成就展示区域滚动 */
+        .achievements-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .achievements-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .achievements-scroll::-webkit-scrollbar-track {
+            background: var(--bg-card);
+            border-radius: 3px;
+        }
+
+        .achievements-scroll::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 3px;
+        }
+
+        /* ============================================
+           图表区域
+           ============================================ */
         .charts-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -267,14 +2152,15 @@
         }
 
         .chart-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: var(--bg-card);
+            backdrop-filter: var(--card-blur);
+            border-radius: var(--border-radius);
             padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .chart-title {
+            font-family: var(--font-display);
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 20px;
@@ -288,7 +2174,7 @@
             height: 250px;
         }
 
-        /* Skill tags */
+        /* 技能标签 */
         .skill-tags {
             display: flex;
             flex-wrap: wrap;
@@ -298,7 +2184,8 @@
 
         .skill-tag {
             padding: 6px 14px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 20px;
             font-size: 0.85rem;
             display: flex;
@@ -307,17 +2194,822 @@
         }
 
         .skill-tag .count {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--accent-primary);
+            color: white;
             padding: 2px 8px;
             border-radius: 10px;
             font-size: 0.75rem;
         }
+        
+        [data-theme="fresh-garden"] .skill-tag .count {
+            color: #1b5e20;
+        }
+        
+        [data-theme="minimal-ink"] .skill-tag .count {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
 
-        /* Loading state */
+        /* ============================================
+           评分详情区域
+           ============================================ */
+        .score-breakdown-section {
+            background: var(--bg-card);
+            backdrop-filter: var(--card-blur);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .score-item {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            border: 1px solid var(--border-color);
+        }
+        
+        [data-theme="minimal-ink"] .score-item {
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0;
+        }
+
+        .score-item-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .score-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* ============================================
+           小贴士区域
+           ============================================ */
+        .tip-section {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+        
+        [data-theme="minimal-ink"] .tip-section {
+            border: none;
+            border-left: 2px solid var(--accent-highlight);
+            border-radius: 0;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tip-title {
+            font-size: 1rem;
+            color: var(--accent-highlight);
+            font-weight: 600;
+        }
+        
+        #fun-fact {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           快速操作区域
+           ============================================ */
+        .quick-actions {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .quick-actions-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        .quick-actions-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 10px 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-family: var(--font-body);
+        }
+
+        .action-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+        
+        [data-theme="cyber-neon"] .action-btn:hover {
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 10px var(--accent-secondary);
+        }
+        
+        .action-btn.primary {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* ============================================
+           主题切换面板
+           ============================================ */
+        .theme-switcher {
+            position: relative;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .theme-toggle-icon {
+            font-size: 1.1rem;
+        }
+
+        .theme-panel {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            min-width: 520px;
+            max-width: 90vw;
+            max-height: 75vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-card);
+            backdrop-filter: var(--card-blur);
+        }
+        
+        .theme-panel.show {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .theme-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .theme-panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .theme-panel-close {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-panel-close:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+        
+        .theme-panel-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .theme-count-badge {
+            background: var(--accent-primary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .theme-category {
+            margin-bottom: 18px;
+        }
+        
+        .theme-category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .theme-category-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .theme-category-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .theme-category-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .theme-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        @media (max-width: 600px) {
+            .theme-panel {
+                min-width: 300px;
+                padding: 15px;
+            }
+            
+            .theme-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theme-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.03) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .theme-option:hover::before {
+            opacity: 1;
+        }
+
+        .theme-option:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .theme-option.active {
+            border-color: var(--accent-primary);
+            background: var(--bg-card-hover);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+        }
+        
+        [data-theme="cyber-neon"] .theme-option.active {
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+        }
+        
+        [data-theme="dark-forest"] .theme-option.active {
+            box-shadow: 0 0 15px rgba(82, 183, 136, 0.3);
+        }
+        
+        [data-theme="vaporwave"] .theme-option.active {
+            box-shadow: 0 0 15px rgba(255, 113, 206, 0.3);
+        }
+        
+        [data-theme="fresh-garden"] .theme-option.active {
+            box-shadow: 0 0 15px rgba(67, 233, 123, 0.3);
+        }
+        
+        [data-theme="candy-land"] .theme-option.active {
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .theme-preview {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+        
+        .theme-preview-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .theme-option.active .theme-preview {
+            border-color: var(--accent-primary);
+        }
+
+        .theme-preview-color {
+            flex: 1;
+        }
+        
+        .theme-preview-color:first-child {
+            flex: 1.3;
+        }
+
+        .theme-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .theme-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+
+        .theme-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .theme-type-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+        
+        .theme-type-badge.dark { background: rgba(30, 30, 50, 0.8); color: #fff; }
+        .theme-type-badge.light { background: rgba(255, 255, 255, 0.9); color: #333; }
+        .theme-type-badge.special { background: linear-gradient(135deg, #ff6b6b, #feca57); color: #fff; }
+        
+        .theme-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+        }
+        
+        .theme-option.active .theme-check {
+            display: flex;
+            animation: checkPop 0.3s ease;
+        }
+        
+        @keyframes checkPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* ============================================
+           悬浮生成按钮
+           ============================================ */
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .floating-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-highlight));
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(255, 107, 107, 0.5);
+        }
+        
+        .floating-btn.loading {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .floating-tooltip {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .floating-action:hover .floating-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           成就详情弹窗
+           ============================================ */
+        .achievement-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .achievement-modal {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 0 50px rgba(255, 107, 107, 0.3);
+            animation: popInModal 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes popInModal {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .achievement-modal-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 1s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .achievement-modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+        
+        .achievement-modal-category {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .achievement-modal-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .achievement-modal-close {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-highlight));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-modal-close:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* ============================================
+           分享卡片弹窗
+           ============================================ */
+        .share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        
+        .share-card {
+            background: var(--bg-gradient);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            max-width: 420px;
+            width: 100%;
+            border: 2px solid var(--accent-primary);
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 107, 107, 0.2);
+            animation: cardPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes cardPopIn {
+            0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        
+        .share-card::before {
+            content: '✨';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.6; transform: translateX(-50%) scale(1.2); }
+        }
+        
+        .share-card-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .share-level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-highlight));
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .share-level-emoji {
+            font-size: 2.5rem;
+        }
+        
+        .share-level-text {
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .share-level-name {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+        
+        .share-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .share-stat-item {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .share-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        
+        .share-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .share-achievements {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .share-achievements-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .share-achievement-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .share-achievement-tag {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-highlight));
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: white;
+        }
+        
+        .share-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .share-actions .btn {
+            flex: 1;
+        }
+        
+        /* ============================================
+           响应式设计
+           ============================================ */
+        @media (max-width: 768px) {
+            .floating-action {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .floating-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .share-card {
+                padding: 20px;
+            }
+            
+            .share-level-badge {
+                padding: 10px 20px;
+            }
+            
+            .share-level-emoji {
+                font-size: 2rem;
+            }
+            
+            .share-level-text {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ============================================
+           底部区域
+           ============================================ */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--accent-secondary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* ============================================
+           加载状态
+           ============================================ */
         .loading {
             text-align: center;
             padding: 40px;
-            color: #888;
+            color: var(--text-secondary);
         }
 
         .loading::after {
@@ -331,152 +3023,9 @@
             60%, 100% { content: '...'; }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8rem;
-            }
-
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-
-            .charts-section {
-                grid-template-columns: 1fr;
-            }
-
-            .chart-container {
-                height: 200px;
-            }
-
-            /* 移动端卡片优化 */
-            .card {
-                padding: 20px;
-            }
-
-            .stat-value {
-                font-size: 2rem;
-            }
-
-            /* 移动端按钮优化 */
-            #refresh-btn, #share-btn {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-            }
-
-            /* 移动端快速操作区域 */
-            .quick-actions button {
-                padding: 8px 12px;
-                font-size: 0.8rem;
-            }
-
-            /* 移动端评分详情 */
-            .score-grid {
-                grid-template-columns: 1fr;
-            }
-
-            /* 移动端隐藏部分内容 */
-            .depth-breakdown {
-                font-size: 0.85rem;
-            }
-
-            /* 移动端成就区域 */
-            .achievement-item {
-                font-size: 0.85rem;
-                padding: 10px 12px;
-            }
-
-            /* 移动端调侃话术 */
-            .roast-content {
-                font-size: 1rem;
-                padding: 15px;
-            }
-        }
-
-        /* 小屏幕手机优化 */
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            header p {
-                font-size: 0.85rem;
-            }
-
-            body {
-                padding: 10px;
-            }
-
-            .card {
-                padding: 15px;
-                border-radius: 15px;
-            }
-
-            .card-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-
-            .stat-value {
-                font-size: 1.8rem;
-            }
-
-            .stat-label {
-                font-size: 0.8rem;
-            }
-
-            .roast-section, .chart-card {
-                padding: 15px;
-            }
-
-            .quick-actions {
-                padding: 15px;
-            }
-
-            .quick-actions button {
-                flex: 1;
-                min-width: calc(50% - 10px);
-            }
-        }
-
-        /* 横屏模式优化 */
-        @media (max-height: 500px) and (orientation: landscape) {
-            header {
-                padding: 20px;
-            }
-
-            header h1 {
-                font-size: 1.5rem;
-                margin-bottom: 5px;
-            }
-
-            .dashboard {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
-
-            .card {
-                padding: 15px;
-            }
-        }
-
-        /* 大屏幕优化 */
-        @media (min-width: 1600px) {
-            .container {
-                max-width: 1600px;
-            }
-
-            .dashboard {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .charts-section {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Animations */
+        /* ============================================
+           动画
+           ============================================ */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -497,190 +3046,293 @@
         .card:nth-child(3) { animation-delay: 0.3s; }
         .card:nth-child(4) { animation-delay: 0.4s; }
 
-        /* 刷新按钮悬浮效果 */
-        #refresh-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        /* ============================================
+           Toast 提示
+           ============================================ */
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+            z-index: 10000;
+            animation: slideUp 0.3s ease;
+            border: 1px solid var(--border-color);
         }
 
-        #refresh-btn:active {
-            transform: translateY(0);
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(20px); opacity: 0; }
         }
 
-        /* 数据更新闪烁效果 */
-        @keyframes dataUpdate {
-            0% { background-color: rgba(102, 126, 234, 0.3); }
-            100% { background-color: transparent; }
+        /* ============================================
+           响应式设计
+           ============================================ */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 200px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .shortcut-hint {
+                display: none;
+            }
+            
+            .theme-panel {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--border-radius) var(--border-radius) 0 0;
+                max-height: 70vh;
+                max-width: 100%;
+                min-width: unset;
+            }
+            
+            .theme-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-actions {
+                gap: 8px;
+            }
+            
+            .nav-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .theme-toggle {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .floating-action {
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .floating-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .data-updated {
-            animation: dataUpdate 0.5s ease;
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header p {
+                font-size: 0.85rem;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .navbar {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .nav-brand {
+                font-size: 1.1rem;
+            }
+            
+            .header-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .btn {
+                font-size: 0.85rem;
+                padding: 10px 16px;
+            }
+            
+            .theme-panel-header {
+                padding-bottom: 10px;
+            }
+            
+            .theme-panel-title {
+                font-size: 1rem;
+            }
         }
 
-        /* 趣味化标题动画 */
-        @keyframes lobsterWiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1600px;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .charts-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
-        header h1:hover {
-            animation: lobsterWiggle 0.5s ease;
-        }
-
-        /* 成就弹出效果 */
-        @keyframes achievementPop {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .achievement-item {
-            animation: achievementPop 0.4s ease forwards;
-        }
-
-        .achievement-item:nth-child(1) { animation-delay: 0.1s; }
-        .achievement-item:nth-child(2) { animation-delay: 0.2s; }
-        .achievement-item:nth-child(3) { animation-delay: 0.3s; }
-        .achievement-item:nth-child(4) { animation-delay: 0.4s; }
-
-        /* 额外趣味元素样式 */
-        .fun-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            border-radius: 15px;
-            font-size: 0.8rem;
-            margin-left: 10px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* 龙虾等级特效 */
-        .lobster-glow {
-            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5),
-                         0 0 20px rgba(255, 107, 107, 0.3),
-                         0 0 30px rgba(255, 107, 107, 0.2);
-        }
-
-        /* 统计数字动画 */
-        @keyframes countUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .stat-value {
-            animation: countUp 0.5s ease forwards;
-        }
-
-        /* 彩蛋：鼠标悬停时的龙虾动画 */
-        .roast-icon {
-            transition: transform 0.3s ease;
-            display: inline-block;
-        }
-
-        .roast-icon:hover {
-            transform: rotate(360deg) scale(1.2);
-        }
-
-        /* 进度条渐变动画 */
-        @keyframes progressShine {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .progress-fill {
-            background-size: 200% auto;
-            animation: progressShine 3s linear infinite;
-        }
-
-        .card-depth .progress-fill {
-            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
-            background-size: 200% auto;
-        }
-
-        /* 底部版权区域 */
-        .footer {
+        /* ============================================
+           彩蛋
+           ============================================ */
+        #easter-egg {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            z-index: 1000;
             text-align: center;
-            padding: 30px;
-            color: #555;
-            font-size: 0.85rem;
+            border: 2px solid var(--accent-primary);
+            box-shadow: var(--shadow-glow);
         }
 
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
+        #easter-egg-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
         }
 
-        .footer a:hover {
-            text-decoration: underline;
+        /* ============================================
+           图片弹窗
+           ============================================ */
+        #image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
         }
-
-        /* 提示气泡 */
-        .tip-bubble {
-            background: rgba(102, 126, 234, 0.15);
-            border-left: 3px solid #667eea;
-            padding: 10px 15px;
-            border-radius: 0 8px 8px 0;
+        
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .modal-actions {
             margin-top: 15px;
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-
-        /* 加载骨架屏 */
-        .skeleton {
-            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
-            background-size: 200% 100%;
-            animation: skeleton 1.5s infinite;
-            border-radius: 4px;
-        }
-
-        @keyframes skeleton {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            display: flex;
+            gap: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🦞 龙虾能力估值 Skill v1.0</h1>
-            <p>基于 Claude Code 使用数据的深度分析与价值评估</p>
-            <button id="refresh-btn" onclick="refreshData()" style="
-                margin-top: 15px;
-                padding: 10px 25px;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                border: none;
-                border-radius: 25px;
-                color: white;
-                font-size: 0.95rem;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            ">🔄 刷新数据</button>
-            <button id="share-btn" onclick="shareResult()" style="
-                margin-top: 15px;
-                margin-left: 10px;
-                padding: 10px 25px;
-                background: linear-gradient(135deg, #f093fb, #f5576c);
-                border: none;
-                border-radius: 25px;
-                color: white;
-                font-size: 0.95rem;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
-            ">📤 分享结果</button>
-            <span style="margin-left: 15px; color: #666; font-size: 0.8rem;">快捷键: R 刷新 | S 分享</span>
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="nav-brand">🦞 ClawValue</div>
+            <div class="nav-actions">
+                <div class="theme-switcher">
+                    <button class="theme-toggle" onclick="toggleThemePanel()">
+                        <span class="theme-toggle-icon">🎨</span>
+                        <span>切换主题</span>
+                    </button>
+                    <div class="theme-panel" id="theme-panel">
+                        <div class="theme-panel-header">
+                            <div class="theme-panel-title">🎨 主题风格</div>
+                            <button class="theme-panel-close" onclick="toggleThemePanel()">×</button>
+                        </div>
+                        <div class="theme-panel-subtitle">
+                            点击切换，自动保存您的偏好
+                            <span class="theme-count-badge">15 套可选</span>
+                        </div>
+                        <div id="theme-categories">
+                            <!-- 动态生成分类主题 -->
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-btn" onclick="showHelp()">❓ 帮助</button>
+            </div>
+        </nav>
+
+        <header class="animate-in">
+            <h1>🦞 龙虾能力估值 Skill v4.0</h1>
+            <p>基于 OpenClaw 使用数据的深度分析与价值评估</p>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="refresh-btn" onclick="refreshData()">🔄 刷新数据</button>
+                <button class="btn btn-primary btn-glow" id="share-btn" onclick="shareResult()">✨ 分享我的龙虾值</button>
+                <span class="shortcut-hint">快捷键: R 刷新 | S 分享</span>
+            </div>
         </header>
 
         <div class="dashboard">
             <!-- 使用深度卡片 -->
-            <div class="card card-depth">
+            <div class="card card-depth animate-in animate-in-delay-1">
                 <div class="card-header">
                     <div class="card-icon">📊</div>
                     <div>
@@ -693,13 +3345,11 @@
                 <div class="progress-bar">
                     <div class="progress-fill" id="depth-progress" style="width: 0%"></div>
                 </div>
-                <div class="depth-levels" id="depth-breakdown">
-                    <!-- 动态填充 -->
-                </div>
+                <div class="depth-levels" id="depth-breakdown"></div>
             </div>
 
             <!-- 价值估算卡片 -->
-            <div class="card card-value">
+            <div class="card card-value animate-in animate-in-delay-2">
                 <div class="card-header">
                     <div class="card-icon">💰</div>
                     <div>
@@ -709,24 +3359,28 @@
                 </div>
                 <div class="stat-value" id="value-amount">--</div>
                 <div class="stat-label" id="value-label">正在计算...</div>
-                <div style="margin-top: 15px; font-size: 0.9rem; color: #aaa;">
+                <div style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <span>节省工时</span>
-                        <span id="hours-saved">--</span>
+                        <span id="hours-saved" style="color: var(--accent-primary); font-weight: 600;">--</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <span>效率提升</span>
-                        <span id="efficiency">--</span>
+                        <span id="efficiency" style="color: var(--color-success); font-weight: 600;">--</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span>ROI</span>
                         <span id="roi">--</span>
                     </div>
                 </div>
+                <div id="value-hint" style="margin-top: 15px; padding: 12px; background: rgba(255, 107, 157, 0.08); border-radius: 12px; font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; border: 1px dashed rgba(255, 107, 157, 0.2);">
+                    <span style="font-size: 1.2rem;">💡</span>
+                    <span>配置更多技能，开启心跳任务，解锁你的龙虾价值！</span>
+                </div>
             </div>
 
             <!-- 技能统计卡片 -->
-            <div class="card card-skills">
+            <div class="card card-skills animate-in animate-in-delay-3">
                 <div class="card-header">
                     <div class="card-icon">🛠️</div>
                     <div>
@@ -736,13 +3390,11 @@
                 </div>
                 <div class="stat-value" id="skill-count">--</div>
                 <div class="stat-label">已识别技能类别</div>
-                <div class="skill-tags" id="skill-tags">
-                    <!-- 动态填充 -->
-                </div>
+                <div class="skill-tags" id="skill-tags"></div>
             </div>
 
             <!-- 会话统计卡片 -->
-            <div class="card card-sessions">
+            <div class="card card-sessions animate-in animate-in-delay-4">
                 <div class="card-header">
                     <div class="card-icon">💬</div>
                     <div>
@@ -752,7 +3404,7 @@
                 </div>
                 <div class="stat-value" id="session-count">--</div>
                 <div class="stat-label">总会话数</div>
-                <div style="margin-top: 15px; font-size: 0.9rem; color: #aaa;">
+                <div style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                         <span>平均消息数</span>
                         <span id="avg-messages">--</span>
@@ -770,7 +3422,7 @@
         </div>
 
         <!-- 趣味化调侃话术展示区 -->
-        <div class="roast-section">
+        <div class="roast-section animate-in animate-in-delay-5">
             <div class="roast-header">
                 <span class="roast-icon">🔥</span>
                 <span class="roast-title">龙虾点评</span>
@@ -778,10 +3430,19 @@
             <div class="roast-content" id="roast-content">
                 <p class="loading">正在分析你的龙虾等级</p>
             </div>
-            <!-- 成就展示 -->
             <div class="achievements-section" id="achievements-section" style="display: none;">
-                <div class="achievements-title">🏆 成就解锁</div>
-                <div class="achievements-list" id="achievements-list"></div>
+                <div class="achievements-header">
+                    <div class="achievements-title">
+                        <span>🏆</span>
+                        <span>成就徽章</span>
+                    </div>
+                    <div class="achievements-count" id="achievements-count">0 已解锁</div>
+                </div>
+                <div class="achievements-scroll">
+                    <div class="achievements-grid" id="achievements-list">
+                        <!-- 动态生成徽章 -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -801,148 +3462,348 @@
             </div>
         </div>
 
-        <!-- 新增：评分详情区域 -->
-        <div class="score-breakdown-section" style="
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 30px;
-        ">
+        <!-- 评分详情区域 -->
+        <div class="score-breakdown-section">
             <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
                 <span>🎯</span>
                 <span>评分详情</span>
             </div>
-            <div class="score-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                <div class="score-item" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <div class="score-grid">
+                <div class="score-item">
+                    <div class="score-item-header">
                         <span style="font-size: 1.2rem;">🛠️</span>
-                        <span style="color: #aaa;">技能得分</span>
+                        <span style="color: var(--text-secondary);">技能得分</span>
                     </div>
-                    <div id="skill-score" style="font-size: 1.8rem; font-weight: 700; color: #4facfe;">--</div>
+                    <div class="score-value" id="skill-score" style="color: var(--color-info);">--</div>
                     <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="skill-score-bar" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #4facfe, #00f2fe);"></div>
+                        <div id="skill-score-bar" class="progress-fill" style="width: 0%;"></div>
                     </div>
                 </div>
-                <div class="score-item" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <div class="score-item">
+                    <div class="score-item-header">
                         <span style="font-size: 1.2rem;">⚡</span>
-                        <span style="color: #aaa;">自动化得分</span>
+                        <span style="color: var(--text-secondary);">自动化得分</span>
                     </div>
-                    <div id="automation-score" style="font-size: 1.8rem; font-weight: 700; color: #43e97b;">--</div>
+                    <div class="score-value" id="automation-score" style="color: var(--color-success);">--</div>
                     <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="automation-score-bar" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #43e97b, #38f9d7);"></div>
+                        <div id="automation-score-bar" class="progress-fill" style="width: 0%;"></div>
                     </div>
                 </div>
-                <div class="score-item" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <div class="score-item">
+                    <div class="score-item-header">
                         <span style="font-size: 1.2rem;">🔗</span>
-                        <span style="color: #aaa;">集成得分</span>
+                        <span style="color: var(--text-secondary);">集成得分</span>
                     </div>
-                    <div id="integration-score" style="font-size: 1.8rem; font-weight: 700; color: #f5576c;">--</div>
+                    <div class="score-value" id="integration-score" style="color: var(--accent-primary);">--</div>
                     <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="integration-score-bar" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #f093fb, #f5576c);"></div>
+                        <div id="integration-score-bar" class="progress-fill" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- 趣味小贴士区域 -->
-        <div class="tip-section" style="
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        ">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div class="tip-section">
+            <div class="tip-header">
                 <span style="font-size: 1.5rem;">💡</span>
-                <span style="font-size: 1rem; color: #feca57; font-weight: 600;">龙虾小贴士</span>
-                <button onclick="nextTip()" style="margin-left: auto; background: rgba(255,255,255,0.1); border: none; border-radius: 15px; padding: 5px 15px; color: #aaa; cursor: pointer; font-size: 0.85rem;">换一个 💫</button>
+                <span class="tip-title">龙虾小贴士</span>
+                <button onclick="nextTip()" style="margin-left: auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 15px; padding: 5px 15px; color: var(--text-secondary); cursor: pointer; font-size: 0.85rem; font-family: var(--font-body);">换一个 💫</button>
             </div>
-            <p id="fun-fact" style="color: #aaa; font-size: 0.95rem; line-height: 1.6;">加载中...</p>
+            <p id="fun-fact">加载中...</p>
         </div>
 
-        <!-- 新增：快速操作区域 -->
-        <div class="quick-actions" style="
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        ">
-            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 15px; color: #888;">⚡ 快速操作</div>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button onclick="exportData()" style="
-                    background: rgba(102, 126, 234, 0.2);
-                    border: 1px solid rgba(102, 126, 234, 0.3);
-                    border-radius: 10px;
-                    padding: 10px 20px;
-                    color: #667eea;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.background='rgba(102, 126, 234, 0.3)'" onmouseout="this.style.background='rgba(102, 126, 234, 0.2)'">📥 导出数据</button>
-                <button onclick="copyShareLink()" style="
-                    background: rgba(240, 147, 251, 0.2);
-                    border: 1px solid rgba(240, 147, 251, 0.3);
-                    border-radius: 10px;
-                    padding: 10px 20px;
-                    color: #f093fb;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.background='rgba(240, 147, 251, 0.3)'" onmouseout="this.style.background='rgba(240, 147, 251, 0.2)'">📋 复制分享</button>
-                <button onclick="toggleDarkMode()" style="
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    border-radius: 10px;
-                    padding: 10px 20px;
-                    color: #aaa;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">🌓 切换主题</button>
-                <button onclick="showHelp()" style="
-                    background: rgba(67, 233, 123, 0.2);
-                    border: 1px solid rgba(67, 233, 123, 0.3);
-                    border-radius: 10px;
-                    padding: 10px 20px;
-                    color: #43e97b;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-                    transition: all 0.3s ease;
-                " onmouseover="this.style.background='rgba(67, 233, 123, 0.3)'" onmouseout="this.style.background='rgba(67, 233, 123, 0.2)'">❓ 帮助</button>
+        <!-- 快速操作区域 -->
+        <div class="quick-actions">
+            <div class="quick-actions-title">⚡ 快速操作</div>
+            <div class="quick-actions-grid">
+                <button class="action-btn primary" onclick="generateLobsterImage()" id="generate-image-btn">🎨 生成专属龙虾</button>
+                <button class="action-btn" onclick="exportData()">📥 导出数据</button>
+                <button class="action-btn" onclick="copyShareLink()">📋 复制分享</button>
+                <button class="action-btn" onclick="showHelp()">❓ 帮助</button>
+            </div>
+        </div>
+
+        <!-- 悬浮生成按钮 -->
+        <div class="floating-action" id="floating-action">
+            <button class="floating-btn" onclick="generateLobsterImage()" id="floating-generate-btn" title="生成专属龙虾图片">
+                🦞
+            </button>
+            <div class="floating-tooltip">生成专属龙虾图片</div>
+        </div>
+
+        <!-- 分享卡片弹窗 -->
+        <div class="share-modal" id="share-modal" style="display: none;" onclick="closeShareModal(event)">
+            <div class="share-card" onclick="event.stopPropagation()">
+                <button onclick="closeShareModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">×</button>
+                
+                <div class="share-card-header">
+                    <div class="share-level-badge">
+                        <span class="share-level-emoji" id="share-level-emoji">🦞</span>
+                        <div>
+                            <div class="share-level-text" id="share-level-text">Lv.2</div>
+                            <div class="share-level-name" id="share-level-name">初级玩家</div>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">我的 OpenClaw 龙虾等级</p>
+                </div>
+                
+                <div class="share-stats">
+                    <div class="share-stat-item">
+                        <div class="share-stat-value" id="share-value">¥0</div>
+                        <div class="share-stat-label">价值估算</div>
+                    </div>
+                    <div class="share-stat-item">
+                        <div class="share-stat-value" id="share-skills">0</div>
+                        <div class="share-stat-label">技能数量</div>
+                    </div>
+                    <div class="share-stat-item">
+                        <div class="share-stat-value" id="share-score">0</div>
+                        <div class="share-stat-label">综合得分</div>
+                    </div>
+                    <div class="share-stat-item">
+                        <div class="share-stat-value" id="share-achievements-count">0</div>
+                        <div class="share-stat-label">已解锁成就</div>
+                    </div>
+                </div>
+                
+                <div class="share-achievements" id="share-achievements-section">
+                    <div class="share-achievements-title">🏆 已解锁成就</div>
+                    <div class="share-achievement-list" id="share-achievement-list"></div>
+                </div>
+                
+                <div class="share-actions">
+                    <button class="btn btn-primary" onclick="copyShareText()">📋 复制文案</button>
+                    <button class="btn btn-secondary" onclick="generateLobsterImageFromShare()">🦞 生成龙虾</button>
+                </div>
             </div>
         </div>
 
         <!-- 底部版权区域 -->
         <div class="footer">
-            <p>🦞 龙虾能力估Skill v1.0 - 量化你的 AI 自动化价值</p>
+            <p>🦞 龙虾能力估Skill v2.0 - 量化你的 AI 自动化价值</p>
             <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank">OpenClaw</a> | 数据本地存储，安全可靠</p>
-            <p style="margin-top: 8px; color: #666; font-size: 0.8rem;">
+            <p style="margin-top: 8px; font-size: 0.8rem;">
                 <span id="current-time"></span> | 
                 <span id="lobster-count">🦞 已有 <strong>--</strong> 只龙虾完成评估</span>
             </p>
         </div>
-
-        <!-- 隐藏彩蛋区域 -->
-        <div id="easter-egg" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background: rgba(0,0,0,0.95); padding: 40px; border-radius: 20px; z-index: 1000; text-align: center;
-            border: 2px solid #ff6b6b; box-shadow: 0 0 50px rgba(255,107,107,0.5);">
-            <div style="font-size: 4rem; margin-bottom: 20px;">🦞✨</div>
-            <div style="font-size: 1.5rem; color: #feca57; margin-bottom: 10px;">恭喜发现隐藏彩蛋！</div>
-            <div style="color: #aaa; margin-bottom: 20px;">你是真正的龙虾探索者！</div>
-            <button onclick="closeEasterEgg()" style="padding: 10px 30px; background: linear-gradient(135deg, #667eea, #764ba2); 
-                border: none; border-radius: 20px; color: white; cursor: pointer;">关闭</button>
-        </div>
-        <div id="easter-egg-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(0,0,0,0.7); z-index: 999;"></div>
     </div>
 
+    <!-- 彩蛋 -->
+    <div id="easter-egg">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🦞✨</div>
+        <div style="font-size: 1.5rem; color: var(--accent-highlight); margin-bottom: 10px;">恭喜发现隐藏彩蛋！</div>
+        <div style="color: var(--text-secondary); margin-bottom: 20px;">你是真正的龙虾探索者！</div>
+        <button class="btn btn-primary" onclick="closeEasterEgg()">关闭</button>
+    </div>
+    <div id="easter-egg-overlay"></div>
+
     <script>
+        // ============================================
+        // 主题配置
+        // ============================================
+        const themes = {
+            'deep-sea': {
+                name: '深海龙虾',
+                icon: '🦞',
+                desc: '深色科技风',
+                type: 'dark',
+                colors: ['#0f0f23', '#ff6b6b', '#4facfe', '#feca57']
+            },
+            'fresh-garden': {
+                name: '清新田园',
+                icon: '🌿',
+                desc: '明亮清新风',
+                type: 'light',
+                colors: ['#f0f9f0', '#43e97b', '#38f9d7', '#ff9800']
+            },
+            'cyber-neon': {
+                name: '赛博霓虹',
+                icon: '⚡',
+                desc: '未来科技风',
+                type: 'special',
+                colors: ['#0a0a0a', '#ff00ff', '#00ffff', '#ffff00']
+            },
+            'retro-type': {
+                name: '复古打字机',
+                icon: '📜',
+                desc: '复古文艺风',
+                type: 'light',
+                colors: ['#f5e6d3', '#8b4513', '#d2691e', '#b8860b']
+            },
+            'minimal-ink': {
+                name: '极简水墨',
+                icon: '🎨',
+                desc: '东方禅意风',
+                type: 'light',
+                colors: ['#fafafa', '#2c2c2c', '#666666', '#c41e3a']
+            },
+            'dark-forest': {
+                name: '暗夜森林',
+                icon: '🌙',
+                desc: '神秘自然风',
+                type: 'dark',
+                colors: ['#0d1b2a', '#52b788', '#40916c', '#d4a373']
+            },
+            'summer-beach': {
+                name: '夏日海滩',
+                icon: '🏖️',
+                desc: '清爽度假风',
+                type: 'light',
+                colors: ['#fefae0', '#606c38', '#bc6c25', '#dda15e']
+            },
+            'candy-land': {
+                name: '糖果乐园',
+                icon: '🍬',
+                desc: '可爱甜美风',
+                type: 'special',
+                colors: ['#fff0f5', '#ff69b4', '#ff1493', '#87ceeb']
+            },
+            'dark-gothic': {
+                name: '暗黑哥特',
+                icon: '🦇',
+                desc: '暗黑神秘风',
+                type: 'dark',
+                colors: ['#0a0a0a', '#8b0000', '#4a0a0a', '#c0c0c0']
+            },
+            'vaporwave': {
+                name: '蒸汽波',
+                icon: '💜',
+                desc: '复古未来风',
+                type: 'special',
+                colors: ['#0d0221', '#ff71ce', '#01cdfe', '#05ffa1']
+            },
+            'sakura-bloom': {
+                name: '樱花物语',
+                icon: '🌸',
+                desc: '日系浪漫风',
+                type: 'light',
+                colors: ['#fff5f8', '#ff6b9d', '#fd79a8', '#c44569']
+            },
+            'pixel-game': {
+                name: '像素游戏',
+                icon: '🎮',
+                desc: '复古游戏风',
+                type: 'special',
+                colors: ['#1a1c2c', '#29adff', '#00e436', '#ffec27']
+            },
+            'ocean-deep': {
+                name: '海洋深处',
+                icon: '🌊',
+                desc: '海洋探索风',
+                type: 'dark',
+                colors: ['#001f3f', '#00bcd4', '#ff6f61', '#ff9800']
+            },
+            'music-rhythm': {
+                name: '音乐律动',
+                icon: '🎵',
+                desc: '音乐可视化风',
+                type: 'dark',
+                colors: ['#0d0d0d', '#e63946', '#a8dadc', '#f1faee']
+            },
+            'snow-peak': {
+                name: '雪山之巅',
+                icon: '🏔️',
+                desc: '极地纯净风',
+                type: 'light',
+                colors: ['#e8f4f8', '#2e86de', '#54a0ff', '#feca57']
+            }
+        };
+        
+        // 主题分类
+        const themeCategories = {
+            dark: { name: '深色系', icon: '🌙' },
+            light: { name: '浅色系', icon: '☀️' },
+            special: { name: '特色系', icon: '✨' }
+        };
+
+        // 初始化主题面板
+        function initThemePanel() {
+            const container = document.getElementById('theme-categories');
+            const currentTheme = localStorage.getItem('clawvalue-theme') || 'deep-sea';
+            
+            // 按分类组织主题
+            const categorized = {};
+            Object.entries(themes).forEach(([id, theme]) => {
+                const type = theme.type || 'dark';
+                if (!categorized[type]) categorized[type] = [];
+                categorized[type].push({ id, ...theme });
+            });
+            
+            // 生成分类 HTML
+            container.innerHTML = Object.entries(themeCategories).map(([type, catInfo]) => {
+                const themeList = categorized[type] || [];
+                if (themeList.length === 0) return '';
+                
+                return `
+                    <div class="theme-category">
+                        <div class="theme-category-header">
+                            <span>${catInfo.icon}</span>
+                            <span class="theme-category-title">${catInfo.name}</span>
+                            <span class="theme-category-count">${themeList.length} 套</span>
+                            <div class="theme-category-line"></div>
+                        </div>
+                        <div class="theme-list">
+                            ${themeList.map(t => `
+                                <div class="theme-option ${t.id === currentTheme ? 'active' : ''}" 
+                                     data-theme-id="${t.id}" 
+                                     onclick="setTheme('${t.id}')">
+                                    <div class="theme-preview">
+                                        ${t.colors.map(c => `<div class="theme-preview-color" style="background: ${c}"></div>`).join('')}
+                                        <span class="theme-preview-icon">${t.icon}</span>
+                                    </div>
+                                    <div class="theme-info">
+                                        <div class="theme-name">${t.name}</div>
+                                        <div class="theme-desc">
+                                            <span class="theme-type-badge ${t.type}">${t.type === 'dark' ? '深色' : t.type === 'light' ? '浅色' : '特色'}</span>
+                                            ${t.desc}
+                                        </div>
+                                    </div>
+                                    <div class="theme-check">✓</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 切换主题面板
+        function toggleThemePanel() {
+            const panel = document.getElementById('theme-panel');
+            panel.classList.toggle('show');
+        }
+
+        // 设置主题
+        function setTheme(themeId) {
+            document.documentElement.setAttribute('data-theme', themeId);
+            localStorage.setItem('clawvalue-theme', themeId);
+            
+            // 更新面板选中状态
+            document.querySelectorAll('.theme-option').forEach(el => {
+                const isActive = el.getAttribute('data-theme-id') === themeId;
+                el.classList.toggle('active', isActive);
+            });
+            
+            // 关闭面板
+            document.getElementById('theme-panel').classList.remove('show');
+            
+            showToast(`✅ 已切换到「${themes[themeId].name}」主题`);
+            
+            // 更新图表颜色
+            updateChartColors();
+        }
+
+        // 初始化主题
+        function initTheme() {
+            const saved = localStorage.getItem('clawvalue-theme') || 'deep-sea';
+            document.documentElement.setAttribute('data-theme', saved);
+            initThemePanel();
+        }
+
+        // ============================================
         // 颜色配置
+        // ============================================
         const colors = {
             primary: '#667eea',
             secondary: '#f5576c',
@@ -999,24 +3860,27 @@
             3: [
                 "💻 中级开发者！你已经是个合格的 Claude 用户了，各种功能信手拈来~",
                 "你的使用模式显示你是个「效率追求者」，懂得利用工具提升生产力！",
-                "恭喜达到中级水平！你已经是团队里那个「会用 AI 的人」了！"
+                "恭喜达到中级水平！你已经是团队里那个「会用 AI 的人」了！",
+                "🦞 龙虾壳渐渐变红！你的 OpenClaw 使用技能正在升温，继续保持这个势头，全熟指日可待！"
             ],
             4: [
                 "🚀 高级工程师！你对 Claude 的使用已经炉火纯青，堪称效率机器！",
                 "你的技能树已经点满大半，是时候考虑传授经验给新人了~",
                 "高级玩家认证！你用 Claude 的方式，让旁观者都忍不住想学习！",
-                "检测到「效率怪兽」！你的自动化程度已经突破了天际，建议考虑写一本《如何让AI帮你打工》的畅销书。"
+                "检测到「效率怪兽」！你的自动化程度已经突破了天际，建议考虑写一本《如何让AI帮你打工》的畅销书。",
+                "🦞 全熟龙虾！你的技能点已满，接下来就是进化成「龙虾王」的旅程了！"
             ],
             5: [
                 "🦞 龙虾大师！你已经达到了传说中的最高境界！Claude 见你都要叫一声「大佬」！",
                 "你的效率已经让普通人类望尘莫及了！AI助手表示：「能为您服务是我的荣幸，请收下我的膝盖。」",
                 "恭喜你成为「龙虾大师」！你的使用深度已经突破天际！建议你直接去写一本《Claude 使用指南》！",
                 "⚠️ 警告：你的使用深度已经突破系统阈值，AI可能会开始产生「主人是不是机器人」的疑问。",
-                "检测到「全熟龙虾」！你的OpenClaw技能点满，效率爆表，堪称「人机合一」的典范！"
+                "检测到「全熟龙虾」！你的OpenClaw技能点满，效率爆表，堪称「人机合一」的典范！",
+                "🏆 传奇龙虾王！你的名字将被刻在 OpenClaw 的史册上，后人将仰望你的背影！"
             ]
         };
 
-        // 额外趣味提示
+        // 趣味提示
         const funFacts = [
             "💡 小知识：龙虾的血液是蓝色的，因为它们用铜来运输氧气，而不是铁。",
             "💡 小知识：龙虾可以活超过100年，你的AI助手可能比你还长寿！",
@@ -1025,15 +3889,260 @@
             "💡 小知识：龙虾在蜕壳时会吃掉自己的旧壳。你的AI在升级时只会吃掉你的Token。",
             "⚡ 提示：配置心跳任务可以让你的AI在你睡觉时也在工作，真正的「睡后收入」！",
             "⚡ 提示：自定义技能是你的秘密武器，越多越强！",
-            "⚡ 提示：连接多个渠道，让你的AI成为一个「社交达人」！"
+            "⚡ 提示：连接多个渠道，让你的AI成为一个「社交达人」！",
+            "🦞 龙虾冷知识：龙虾的牙齿长在胃里！你的AI的知识库长在云端，方便多了。",
+            "🦞 龙虾冷知识：龙虾用触角闻味道，你的AI用向量数据库——都是「闻」数据！"
         ];
 
-        // 获取随机趣味提示
         function getRandomFunFact() {
             return funFacts[Math.floor(Math.random() * funFacts.length)];
         }
+        
+        // 时间相关问候语
+        function getTimeGreeting() {
+            const hour = new Date().getHours();
+            const greetings = {
+                morning: [
+                    "🌅 早安！新的一天，新的龙虾能量！",
+                    "☕ 早上好！来杯咖啡，再看看你的AI今天做了什么~",
+                    "🌤️ 早安，勤劳的龙虾！今天也要元气满满！"
+                ],
+                afternoon: [
+                    "☀️ 下午好！你的AI助手正在努力工作中~",
+                    "🍱 午饭时间，看看你的AI今天帮你省了多少时间？",
+                    "🌤️ 下午茶时间到！休息一下，让AI继续干活~"
+                ],
+                evening: [
+                    "🌆 傍晚好！今天的任务完成得怎么样？",
+                    "🌅 夕阳西下，AI仍在工作~",
+                    "🌙 晚上好！一天结束，来看看你的战绩！"
+                ],
+                night: [
+                    "🌙 夜深了，龙虾也要休息~",
+                    "🦉 这么晚还在工作？你的AI表示：「主人辛苦了！」",
+                    "🌃 深夜模式开启，AI在暗处守护你的数据~"
+                ]
+            };
+            
+            let timeKey = 'morning';
+            if (hour >= 12 && hour < 17) timeKey = 'afternoon';
+            else if (hour >= 17 && hour < 21) timeKey = 'evening';
+            else if (hour >= 21 || hour < 6) timeKey = 'night';
+            
+            const options = greetings[timeKey];
+            return options[Math.floor(Math.random() * options.length)];
+        }
+        
+        // 随机彩蛋消息
+        const easterEggs = [
+            "🦞 你发现了一个彩蛋！龙虾在向你眨眼~",
+            "🎉 恭喜！你是今天第 1 个打开这个页面的人（大概）！",
+            "🔮 预言：今天你会写出很棒的代码！",
+            "🤫 AI 悄悄告诉你：你比昨天更厉害了！",
+            "🎮 成就提示：连续使用7天可解锁「忠诚龙虾」称号！",
+            "🌟 龙虾神谕：你的下一个 commit 将是无 bug 的！",
+            "🎭 假如龙虾会说话，它会对你说：「你真棒！」",
+            "🚀 据统计，使用 OpenClaw 的用户效率提升 300%（胡说的）！",
+            "⚡ 你的 AI 正在秘密学习如何更好地帮助你~",
+            "🏆 奖励：解锁「龙虾探索者」隐藏成就！"
+        ];
+        
+        // 隐藏成就触发条件
+        const hiddenAchievements = {
+            'night_owl': { name: '夜猫子龙虾', desc: '深夜 2 点还在使用 OpenClaw', icon: '🦉' },
+            'early_bird': { name: '早起龙虾', desc: '早上 6 点前就开始工作', icon: '🐦' },
+            'power_user': { name: '效率狂魔', desc: '刷新页面超过 5 次', icon: '⚡' },
+            'theme_explorer': { name: '主题收藏家', desc: '切换过所有 10 套主题', icon: '🎨' }
+        };
+        
+        // 追踪用户行为
+        let userBehavior = {
+            refreshCount: 0,
+            themesUsed: new Set(),
+            visitTime: new Date().getHours()
+        };
+        
+        // 彩蛋触发器
+        function checkEasterEgg() {
+            // 10% 概率触发彩蛋
+            if (Math.random() < 0.1) {
+                return easterEggs[Math.floor(Math.random() * easterEggs.length)];
+            }
+            return null;
+        }
 
         let skillChart, radarChart;
+        let currentLevel = 1;
+        let currentAchievements = [];
+
+        // ============================================
+        // 成就系统定义
+        // ============================================
+        const AchievementDefinitions = {
+            // 技能类成就
+            'skill_master': {
+                icon: '🏅', name: '技能大师', category: 'skill', categoryName: '技能',
+                desc: '自定义技能超过5个，你是个真正的创造者！', requirement: 5
+            },
+            'skill_collector': {
+                icon: '📚', name: '技能收藏家', category: 'skill', categoryName: '技能',
+                desc: '技能数量超过10个，你的工具箱比瑞士军刀还全！', requirement: 10
+            },
+            'skill_connoisseur': {
+                icon: '🎖️', name: '技能鉴赏家', category: 'skill', categoryName: '技能',
+                desc: '技能数量超过15个，你对AI工具的品味令人惊叹！', requirement: 15
+            },
+            'skill_legend': {
+                icon: '👑', name: '技能传奇', category: 'skill', categoryName: '技能',
+                desc: '技能数量超过20个，你已经是技能界的「收藏之王」！', requirement: 20
+            },
+            'custom_creator': {
+                icon: '🎨', name: '自定义创造者', category: 'skill', categoryName: '技能',
+                desc: '自定义技能超过3个，你就是传说中的「技能工程师」！', requirement: 3
+            },
+            'custom_master': {
+                icon: '🛠️', name: '自定义大师', category: 'skill', categoryName: '技能',
+                desc: '自定义技能超过7个，你的创造力让AI都感到佩服！', requirement: 7
+            },
+            // 自动化类成就
+            'automation_pro': {
+                icon: '🤖', name: '自动化达人', category: 'automation', categoryName: '自动化',
+                desc: '心跳检测已开启，你的AI正在24小时待命！', requirement: 1
+            },
+            'heartbeat_hero': {
+                icon: '💓', name: '心跳英雄', category: 'automation', categoryName: '自动化',
+                desc: '心跳任务已配置，你的AI在你睡觉时也在默默工作！', requirement: 1
+            },
+            'automation_god': {
+                icon: '⚡', name: '自动化之神', category: 'automation', categoryName: '自动化',
+                desc: '每天消耗超过10万Token，你的AI已成为你的「数字劳动力」！', requirement: 100000
+            },
+            'power_user': {
+                icon: '⚡', name: '超级用户', category: 'automation', categoryName: '自动化',
+                desc: 'Token消耗惊人，你的AI助手表示「有点累但很充实」！', requirement: 50000
+            },
+            // 集成类成就
+            'multi_channel': {
+                icon: '🌐', name: '多渠道运营', category: 'integration', categoryName: '集成',
+                desc: '连接了多个平台，你的AI帝国正在扩张！', requirement: 2
+            },
+            'integration_expert': {
+                icon: '🔗', name: '集成专家', category: 'integration', categoryName: '集成',
+                desc: '连接了3个以上渠道，你的AI已经是个「社交达人」了！', requirement: 3
+            },
+            'channel_master': {
+                icon: '📡', name: '渠道大师', category: 'integration', categoryName: '集成',
+                desc: '连接了5个以上渠道，你的AI已经遍布全球！', requirement: 5
+            },
+            // Token类成就
+            'token_millionaire': {
+                icon: '💰', name: 'Token百万富翁', category: 'special', categoryName: '特殊',
+                desc: 'Token消耗超过100万，你的AI说「感谢老板打赏」！', requirement: 1000000
+            },
+            'token_billionaire': {
+                icon: '💎', name: 'Token亿万富翁', category: 'special', categoryName: '特殊',
+                desc: 'Token消耗超过1000万，你已经是AI服务器的「VIP客户」！', requirement: 10000000
+            },
+            // 会话类成就
+            'session_warrior': {
+                icon: '⚔️', name: '会话战士', category: 'special', categoryName: '特殊',
+                desc: '活跃会话超过100个，你和AI的对话已经比你的微信还多了！', requirement: 100
+            },
+            'session_master': {
+                icon: '💬', name: '会话大师', category: 'special', categoryName: '特殊',
+                desc: '活跃会话超过500个，你和AI的关系已经超越了普通朋友！', requirement: 500
+            },
+            // 稳定性成就
+            'zero_error': {
+                icon: '✨', name: '零错误成就', category: 'special', categoryName: '特殊',
+                desc: '系统运行稳定，没有任何错误日志，堪称「完美主义者」！', requirement: 0
+            },
+            // 活跃度成就
+            'daily_active': {
+                icon: '📅', name: '活跃玩家', category: 'special', categoryName: '特殊',
+                desc: '连续使用超过7天，AI助手已经把你的习惯都记下来了！', requirement: 7
+            },
+            'weekly_warrior': {
+                icon: '🗓️', name: '周常战士', category: 'special', categoryName: '特殊',
+                desc: '连续使用超过30天，你的AI助手已经对你了如指掌！', requirement: 30
+            },
+            'monthly_master': {
+                icon: '📆', name: '月度大师', category: 'special', categoryName: '特殊',
+                desc: '连续使用超过90天，你已经成为了OpenClaw的「老玩家」！', requirement: 90
+            },
+            'veteran_user': {
+                icon: '🏆', name: '资深玩家', category: 'special', categoryName: '特殊',
+                desc: '使用超过180天，你已经是OpenClaw的「活化石」！', requirement: 180
+            },
+            // 隐藏成就
+            'secret_lobster': {
+                icon: '🦞', name: '隐藏成就：龙虾宗师', category: 'special', categoryName: '隐藏',
+                desc: '你解锁了系统的隐藏成就，请联系开发者领取神秘奖励！', requirement: 80
+            }
+        };
+
+        // 解析成就字符串
+        function parseAchievement(achievementStr) {
+            // 尝试从字符串中提取成就信息
+            // 格式: "🏅 技能大师：自定义技能超过5个..."
+            const match = achievementStr.match(/^([^\s]+)\s+([^：]+)：(.+)$/);
+            
+            if (match) {
+                const icon = match[1];
+                const name = match[2].trim();
+                const desc = match[3].trim();
+                
+                // 尝试匹配已定义的成就
+                for (const [key, def] of Object.entries(AchievementDefinitions)) {
+                    if (name.includes(def.name) || def.name.includes(name)) {
+                        return { ...def, icon: icon || def.icon, name: def.name, desc };
+                    }
+                }
+                
+                // 未找到定义，返回解析结果
+                return {
+                    icon: icon || '🏆',
+                    name: name,
+                    desc: desc,
+                    category: 'special',
+                    categoryName: '特殊'
+                };
+            }
+            
+            // 无法解析，返回原始字符串
+            return {
+                icon: '🏆',
+                name: achievementStr.substring(0, 20),
+                desc: achievementStr,
+                category: 'special',
+                categoryName: '特殊'
+            };
+        }
+
+        // 显示成就详情
+        function showAchievementDetail(name) {
+            const def = Object.values(AchievementDefinitions).find(d => d.name === name);
+            if (def) {
+                // 创建一个炫酷的弹窗而不是简单的 Toast
+                const modal = document.createElement('div');
+                modal.className = 'achievement-modal-overlay';
+                modal.innerHTML = `
+                    <div class="achievement-modal">
+                        <div class="achievement-modal-icon">${def.icon}</div>
+                        <div class="achievement-modal-title">${def.name}</div>
+                        <div class="achievement-modal-category">${def.categoryName}成就</div>
+                        <div class="achievement-modal-desc">${def.desc}</div>
+                        <button class="achievement-modal-close" onclick="this.parentElement.parentElement.remove()">太棒了！</button>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                
+                // 点击背景关闭
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+            }
+        }
 
         // 初始化图表
         function initCharts() {
@@ -1055,7 +4164,7 @@
                         legend: {
                             position: 'right',
                             labels: {
-                                color: '#e0e0e0',
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || '#e0e0e0',
                                 padding: 15,
                                 font: { size: 12 }
                             }
@@ -1064,7 +4173,6 @@
                 }
             });
 
-            // 雷达图
             const radarCtx = document.getElementById('radarChart').getContext('2d');
             radarChart = new Chart(radarCtx, {
                 type: 'radar',
@@ -1096,34 +4204,38 @@
                         r: {
                             beginAtZero: true,
                             max: 100,
-                            ticks: {
-                                stepSize: 20,
-                                color: '#666'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            angleLines: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            pointLabels: {
-                                color: '#aaa',
-                                font: { size: 12 }
-                            }
+                            ticks: { stepSize: 20, color: '#666' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#aaa', font: { size: 12 } }
                         }
                     },
                     plugins: {
-                        legend: {
-                            labels: {
-                                color: '#e0e0e0'
-                            }
-                        }
+                        legend: { labels: { color: '#e0e0e0' } }
                     }
                 }
             });
         }
 
-        // 获取数据并更新UI
+        // 更新图表颜色
+        function updateChartColors() {
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || '#e0e0e0';
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim() || '#ff6b6b';
+            
+            if (skillChart) {
+                skillChart.options.plugins.legend.labels.color = textColor;
+                skillChart.update();
+            }
+            
+            if (radarChart) {
+                radarChart.options.plugins.legend.labels.color = textColor;
+                radarChart.data.datasets[0].borderColor = accentColor;
+                radarChart.data.datasets[0].pointBackgroundColor = accentColor;
+                radarChart.update();
+            }
+        }
+
+        // 获取数据
         async function fetchData() {
             try {
                 const response = await fetch('/api/');
@@ -1139,16 +4251,59 @@
             }
         }
 
+        // 数字计数动画
+        function animateNumber(elementId, targetValue, duration = 1000, prefix = '', suffix = '') {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const startValue = parseInt(element.textContent.replace(/[^\d]/g, '')) || 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 使用 easeOutQuart 缓动函数
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                const currentValue = Math.round(startValue + (targetValue - startValue) * easeProgress);
+                
+                element.textContent = prefix + currentValue.toLocaleString() + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // 格式化货币
+        function formatCurrency(value) {
+            if (value >= 10000) {
+                return `¥${(value / 10000).toFixed(1)}万`;
+            }
+            return `¥${value.toLocaleString()}`;
+        }
+
         // 更新UI
         function updateUI(data) {
-            // 更新深度等级
+            currentLevel = data.depth_level || 1;
+            currentAchievements = data.achievements || data.evaluation?.achievements || [];
+
             const depth = data.depth_level || 1;
             const depthInfo = depthConfig[depth];
-            document.getElementById('depth-level').textContent = `${depthInfo.emoji} Lv.${depth}`;
+            
+            // 使用动画更新数字
+            document.getElementById('depth-level').innerHTML = `${depthInfo.emoji} <span class="level-num">Lv.${depth}</span>`;
             document.getElementById('depth-label').textContent = depthInfo.label;
             document.getElementById('depth-progress').style.width = `${depth * 20}%`;
+            
+            // 数值动画
+            const valueAmount = data.value_estimate || 0;
+            animateNumber('value-amount', valueAmount, 1200, '¥');
+            animateNumber('skill-count', data.skill_count || 0, 800);
+            animateNumber('session-count', data.session_count || 0, 1000);
 
-            // 更新深度分布
             if (data.depth_breakdown) {
                 const breakdownHtml = data.depth_breakdown.map(item => `
                     <div class="depth-item">
@@ -1162,7 +4317,6 @@
                 document.getElementById('depth-breakdown').innerHTML = breakdownHtml;
             }
 
-            // 更新价值估算
             const value = data.value_estimation || {};
             document.getElementById('value-amount').textContent = `¥${(value.amount || 0).toLocaleString()}`;
             document.getElementById('value-label').textContent = value.description || '预估节省成本';
@@ -1170,9 +4324,7 @@
             document.getElementById('efficiency').textContent = `+${value.efficiency || 0}%`;
             document.getElementById('roi').textContent = value.roi || '--';
 
-            // 更新技能统计
             const skills = data.skills || {};
-            document.getElementById('skill-count').textContent = skills.total || 0;
             
             const tagsHtml = Object.entries(skills.categories || {}).map(([name, count]) => `
                 <div class="skill-tag">
@@ -1182,45 +4334,68 @@
             `).join('');
             document.getElementById('skill-tags').innerHTML = tagsHtml;
 
-            // 更新会话统计
             const sessions = data.sessions || {};
-            document.getElementById('session-count').textContent = sessions.total || 0;
             document.getElementById('avg-messages').textContent = sessions.avg_messages || 0;
             document.getElementById('total-messages').textContent = sessions.total_messages || 0;
             document.getElementById('active-days').textContent = `${sessions.active_days || 0} 天`;
 
-            // 更新调侃话术
             const roasts = roastTemplates[depth] || roastTemplates[1];
             const randomRoast = roasts[Math.floor(Math.random() * roasts.length)];
             const funFact = getRandomFunFact();
             document.getElementById('roast-content').innerHTML = `
                 <p>${randomRoast}</p>
-                <p style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); font-size: 0.95rem; color: #aaa;">
+                <p style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color); font-size: 0.95rem; color: var(--text-secondary);">
                     ${funFact}
                 </p>
             `;
 
-            // 更新成就
             const achievements = data.achievements || data.evaluation?.achievements || [];
             const achievementsSection = document.getElementById('achievements-section');
             const achievementsList = document.getElementById('achievements-list');
+            const achievementsCount = document.getElementById('achievements-count');
             
             if (achievements.length > 0) {
                 achievementsSection.style.display = 'block';
-                achievementsList.innerHTML = achievements.map(a => 
-                    `<div class="achievement-item">${a}</div>`
-                ).join('');
+                achievementsCount.textContent = `${achievements.length} 已解锁`;
+                
+                // 解析成就字符串，提取图标和名称
+                achievementsList.innerHTML = achievements.map((a, idx) => {
+                    const badge = parseAchievement(a);
+                    return `
+                        <div class="achievement-badge unlocked pop-in" 
+                             style="animation-delay: ${idx * 0.1}s"
+                             onclick="showAchievementDetail('${badge.name}')">
+                            <span class="badge-status">✓ 已解锁</span>
+                            <div class="badge-icon">${badge.icon}</div>
+                            <div class="badge-content">
+                                <span class="achievement-category category-${badge.category}">${badge.categoryName}</span>
+                                <div class="badge-name">${badge.name}</div>
+                                <div class="badge-desc">${badge.desc}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             } else {
-                achievementsSection.style.display = 'none';
+                achievementsSection.style.display = 'block';
+                achievementsCount.textContent = '0 已解锁';
+                achievementsList.innerHTML = `
+                    <div class="achievement-badge locked" style="grid-column: 1 / -1;">
+                        <div class="badge-icon">🔒</div>
+                        <div class="badge-content">
+                            <div class="badge-name">还没有解锁成就</div>
+                            <div class="badge-desc">继续使用 OpenClaw，解锁更多徽章吧！</div>
+                            <div class="badge-progress">
+                                <div class="badge-progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
 
-            // 更新图表
             updateCharts(data);
         }
 
-        // 更新图表
         function updateCharts(data) {
-            // 技能分布图
             const categories = data.skills?.categories || {};
             const skillLabels = Object.keys(categories);
             const skillData = Object.values(categories);
@@ -1232,52 +4407,61 @@
                 skillChart.update();
             }
 
-            // 雷达图更新
             const eval = data.evaluation || {};
             const scores = [
                 eval.skill_score || 0,
                 eval.automation_score || 0,
                 eval.integration_score || 0,
-                Math.min(100, (eval.metrics?.daily_tokens || 0) / 1000), // 活跃度
-                100 - Math.min(100, (data.log_stats?.error_count || 0)) // 稳定性
+                Math.min(100, (eval.metrics?.daily_tokens || 0) / 1000),
+                100 - Math.min(100, (data.log_stats?.error_count || 0))
             ];
             radarChart.data.datasets[0].data = scores;
             radarChart.update();
 
-            // 更新评分详情
             document.getElementById('skill-score').textContent = Math.round(eval.skill_score || 0);
             document.getElementById('automation-score').textContent = Math.round(eval.automation_score || 0);
             document.getElementById('integration-score').textContent = Math.round(eval.integration_score || 0);
             
-            document.getElementById('skill-score-bar').style.width = `${eval.skill_score || 0}%`;
-            document.getElementById('automation-score-bar').style.width = `${eval.automation_score || 0}%`;
-            document.getElementById('integration-score-bar').style.width = `${eval.integration_score || 0}%`;
+            // 动态设置进度条颜色（高分绿色，低分红色）
+            const getScoreColor = (score) => {
+                if (score >= 70) return 'linear-gradient(90deg, #10ac84, #1dd1a1)';
+                if (score >= 40) return 'linear-gradient(90deg, #feca57, #ff9f43)';
+                return 'linear-gradient(90deg, #ee5253, #ff6b6b)';
+            };
+            
+            const skillBar = document.getElementById('skill-score-bar');
+            const autoBar = document.getElementById('automation-score-bar');
+            const integBar = document.getElementById('integration-score-bar');
+            
+            skillBar.style.width = `${eval.skill_score || 0}%`;
+            skillBar.style.background = getScoreColor(eval.skill_score || 0);
+            
+            autoBar.style.width = `${eval.automation_score || 0}%`;
+            autoBar.style.background = getScoreColor(eval.automation_score || 0);
+            
+            integBar.style.width = `${eval.integration_score || 0}%`;
+            integBar.style.background = getScoreColor(eval.integration_score || 0);
         }
 
-        // 显示错误
         function showError() {
             document.getElementById('roast-content').innerHTML = '<p>⚠️ 数据加载失败，请检查 API 连接</p>';
         }
 
-        // 刷新数据
         async function refreshData() {
             const btn = document.getElementById('refresh-btn');
             btn.disabled = true;
             btn.textContent = '⏳ 刷新中...';
-            btn.style.opacity = '0.7';
 
             try {
                 const response = await fetch('/api/refresh', { method: 'POST' });
                 const result = await response.json();
                 
                 if (result.success) {
-                    // 重新获取仪表盘数据
                     await fetchData();
                     btn.textContent = '✅ 已刷新';
                     setTimeout(() => {
                         btn.textContent = '🔄 刷新数据';
                         btn.disabled = false;
-                        btn.style.opacity = '1';
                     }, 2000);
                 } else {
                     throw new Error(result.error);
@@ -1288,23 +4472,29 @@
                 setTimeout(() => {
                     btn.textContent = '🔄 刷新数据';
                     btn.disabled = false;
-                    btn.style.opacity = '1';
                 }, 2000);
             }
         }
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
             initCharts();
             fetchData();
             updateTime();
             updateLobsterCount();
-            
-            // 定时更新时间
+            initFunFact();  // 初始化小贴士
             setInterval(updateTime, 1000);
         });
+        
+        // 初始化小贴士
+        function initFunFact() {
+            const el = document.getElementById('fun-fact');
+            if (el) {
+                el.textContent = getRandomFunFact();
+            }
+        }
 
-        // 更新当前时间
         function updateTime() {
             const now = new Date();
             const options = { 
@@ -1320,53 +4510,78 @@
             document.getElementById('current-time').textContent = now.toLocaleString('zh-CN', options);
         }
 
-        // 更新龙虾计数器（模拟数据）
         function updateLobsterCount() {
-            // 从 localStorage 获取或初始化
             let count = parseInt(localStorage.getItem('lobsterCount') || '0');
             count++;
             localStorage.setItem('lobsterCount', count.toString());
-            
-            // 添加一个随机基数让数字看起来更有趣
             const baseCount = 1024 + Math.floor(Date.now() / 86400000) * 7;
             document.getElementById('lobster-count').innerHTML = `🦞 已有 <strong>${(baseCount + count).toLocaleString()}</strong> 只龙虾完成评估`;
         }
 
-        // 分享功能
         async function shareResult() {
-            const response = await fetch('/api/');
-            const result = await response.json();
-            const data = result.data || {};
-            const depth = data.depth_level || 1;
-            const depthInfo = depthConfig[depth];
-            const lobsterSkill = data.evaluation?.lobster_skill || '龙虾能力估Skill';
-            
-            const shareText = `🦞 我的OpenClaw使用评估结果：\n\n` +
-                `${depthInfo.emoji} 等级：Lv.${depth} ${depthInfo.label}\n` +
-                `${lobsterSkill}\n\n` +
-                `来测测你的「龙虾能力」吧！`;
-            
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: '龙虾能力估值 Skill',
-                        text: shareText,
-                        url: window.location.href
-                    });
-                } catch (err) {
-                    copyToClipboard(shareText);
+            // 显示分享卡片弹窗
+            try {
+                const response = await fetch('/api/share-card', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const card = result.data;
+                    
+                    // 更新弹窗内容
+                    document.getElementById('share-level-emoji').textContent = card.level_emoji;
+                    document.getElementById('share-level-text').textContent = `Lv.${card.level}`;
+                    document.getElementById('share-level-name').textContent = card.level_name;
+                    document.getElementById('share-value').textContent = card.value_estimate;
+                    document.getElementById('share-skills').textContent = card.skill_count;
+                    document.getElementById('share-score').textContent = card.total_score;
+                    document.getElementById('share-achievements-count').textContent = card.achievements.length;
+                    
+                    // 更新成就列表
+                    const achievementList = document.getElementById('share-achievement-list');
+                    achievementList.innerHTML = card.achievements.map(a => {
+                        const match = a.match(/^([^\s]+)/);
+                        const icon = match ? match[1] : '🏆';
+                        const text = a.replace(/^[^\s]+\s*/, '').split('：')[0] || a;
+                        return `<span class="share-achievement-tag">${icon} ${text}</span>`;
+                    }).join('');
+                    
+                    // 存储分享文本
+                    window.shareText = card.share_text;
+                    
+                    // 显示弹窗
+                    document.getElementById('share-modal').style.display = 'flex';
                 }
-            } else {
-                copyToClipboard(shareText);
+            } catch (err) {
+                console.error('获取分享数据失败:', err);
+                // 回退到简单的复制
+                copyToClipboard(window.location.href);
+                showToast('📋 已复制链接');
             }
         }
+        
+        function closeShareModal(event) {
+            if (!event || event.target.id === 'share-modal') {
+                document.getElementById('share-modal').style.display = 'none';
+            }
+        }
+        
+        function copyShareText() {
+            if (window.shareText) {
+                copyToClipboard(window.shareText);
+            } else {
+                copyToClipboard(window.location.href);
+            }
+        }
+        
+        function generateLobsterImageFromShare() {
+            closeShareModal();
+            generateLobsterImage();
+        }
 
-        // 复制到剪贴板
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast('✅ 已复制到剪贴板！快去分享吧~');
             }).catch(() => {
-                // 降级方案
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
                 document.body.appendChild(textarea);
@@ -1377,26 +4592,12 @@
             });
         }
 
-        // 显示 Toast 提示
         function showToast(message, duration = 3000) {
             const existing = document.querySelector('.toast-message');
             if (existing) existing.remove();
             
             const toast = document.createElement('div');
             toast.className = 'toast-message';
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 30px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(0, 0, 0, 0.9);
-                color: white;
-                padding: 12px 24px;
-                border-radius: 25px;
-                font-size: 0.95rem;
-                z-index: 10000;
-                animation: slideUp 0.3s ease;
-            `;
             toast.textContent = message;
             document.body.appendChild(toast);
             
@@ -1406,21 +4607,6 @@
             }, duration);
         }
 
-        // 添加 Toast 动画
-        const toastStyle = document.createElement('style');
-        toastStyle.textContent = `
-            @keyframes slideUp {
-                from { transform: translateX(-50%) translateY(20px); opacity: 0; }
-                to { transform: translateX(-50%) translateY(0); opacity: 1; }
-            }
-            @keyframes slideDown {
-                from { transform: translateX(-50%) translateY(0); opacity: 1; }
-                to { transform: translateX(-50%) translateY(20px); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(toastStyle);
-
-        // 下一个小贴士
         function nextTip() {
             const fact = getRandomFunFact();
             const el = document.getElementById('fun-fact');
@@ -1431,7 +4617,6 @@
             }, 200);
         }
 
-        // 导出数据
         async function exportData() {
             try {
                 const response = await fetch('/api/');
@@ -1449,18 +4634,10 @@
             }
         }
 
-        // 复制分享链接
         function copyShareLink() {
-            const url = window.location.href;
-            copyToClipboard(url);
+            copyToClipboard(window.location.href);
         }
 
-        // 切换主题（预留）
-        function toggleDarkMode() {
-            showToast('🌓 主题切换功能开发中...');
-        }
-
-        // 显示帮助
         function showHelp() {
             const helpText = `🦞 龙虾能力估Skill 使用指南
 
@@ -1468,6 +4645,10 @@
 • R - 刷新数据
 • S - 分享结果
 • KKK - 隐藏彩蛋
+
+主题切换：
+• 点击右上角「切换主题」
+• 5种风格任你选择
 
 功能说明：
 • 使用深度：基于技能、自动化、集成三个维度评估
@@ -1478,32 +4659,119 @@
             alert(helpText);
         }
 
-        // 鼠标悬停卡片特效
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-8px) scale(1.02)';
+        async function generateLobsterImage() {
+            const btn = document.getElementById('generate-image-btn');
+            const floatingBtn = document.getElementById('floating-generate-btn');
+            const originalText = btn ? btn.innerHTML : '';
+            
+            try {
+                if (btn) {
+                    btn.innerHTML = '🎨 生成中...';
+                    btn.disabled = true;
+                }
+                if (floatingBtn) {
+                    floatingBtn.classList.add('loading');
+                }
+                
+                const response = await fetch('/api/generate-image', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        level: currentLevel,
+                        achievements: currentAchievements.slice(0, 3)
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    showImageModal(result.data);
+                    showToast(`✅ 已生成 ${result.data.style} 风格龙虾图片！`);
+                } else {
+                    showToast(`❌ 生成失败: ${result.error || '未知错误'}`);
+                }
+            } catch (error) {
+                showToast('❌ 网络错误，请稍后重试');
+                console.error('生成图片失败:', error);
+            } finally {
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+                if (floatingBtn) {
+                    floatingBtn.classList.remove('loading');
+                }
+            }
+        }
+        
+        function showImageModal(data) {
+            const modal = document.createElement('div');
+            modal.id = 'image-modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeImageModal()">×</button>
+                    <div style="margin-bottom: 15px; color: var(--text-secondary); font-size: 0.9rem;">
+                        🎨 ${data.style} | 等级 Lv.${currentLevel}
+                    </div>
+                    <img src="${data.image_url}" style="max-width: 100%; max-height: 60vh; border-radius: 10px;" />
+                    <div class="modal-actions">
+                        <a href="${data.image_url}" download="my-lobster.png" class="btn btn-primary">📥 保存图片</a>
+                        <button class="btn btn-secondary" onclick="shareImage('${data.image_url}')">📤 分享</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeImageModal();
             });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-            });
-        });
+        }
+        
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            if (modal) modal.remove();
+        }
+        
+        function shareImage(url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: '我的专属龙虾',
+                    text: `🦞 我的 OpenClaw 龙虾等级 Lv.${currentLevel}！`,
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(url);
+                showToast('✅ 图片链接已复制！');
+            }
+        }
 
-        // 键盘快捷键
+        // 键盘快捷键系统
+        const shortcuts = {
+            'r': { action: refreshData, desc: '刷新数据' },
+            's': { action: shareResult, desc: '分享结果' },
+            't': { action: toggleThemePanel, desc: '切换主题' },
+            'e': { action: exportData, desc: '导出数据' },
+            'g': { action: generateLobsterImage, desc: '生成龙虾' },
+            '?': { action: showShortcutsHelp, desc: '显示快捷键帮助' }
+        };
+
         document.addEventListener('keydown', (e) => {
-            // R 键刷新
-            if (e.key === 'r' || e.key === 'R') {
-                if (!e.ctrlKey && !e.metaKey) {
-                    refreshData();
-                }
+            // 忽略输入框中的按键
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            // 忽略组合键
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            
+            const key = e.key.toLowerCase();
+            
+            // 快捷键处理
+            if (shortcuts[key]) {
+                e.preventDefault();
+                shortcuts[key].action();
             }
-            // S 键分享
-            if (e.key === 's' || e.key === 'S') {
-                if (!e.ctrlKey && !e.metaKey) {
-                    shareResult();
-                }
-            }
-            // K K K 彩蛋触发（连续按三次K）
-            if (e.key === 'k' || e.key === 'K') {
+            
+            // KKK 彩蛋
+            if (key === 'k') {
                 window.konamiCode = (window.konamiCode || '') + 'K';
                 if (window.konamiCode === 'KKK') {
                     showEasterEgg();
@@ -1511,9 +4779,41 @@
                 }
                 setTimeout(() => { window.konamiCode = ''; }, 2000);
             }
+            
+            // ESC 关闭所有弹窗
+            if (e.key === 'Escape') {
+                document.getElementById('theme-panel').classList.remove('show');
+                closeShareModal();
+                closeImageModal();
+                closeEasterEgg();
+            }
         });
+        
+        // 快捷键帮助面板
+        function showShortcutsHelp() {
+            const shortcutList = Object.entries(shortcuts)
+                .map(([key, info]) => `<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                    <span style="font-family: monospace; background: var(--bg-card); padding: 4px 12px; border-radius: 6px; color: var(--accent-primary);">${key.toUpperCase()}</span>
+                    <span style="color: var(--text-secondary);">${info.desc}</span>
+                </div>`)
+                .join('');
+            
+            const modal = document.createElement('div');
+            modal.className = 'achievement-modal-overlay';
+            modal.innerHTML = `
+                <div class="achievement-modal" style="max-width: 350px;">
+                    <div class="achievement-modal-icon">⌨️</div>
+                    <div class="achievement-modal-title">快捷键</div>
+                    <div style="text-align: left; margin-bottom: 20px;">${shortcutList}</div>
+                    <button class="achievement-modal-close" onclick="this.closest('.achievement-modal-overlay').remove()">知道了</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
 
-        // 彩蛋显示
         function showEasterEgg() {
             document.getElementById('easter-egg').style.display = 'block';
             document.getElementById('easter-egg-overlay').style.display = 'block';
@@ -1524,45 +4824,16 @@
             document.getElementById('easter-egg-overlay').style.display = 'none';
         }
 
-        // 点击遮罩关闭
-        document.getElementById('easter-egg-overlay')?.addEventListener('click', closeEasterEgg);
-
-        // 粒子效果（头部区域）
-        function createParticle() {
-            const header = document.querySelector('header');
-            if (!header) return;
-            
-            const particle = document.createElement('div');
-            particle.style.cssText = `
-                position: absolute;
-                width: 4px;
-                height: 4px;
-                background: rgba(255, 107, 107, 0.6);
-                border-radius: 50%;
-                pointer-events: none;
-                animation: floatUp 3s ease-out forwards;
-                left: ${Math.random() * 100}%;
-                bottom: 0;
-            `;
-            header.style.position = 'relative';
-            header.style.overflow = 'hidden';
-            header.appendChild(particle);
-            
-            setTimeout(() => particle.remove(), 3000);
-        }
-
-        // 定期创建粒子
-        setInterval(createParticle, 500);
-
-        // 添加浮动动画
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes floatUp {
-                0% { transform: translateY(0) scale(1); opacity: 0.6; }
-                100% { transform: translateY(-100px) scale(0); opacity: 0; }
+        document.getElementById('easter-egg-overlay').addEventListener('click', closeEasterEgg);
+        
+        // 点击外部关闭主题面板
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('theme-panel');
+            const switcher = document.querySelector('.theme-switcher');
+            if (!switcher.contains(e.target)) {
+                panel.classList.remove('show');
             }
-        `;
-        document.head.appendChild(style);
+        });
     </script>
 </body>
 </html>
