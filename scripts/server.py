@@ -1,36 +1,39 @@
 #!/usr/bin/env python3
 """
 ClawValue 后端服务
-提供 RESTful API 和静态文件服务
+
+提供 RESTful API 和静态文件服务。
+
+API 端点:
+- GET /api/         - 仪表盘主数据
+- GET /api/stats    - 统计数据
+- GET /api/skills   - 技能列表
+- GET /api/sessions - 会话历史
+- GET /api/evaluation - 评估结果
+- POST /api/refresh - 刷新数据
+- GET /api/health   - 健康检查
+
+参考文档: docs/OPENCLAW_REFERENCE.md
 """
 
 import sys
 import os
-import json
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, jsonify, send_from_directory, request
 
 # 添加 lib 目录到路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib'))
+lib_path = os.path.join(os.path.dirname(__file__), '..', 'lib')
+sys.path.insert(0, lib_path)
 
-from parser import DataCollector
-from models import ClawValueDB
+# 导入核心模块
+from collector import DataCollector
 from evaluation import EvaluationEngine
+from constants import DepthLevel, LobsterLevel, Achievement
 
+# 创建 Flask 应用
 app = Flask(__name__,
             static_folder=os.path.join(os.path.dirname(__file__), '..', 'web'))
-
-# 全局数据库实例
-db = None
-
-
-def get_db():
-    """获取数据库实例"""
-    global db
-    if db is None:
-        db = ClawValueDB()
-    return db
 
 
 @app.route('/')
@@ -388,76 +391,70 @@ def get_dashboard():
         - trends: 使用趋势
     """
     try:
-        # 采集数据
+        # 使用新的数据采集模块
         collector = DataCollector()
-        data = collector.collect_all()
-
+        data = collector.collect()  # 返回 CollectionData 对象
+        
         # 评估
         engine = EvaluationEngine()
-        evaluation = engine.generate_full_evaluation(data)
+        # 转换为字典格式供评估引擎使用
+        data_dict = data.to_dict()
+        evaluation = engine.generate_full_evaluation(data_dict)
 
         # 计算深度等级 (1-5)
         total_score = evaluation.get('total_score', 0)
-        if total_score < 20:
-            depth_level = 1
-        elif total_score < 40:
-            depth_level = 2
-        elif total_score < 60:
-            depth_level = 3
-        elif total_score < 80:
-            depth_level = 4
-        else:
-            depth_level = 5
+        depth_level = 1
+        for level, threshold in sorted(DepthLevel.SCORE_THRESHOLDS.items()):
+            if total_score >= threshold:
+                depth_level = level
 
         # 深度分布
         metrics = evaluation.get('metrics', {})
         depth_breakdown = [
             {'level': 1, 'name': '技能数量', 'count': metrics.get('skill_count', 0)},
             {'level': 2, 'name': '自定义技能', 'count': metrics.get('custom_skills', 0)},
-            {'level': 3, 'name': '日均Token', 'count': metrics.get('daily_tokens', 0)},
+            {'level': 3, 'name': '日志条目', 'count': data.log_stats.total_entries},
             {'level': 4, 'name': 'Agent数量', 'count': metrics.get('agent_count', 1)},
             {'level': 5, 'name': '集成渠道', 'count': metrics.get('channels', 0)}
         ]
 
         # 价值估算
+        value_str = evaluation.get('value_estimate', '0元')
+        try:
+            value_amount = int(value_str.replace(',', '').replace('元', '').strip())
+        except ValueError:
+            value_amount = 0
+            
         value_estimation = {
-            'amount': int(evaluation.get('value_estimate', '0').replace(',', '').replace('元', '') or 0),
+            'amount': value_amount,
             'description': evaluation.get('value_level', '基础价值级'),
-            'hours_saved': int(metrics.get('daily_tokens', 0) / 1000),  # 粗略估算
+            'hours_saved': data.log_stats.tool_calls,  # 用工具调用数估算
             'efficiency': min(int(total_score * 1.2), 200),
             'roi': f'{min(int(total_score / 10), 10)}x'
         }
 
-        # 技能统计
-        skills_data = data.get('skills', [])
-        categories = {}
-        for skill in skills_data:
-            cat = skill.get('category', 'Other')
-            categories[cat] = categories.get(cat, 0) + 1
-
+        # 技能统计 - 使用新的数据模型
         skills = {
-            'total': len(skills_data),
-            'custom': len([s for s in skills_data if s.get('is_custom')]),
-            'categories': categories
+            'total': data.total_skills,
+            'custom': data.custom_skills,
+            'categories': data.categories
         }
 
-        # 会话统计
-        sessions_data = data.get('sessions', {})
+        # 会话统计 - 使用新的数据模型
         sessions = {
-            'total': data.get('total_sessions', 0),
-            'total_messages': sessions_data.get('total_messages', 0),
-            'avg_messages': int(sessions_data.get('total_messages', 0) / max(data.get('total_sessions', 1), 1)),
-            'active_days': data.get('usage_days', 1)
+            'total': data.log_stats.total_entries,
+            'total_messages': data.log_stats.tool_calls,
+            'avg_messages': data.log_stats.tool_calls // max(data.usage_days, 1),
+            'active_days': data.usage_days
         }
 
-        # 使用趋势（模拟最近7天）
+        # 使用趋势（最近7天模拟）
         trends = []
-        from datetime import timedelta
         for i in range(6, -1, -1):
             date = datetime.now() - timedelta(days=i)
             trends.append({
                 'date': date.strftime('%m-%d'),
-                'count': max(0, sessions_data.get('total_messages', 0) // 7 + (7 - i) * 2)
+                'count': max(0, data.log_stats.tool_calls // 7 + (7 - i) * 2)
             })
 
         # 成就列表
