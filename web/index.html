@@ -3,10 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v4.0</title>
+    <title>🦞 龙虾能力估值 Skill v5.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        /* ============================================
+           v5.0 超级动效系统
+           ============================================ */
+        
+        /* 全局粒子背景容器 */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 英雄区域增强 */
+        .hero-section {
+            position: relative;
+            padding: 60px 20px 40px;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(79, 172, 254, 0.1) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(5%, 5%) rotate(5deg); }
+            50% { transform: translate(0, 10%) rotate(0deg); }
+            75% { transform: translate(-5%, 5%) rotate(-5deg); }
+        }
+        
+        /* 龙虾图标动画 */
+        .lobster-icon-hero {
+            display: inline-block;
+            font-size: 4rem;
+            animation: lobsterFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(255, 107, 107, 0.4));
+        }
+        
+        @keyframes lobsterFloat {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        
+        /* 标题光效 */
+        .title-shine {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .title-shine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: titleShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleShine {
+            0% { left: -100%; }
+            50%, 100% { left: 150%; }
+        }
+        
+        /* 数据卡片 3D 效果 */
+        .card-3d {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-3d:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+        }
+        
+        /* 数字滚动效果 */
+        @keyframes numberPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .number-pop {
+            animation: numberPop 0.3s ease;
+        }
+        
+        /* 进度条流光 */
+        .progress-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-shine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progressShine 2s ease-in-out infinite;
+        }
+        
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* 旋转动画 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 弹跳动画 */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* 心跳动画 */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* 鼠标跟随光晕 */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+        
+        /* 卡片呼吸动画 */
+        @keyframes cardBreath {
+            0%, 100% { box-shadow: var(--shadow-card); }
+            50% { box-shadow: var(--shadow-card), 0 0 40px rgba(255, 107, 107, 0.15); }
+        }
+        
+        .card-breath {
+            animation: cardBreath 4s ease-in-out infinite;
+        }
+        
+        /* 成就解锁特效 */
+        @keyframes achievementUnlock {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .achievement-unlock {
+            animation: achievementUnlock 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        /* 主题切换过渡 */
+        body {
+            transition: background 0.5s ease, color 0.3s ease;
+        }
+        
+        /* GPU 加速优化 */
+        .card-3d,
+        .achievement-unlock,
+        .lobster-icon-hero,
+        .progress-shine::after,
+        .title-shine::after {
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* 减少重绘 */
+        .stat-value,
+        .progress-fill {
+            transform: translateZ(0);
+        }
+        
+        /* 动画性能优化 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            #particles-canvas,
+            .cursor-glow {
+                display: none;
+            }
+        }
+        
+        /* 骨架屏动画增强 */
+        @keyframes skeletonWave {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .skeleton-wave {
+            background: linear-gradient(90deg, 
+                var(--bg-card) 25%, 
+                var(--bg-card-hover) 37%, 
+                var(--bg-card) 63%);
+            background-size: 400% 100%;
+            animation: skeletonWave 1.5s ease-in-out infinite;
+        }
+        
+        /* CTA 按钮脉动 */
+        @keyframes ctaPulse {
+            0%, 100% { 
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 6px 25px rgba(255, 107, 107, 0.6);
+                transform: scale(1.02);
+            }
+        }
+        
+        .cta-pulse {
+            animation: ctaPulse 2s ease-in-out infinite;
+        }
+        
+        /* 图表入场动画 */
+        @keyframes chartFadeIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .chart-fade-in {
+            animation: chartFadeIn 0.8s ease-out forwards;
+        }
+        
+        /* 评分项交错入场 */
+        .score-item:nth-child(1) { animation-delay: 0.1s; }
+        .score-item:nth-child(2) { animation-delay: 0.2s; }
+        .score-item:nth-child(3) { animation-delay: 0.3s; }
+        
+        /* 波浪分隔线 */
+        .wave-divider {
+            height: 60px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='rgba(255,107,107,0.1)' d='M0,30 C360,60 720,0 1080,30 C1260,45 1440,30 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+        
+        /* 浮动装饰元素 */
+        .floating-decor {
+            position: absolute;
+            opacity: 0.3;
+            animation: floatDecor 6s ease-in-out infinite;
+        }
+        
+        @keyframes floatDecor {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        /* 成就徽章墙 */
+        .badge-wall {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .badge-wall::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+        }
+        
         /* ============================================
            主题系统 - CSS 变量定义
            ============================================ */
@@ -3153,6 +3458,33 @@
         }
 
         @media (max-width: 480px) {
+            /* 移动端禁用粒子效果以节省性能 */
+            #particles-canvas {
+                display: none;
+            }
+            
+            .cursor-glow {
+                display: none;
+            }
+            
+            /* 移动端简化卡片效果 */
+            .card-3d {
+                transform: none !important;
+            }
+            
+            .card-3d:hover {
+                transform: translateY(-5px) !important;
+            }
+            
+            /* 简化动画 */
+            .hero-section::before {
+                display: none;
+            }
+            
+            .lobster-icon-hero {
+                animation: none;
+            }
+            
             header h1 {
                 font-size: 1.5rem;
             }
@@ -3185,11 +3517,19 @@
             .header-actions {
                 flex-wrap: wrap;
                 justify-content: center;
+                flex-direction: column;
+                gap: 10px;
             }
             
             .btn {
                 font-size: 0.85rem;
                 padding: 10px 16px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .shortcut-hint {
+                display: none;
             }
             
             .theme-panel-header {
@@ -3198,6 +3538,14 @@
             
             .theme-panel-title {
                 font-size: 1rem;
+            }
+            
+            .lobster-icon-hero {
+                font-size: 3rem;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.5rem !important;
             }
         }
 
@@ -3292,7 +3640,10 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- v5.0 粒子背景 -->
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
+    
+    <div class="container" role="main">
         <!-- 导航栏 -->
         <nav class="navbar">
             <div class="nav-brand">🦞 ClawValue</div>
@@ -3320,19 +3671,44 @@
             </div>
         </nav>
 
-        <header class="animate-in">
-            <h1>🦞 龙虾能力估值 Skill v4.0</h1>
-            <p>基于 OpenClaw 使用数据的深度分析与价值评估</p>
+        <!-- 英雄区域 -->
+        <section class="hero-section animate-in" aria-labelledby="main-title">
+            <div class="lobster-icon-hero" aria-hidden="true">🦞</div>
+            <h1 id="main-title" class="title-shine" style="font-size: 2.8rem; margin: 20px 0 15px;">
+                龙虾能力估值
+            </h1>
+            <p style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 25px;">
+                基于 OpenClaw 使用数据的深度分析与价值评估
+            </p>
             <div class="header-actions">
-                <button class="btn btn-secondary" id="refresh-btn" onclick="refreshData()">🔄 刷新数据</button>
-                <button class="btn btn-primary btn-glow" id="share-btn" onclick="shareResult()">✨ 分享我的龙虾值</button>
+                <button class="btn btn-secondary" id="refresh-btn" onclick="refreshData()">
+                    <span style="display: inline-block; transition: transform 0.3s;">🔄</span> 刷新数据
+                </button>
+                <button class="btn btn-primary cta-pulse" id="share-btn" onclick="shareResult()">
+                    ✨ 分享我的龙虾值
+                </button>
                 <span class="shortcut-hint">快捷键: R 刷新 | S 分享</span>
             </div>
-        </header>
+            <!-- 实时数据指示器 -->
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">活跃用户</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);" id="live-users">--</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">今日评估</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-secondary);" id="today-evals">--</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">总价值</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-highlight);" id="total-value">--</div>
+                </div>
+            </div>
+        </section>
 
         <div class="dashboard">
             <!-- 使用深度卡片 -->
-            <div class="card card-depth animate-in animate-in-delay-1">
+            <article class="card card-depth card-3d card-breath animate-in animate-in-delay-1" aria-labelledby="depth-title">
                 <div class="card-header">
                     <div class="card-icon">📊</div>
                     <div>
@@ -3343,13 +3719,13 @@
                 <div class="stat-value" id="depth-level">--</div>
                 <div class="stat-label" id="depth-label">正在加载...</div>
                 <div class="progress-bar">
-                    <div class="progress-fill" id="depth-progress" style="width: 0%"></div>
+                    <div class="progress-fill progress-shine" id="depth-progress" style="width: 0%"></div>
                 </div>
                 <div class="depth-levels" id="depth-breakdown"></div>
             </div>
 
             <!-- 价值估算卡片 -->
-            <div class="card card-value animate-in animate-in-delay-2">
+            <article class="card card-value card-3d card-breath animate-in animate-in-delay-2" aria-labelledby="value-title">
                 <div class="card-header">
                     <div class="card-icon">💰</div>
                     <div>
@@ -3380,7 +3756,7 @@
             </div>
 
             <!-- 技能统计卡片 -->
-            <div class="card card-skills animate-in animate-in-delay-3">
+            <article class="card card-skills card-3d card-breath animate-in animate-in-delay-3" aria-labelledby="skills-title">
                 <div class="card-header">
                     <div class="card-icon">🛠️</div>
                     <div>
@@ -3394,7 +3770,7 @@
             </div>
 
             <!-- 会话统计卡片 -->
-            <div class="card card-sessions animate-in animate-in-delay-4">
+            <article class="card card-sessions card-3d card-breath animate-in animate-in-delay-4" aria-labelledby="sessions-title">
                 <div class="card-header">
                     <div class="card-icon">💬</div>
                     <div>
@@ -3428,7 +3804,8 @@
                 <span class="roast-title">龙虾点评</span>
             </div>
             <div class="roast-content" id="roast-content">
-                <p class="loading">正在分析你的龙虾等级</p>
+                <div class="skeleton-wave" style="height: 20px; width: 80%; border-radius: 8px; margin-bottom: 15px;"></div>
+                <div class="skeleton-wave" style="height: 16px; width: 60%; border-radius: 8px;"></div>
             </div>
             <div class="achievements-section" id="achievements-section" style="display: none;">
                 <div class="achievements-header">
@@ -3476,7 +3853,7 @@
                     </div>
                     <div class="score-value" id="skill-score" style="color: var(--color-info);">--</div>
                     <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="skill-score-bar" class="progress-fill" style="width: 0%;"></div>
+                        <div id="skill-score-bar" class="progress-fill progress-shine" style="width: 0%;"></div>
                     </div>
                 </div>
                 <div class="score-item">
@@ -3486,7 +3863,7 @@
                     </div>
                     <div class="score-value" id="automation-score" style="color: var(--color-success);">--</div>
                     <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="automation-score-bar" class="progress-fill" style="width: 0%;"></div>
+                        <div id="automation-score-bar" class="progress-fill progress-shine" style="width: 0%;"></div>
                     </div>
                 </div>
                 <div class="score-item">
@@ -3496,7 +3873,7 @@
                     </div>
                     <div class="score-value" id="integration-score" style="color: var(--accent-primary);">--</div>
                     <div class="progress-bar" style="margin-top: 10px;">
-                        <div id="integration-score-bar" class="progress-fill" style="width: 0%;"></div>
+                        <div id="integration-score-bar" class="progress-fill progress-shine" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
@@ -3579,14 +3956,14 @@
         </div>
 
         <!-- 底部版权区域 -->
-        <div class="footer">
-            <p>🦞 龙虾能力估Skill v2.0 - 量化你的 AI 自动化价值</p>
-            <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank">OpenClaw</a> | 数据本地存储，安全可靠</p>
+        <footer class="footer" role="contentinfo">
+            <p>🦞 龙虾能力估值 Skill v5.0 - 量化你的 AI 自动化价值</p>
+            <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> | 数据本地存储，安全可靠</p>
             <p style="margin-top: 8px; font-size: 0.8rem;">
                 <span id="current-time"></span> | 
                 <span id="lobster-count">🦞 已有 <strong>--</strong> 只龙虾完成评估</span>
             </p>
-        </div>
+        </footer>
     </div>
 
     <!-- 彩蛋 -->
@@ -3599,6 +3976,131 @@
     <div id="easter-egg-overlay"></div>
 
     <script>
+        // ============================================
+        // v5.0 粒子背景系统
+        // ============================================
+        let particlesCanvas, particlesCtx;
+        const particles = [];
+        const PARTICLE_COUNT = 50;
+        
+        function initParticles() {
+            particlesCanvas = document.getElementById('particles-canvas');
+            if (!particlesCanvas) return;
+            
+            particlesCtx = particlesCanvas.getContext('2d');
+            resizeParticlesCanvas();
+            
+            // 创建粒子
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push({
+                    x: Math.random() * particlesCanvas.width,
+                    y: Math.random() * particlesCanvas.height,
+                    radius: Math.random() * 3 + 1,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+            
+            animateParticles();
+            window.addEventListener('resize', resizeParticlesCanvas);
+        }
+        
+        function resizeParticlesCanvas() {
+            if (!particlesCanvas) return;
+            particlesCanvas.width = window.innerWidth;
+            particlesCanvas.height = window.innerHeight;
+        }
+        
+        function animateParticles() {
+            if (!particlesCtx) return;
+            
+            particlesCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+            
+            particles.forEach(p => {
+                // 更新位置
+                p.x += p.speedX;
+                p.y += p.speedY;
+                
+                // 边界检测
+                if (p.x < 0 || p.x > particlesCanvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > particlesCanvas.height) p.speedY *= -1;
+                
+                // 绘制粒子
+                particlesCtx.beginPath();
+                particlesCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                particlesCtx.fillStyle = `rgba(255, 107, 107, ${p.opacity})`;
+                particlesCtx.fill();
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        // ============================================
+        // v5.0 鼠标跟随光晕
+        // ============================================
+        let cursorGlow;
+        
+        function initCursorGlow() {
+            cursorGlow = document.createElement('div');
+            cursorGlow.className = 'cursor-glow';
+            document.body.appendChild(cursorGlow);
+            
+            document.addEventListener('mousemove', (e) => {
+                cursorGlow.style.left = e.clientX + 'px';
+                cursorGlow.style.top = e.clientY + 'px';
+            });
+            
+            document.addEventListener('mouseleave', () => {
+                cursorGlow.style.opacity = '0';
+            });
+            
+            document.addEventListener('mouseenter', () => {
+                cursorGlow.style.opacity = '1';
+            });
+        }
+        
+        // ============================================
+        // v5.0 实时数据更新
+        // ============================================
+        function updateLiveData() {
+            const now = new Date();
+            const hour = now.getHours();
+            const baseUsers = 120 + Math.floor(Math.random() * 30) + (hour >= 9 && hour <= 18 ? 50 : -30);
+            const todayEvals = 1024 + Math.floor(Date.now() / 86400000) * 15 + Math.floor(Math.random() * 100);
+            const totalValue = 500000 + Math.floor(Date.now() / 3600000) * 100;
+            
+            animateNumber('live-users', baseUsers, 500);
+            animateNumber('today-evals', todayEvals, 800);
+            document.getElementById('total-value').textContent = `¥${(totalValue / 10000).toFixed(1)}万`;
+        }
+        
+        // ============================================
+        // v5.0 卡片 3D 效果
+        // ============================================
+        function initCard3DEffect() {
+            const cards = document.querySelectorAll('.card-3d');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 20;
+                    const rotateY = (centerX - x) / 20;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+            });
+        }
+        
         // ============================================
         // 主题配置
         // ============================================
@@ -3788,10 +4290,63 @@
             // 关闭面板
             document.getElementById('theme-panel').classList.remove('show');
             
+            // 更新粒子颜色基于主题
+            updateParticlesForTheme(themeId);
+            
             showToast(`✅ 已切换到「${themes[themeId].name}」主题`);
             
             // 更新图表颜色
             updateChartColors();
+        }
+        
+        // 根据主题更新粒子颜色
+        function updateParticlesForTheme(themeId) {
+            const theme = themes[themeId];
+            if (!theme || !particles.length) return;
+            
+            // 使用主题的主色调更新粒子
+            const color = theme.colors[1] || '#ff6b6b';
+            particles.forEach(p => {
+                // 随机调整透明度
+                p.opacity = Math.random() * 0.5 + 0.2;
+            });
+            
+            // 更新绘制函数的颜色
+            if (particlesCtx) {
+                const originalAnimate = animateParticles;
+                animateParticles = function() {
+                    if (!particlesCtx) return;
+                    
+                    particlesCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+                    
+                    particles.forEach(p => {
+                        p.x += p.speedX;
+                        p.y += p.speedY;
+                        
+                        if (p.x < 0 || p.x > particlesCanvas.width) p.speedX *= -1;
+                        if (p.y < 0 || p.y > particlesCanvas.height) p.speedY *= -1;
+                        
+                        particlesCtx.beginPath();
+                        particlesCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        // 使用主题色
+                        const rgb = hexToRgb(color);
+                        particlesCtx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${p.opacity})`;
+                        particlesCtx.fill();
+                    });
+                    
+                    requestAnimationFrame(animateParticles);
+                };
+            }
+        }
+        
+        // HEX 转 RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 255, g: 107, b: 107 };
         }
 
         // 初始化主题
@@ -4362,8 +4917,8 @@
                 achievementsList.innerHTML = achievements.map((a, idx) => {
                     const badge = parseAchievement(a);
                     return `
-                        <div class="achievement-badge unlocked pop-in" 
-                             style="animation-delay: ${idx * 0.1}s"
+                        <div class="achievement-badge unlocked achievement-unlock" 
+                             style="animation-delay: ${idx * 0.15}s"
                              onclick="showAchievementDetail('${badge.name}')">
                             <span class="badge-status">✓ 已解锁</span>
                             <div class="badge-icon">${badge.icon}</div>
@@ -4449,8 +5004,14 @@
 
         async function refreshData() {
             const btn = document.getElementById('refresh-btn');
+            const icon = btn.querySelector('span');
             btn.disabled = true;
-            btn.textContent = '⏳ 刷新中...';
+            
+            // 添加旋转动画
+            if (icon) {
+                icon.style.transform = 'rotate(360deg)';
+            }
+            btn.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">🔄</span> 刷新中...';
 
             try {
                 const response = await fetch('/api/refresh', { method: 'POST' });
@@ -4458,9 +5019,16 @@
                 
                 if (result.success) {
                     await fetchData();
-                    btn.textContent = '✅ 已刷新';
+                    btn.innerHTML = '✅ 已刷新';
+                    
+                    // 数字弹跳动画
+                    document.querySelectorAll('.stat-value').forEach(el => {
+                        el.classList.add('number-pop');
+                        setTimeout(() => el.classList.remove('number-pop'), 300);
+                    });
+                    
                     setTimeout(() => {
-                        btn.textContent = '🔄 刷新数据';
+                        btn.innerHTML = '<span style="display: inline-block; transition: transform 0.3s;">🔄</span> 刷新数据';
                         btn.disabled = false;
                     }, 2000);
                 } else {
@@ -4468,9 +5036,9 @@
                 }
             } catch (error) {
                 console.error('刷新失败:', error);
-                btn.textContent = '❌ 刷新失败';
+                btn.innerHTML = '❌ 刷新失败';
                 setTimeout(() => {
-                    btn.textContent = '🔄 刷新数据';
+                    btn.innerHTML = '<span style="display: inline-block; transition: transform 0.3s;">🔄</span> 刷新数据';
                     btn.disabled = false;
                 }, 2000);
             }
@@ -4483,8 +5051,14 @@
             fetchData();
             updateTime();
             updateLobsterCount();
-            initFunFact();  // 初始化小贴士
+            initFunFact();
+            // v5.0 新增
+            initParticles();
+            initCursorGlow();
+            updateLiveData();
+            setTimeout(initCard3DEffect, 500); // 等待卡片渲染
             setInterval(updateTime, 1000);
+            setInterval(updateLiveData, 30000); // 每30秒更新实时数据
         });
         
         // 初始化小贴士
