@@ -15,14 +15,17 @@ from typing import List, Dict, Optional
 class LogParser:
     """OpenClaw 日志解析器"""
     
+    # OpenClaw 日志路径（按官方文档）
+    OPENCLAW_LOG_DIR = '/tmp/openclaw'
+    
     def __init__(self, openclaw_home: str = None):
         if openclaw_home is None:
             openclaw_home = str(Path.home() / '.openclaw')
         self.openclaw_home = openclaw_home
-        self.logs_dir = os.path.join(openclaw_home, 'logs')
+        self.logs_dir = self.OPENCLAW_LOG_DIR
     
     def parse_jsonl_file(self, filepath: str) -> List[dict]:
-        """解析 JSONL 日志文件"""
+        """解析 JSONL 日志文件（OpenClaw 官方格式）"""
         results = []
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
@@ -32,12 +35,58 @@ class LogParser:
                         continue
                     try:
                         data = json.loads(line)
-                        results.append(data)
+                        # 解析 OpenClaw 日志格式
+                        parsed = self._parse_openclaw_log(data)
+                        if parsed:
+                            results.append(parsed)
                     except json.JSONDecodeError:
                         continue
         except FileNotFoundError:
             pass
         return results
+    
+    def _parse_openclaw_log(self, data: dict) -> Optional[dict]:
+        """解析 OpenClaw 日志条目格式"""
+        try:
+            # OpenClaw 日志格式: {"0": "message", "_meta": {...}, "time": "..."}
+            message = data.get('0', '') or data.get('message', '')
+            meta = data.get('_meta', {})
+            
+            return {
+                'message': message,
+                'level': meta.get('logLevelName', 'INFO'),
+                'timestamp': data.get('time', ''),
+                'subsystem': self._extract_subsystem(message),
+                'type': self._classify_log(message),
+                'raw': data
+            }
+        except Exception:
+            return None
+    
+    def _extract_subsystem(self, message: str) -> str:
+        """从消息中提取子系统"""
+        if message.startswith('['):
+            end = message.find(']')
+            if end > 0:
+                return message[1:end]
+        return 'unknown'
+    
+    def _classify_log(self, message: str) -> str:
+        """分类日志消息"""
+        msg_lower = message.lower()
+        
+        if 'error' in msg_lower or 'failed' in msg_lower:
+            return 'error'
+        elif 'session' in msg_lower:
+            return 'session'
+        elif 'tool' in msg_lower or 'skill' in msg_lower:
+            return 'tool'
+        elif 'model' in msg_lower or 'token' in msg_lower:
+            return 'model'
+        elif 'webhook' in msg_lower or 'message' in msg_lower:
+            return 'message'
+        else:
+            return 'other'
     
     def parse_text_log(self, filepath: str) -> List[dict]:
         """解析文本格式的日志文件（gateway.log 等）"""
@@ -51,7 +100,6 @@ class LogParser:
                     
                     # 解析日志格式: 2026-03-07T14:15:22.112Z [gateway] message
                     try:
-                        # 提取时间戳和内容
                         if line.startswith('20'):
                             parts = line.split(' ', 2)
                             if len(parts) >= 3:
@@ -59,11 +107,11 @@ class LogParser:
                                 source = parts[1].strip('[]')
                                 message = parts[2] if len(parts) > 2 else ''
                                 
-                                # 提取有用信息
                                 log_entry = {
-                                    'timestamp': timestamp,
-                                    'source': source,
                                     'message': message,
+                                    'level': 'INFO',
+                                    'timestamp': timestamp,
+                                    'subsystem': source,
                                     'type': self._classify_log(message)
                                 }
                                 results.append(log_entry)
@@ -73,32 +121,26 @@ class LogParser:
             pass
         return results
     
-    def _classify_log(self, message: str) -> str:
-        """分类日志消息"""
-        if 'error' in message.lower() or 'Error' in message:
-            return 'error'
-        elif 'session' in message.lower():
-            return 'session'
-        elif 'tool' in message.lower() or 'skill' in message.lower():
-            return 'tool'
-        elif 'ws' in message or 'connected' in message:
-            return 'connection'
-        else:
-            return 'other'
-    
     def get_all_logs(self) -> List[dict]:
         """获取所有日志"""
         all_logs = []
-        if not os.path.exists(self.logs_dir):
-            return all_logs
         
-        for filename in os.listdir(self.logs_dir):
-            filepath = os.path.join(self.logs_dir, filename)
-            
-            if filename.endswith('.jsonl'):
-                all_logs.extend(self.parse_jsonl_file(filepath))
-            elif filename.endswith('.log'):
-                all_logs.extend(self.parse_text_log(filepath))
+        # 优先读取 /tmp/openclaw/ 目录（官方日志位置）
+        if os.path.exists(self.OPENCLAW_LOG_DIR):
+            for filename in os.listdir(self.OPENCLAW_LOG_DIR):
+                if filename.endswith('.log') and filename.startswith('openclaw-'):
+                    filepath = os.path.join(self.OPENCLAW_LOG_DIR, filename)
+                    all_logs.extend(self.parse_jsonl_file(filepath))
+        
+        # 兼容旧路径
+        old_logs_dir = os.path.join(self.openclaw_home, 'logs')
+        if os.path.exists(old_logs_dir):
+            for filename in os.listdir(old_logs_dir):
+                filepath = os.path.join(old_logs_dir, filename)
+                if filename.endswith('.jsonl'):
+                    all_logs.extend(self.parse_jsonl_file(filepath))
+                elif filename.endswith('.log'):
+                    all_logs.extend(self.parse_text_log(filepath))
         
         return all_logs
     
@@ -109,48 +151,50 @@ class LogParser:
             'total_tokens': 0,
             'tool_calls': 0,
             'errors': 0,
-            'sessions': set(),
             'connections': 0,
-            'log_entries': 0
+            'log_entries': 0,
+            'model_calls': 0,
+            'info_count': 0,
+            'warn_count': 0,
+            'error_count': 0
         }
         
         for log in logs:
             stats['log_entries'] += 1
             
-            # 处理文本日志
-            if 'type' in log:
-                if log['type'] == 'error':
-                    stats['errors'] += 1
-                elif log['type'] == 'tool':
-                    stats['tool_calls'] += 1
-                elif log['type'] == 'connection':
-                    stats['connections'] += 1
-                continue
+            # 统计日志级别
+            level = log.get('level', 'INFO')
+            if level == 'ERROR':
+                stats['error_count'] += 1
+            elif level == 'WARN':
+                stats['warn_count'] += 1
+            else:
+                stats['info_count'] += 1
             
-            # 处理 JSONL 日志
-            # 统计消息数
-            if log.get('role') in ['user', 'assistant']:
-                stats['total_messages'] += 1
-            
-            # 统计 Token
-            usage = log.get('usage', {})
-            stats['total_tokens'] += usage.get('total_tokens', 0)
-            
-            # 统计工具调用
-            if log.get('type') == 'tool_call' or log.get('toolCalls'):
-                stats['tool_calls'] += 1
-            
-            # 统计错误
-            if log.get('isError') or log.get('error'):
+            # 按类型统计
+            log_type = log.get('type', 'other')
+            if log_type == 'error':
                 stats['errors'] += 1
+            elif log_type == 'tool':
+                stats['tool_calls'] += 1
+            elif log_type == 'model':
+                stats['model_calls'] += 1
+            elif log_type == 'connection':
+                stats['connections'] += 1
             
-            # 收集会话 ID
-            session_key = log.get('sessionKey') or log.get('session_key')
-            if session_key:
-                stats['sessions'].add(session_key)
+            # 从原始数据中提取更多信息
+            raw = log.get('raw', {})
+            if raw:
+                # 检查是否有 token 使用信息
+                if 'tokens' in str(raw):
+                    stats['total_tokens'] += raw.get('tokens', 0)
         
-        stats['session_count'] = len(stats['sessions'])
-        del stats['sessions']  # 移除 set，不能序列化
+        stats['session_count'] = stats['log_entries']  # 用日志条目数作为活跃度指标
+        
+        # 清理不能序列化的字段
+        if 'sessions' in stats:
+            del stats['sessions']
+        
         return stats
 
 
