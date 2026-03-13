@@ -4845,36 +4845,43 @@
         }
         
         .theme-category {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
         }
         
         .theme-category-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
         
         .theme-category-title {
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 700;
             color: var(--text-primary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
         
         .theme-category-count {
             font-size: 0.75rem;
-            color: var(--text-muted);
-            background: var(--bg-card);
-            padding: 2px 8px;
-            border-radius: 10px;
+            color: var(--accent-primary);
+            background: rgba(255, 107, 107, 0.1);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
         }
         
         .theme-category-line {
             flex: 1;
-            height: 1px;
-            background: var(--border-color);
+            height: 2px;
+            background: linear-gradient(90deg, var(--border-color), transparent);
         }
 
         .theme-list {
@@ -4885,12 +4892,50 @@
         
         @media (max-width: 600px) {
             .theme-panel {
-                min-width: 300px;
-                padding: 15px;
+                min-width: 100vw;
+                max-width: 100vw;
+                padding: 20px 16px;
+                border-radius: 0;
+                max-height: 90vh;
             }
             
             .theme-list {
                 grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .theme-option {
+                padding: 12px 14px;
+            }
+            
+            .theme-preview {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .theme-category {
+                padding: 10px;
+                margin-bottom: 16px;
+            }
+            
+            .theme-category-title {
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* 移动端主题面板全屏优化 */
+        @media (max-width: 480px) {
+            .theme-switcher {
+                position: fixed;
+                top: auto;
+                bottom: 70px;
+                right: 15px;
+                z-index: 100;
+            }
+            
+            .theme-btn-switch {
+                padding: 10px 14px;
+                font-size: 0.85rem;
             }
         }
 
@@ -4924,13 +4969,6 @@
             opacity: 1;
         }
 
-        .theme-option:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-color);
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
-        }
-        
         .theme-option.active {
             border-color: var(--accent-primary);
             background: var(--bg-card-hover);
@@ -4955,6 +4993,55 @@
         
         [data-theme="candy-land"] .theme-option.active {
             box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+        }
+        
+        /* v10.0 新增主题 active 状态 */
+        [data-theme="golden-legend"] .theme-option.active {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            border-color: #ffd700;
+        }
+        
+        [data-theme="edm-storm"] .theme-option.active {
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+            animation: edmGlow 1s ease-in-out infinite;
+        }
+        
+        @keyframes edmGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(255, 0, 255, 0.5); }
+        }
+        
+        [data-theme="quantum-space"] .theme-option.active {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        [data-theme="magic-forest"] .theme-option.active {
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.4);
+        }
+        
+        [data-theme="phantom-night"] .theme-option.active {
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
+        }
+        
+        [data-theme="tropical-fruits"] .theme-option.active {
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        /* 主题选项悬浮增强 */
+        .theme-option:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-color);
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+        
+        .theme-option:hover .theme-preview {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .theme-option:active {
+            transform: translateY(-2px) scale(0.98);
         }
 
         .theme-preview {
