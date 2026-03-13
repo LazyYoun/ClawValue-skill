@@ -18,6 +18,7 @@ API 端点:
 
 import sys
 import os
+import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, send_from_directory, request
@@ -30,6 +31,17 @@ sys.path.insert(0, lib_path)
 from collector import DataCollector
 from evaluation import EvaluationEngine
 from constants import DepthLevel, LobsterLevel, Achievement
+from models import ClawValueDB
+
+# 全局数据库实例
+_db_instance = None
+
+def get_db():
+    """获取数据库实例（单例模式）"""
+    global _db_instance
+    if _db_instance is None:
+        _db_instance = ClawValueDB()
+    return _db_instance
 
 # 创建 Flask 应用
 app = Flask(__name__,
@@ -174,34 +186,35 @@ def get_evaluation():
         if refresh:
             # 重新采集数据
             collector = DataCollector()
-            data = collector.collect_all()
+            data = collector.collect()
+            data_dict = data.to_dict()
 
             # 评估
             engine = EvaluationEngine()
-            evaluation = engine.generate_full_evaluation(data)
+            evaluation = engine.generate_full_evaluation(data_dict)
 
             # 存储到数据库
             database.insert_collection_record({
-                'total_sessions': data['total_sessions'],
-                'total_skills': data['total_skills'],
-                'total_agents': data['config'].get('agent_count', 1) if data['config'] else 1,
-                'total_tokens': data['total_tokens'],
-                'usage_days': data['usage_days'],
-                'error_count': data['errors']
+                'total_sessions': data_dict.get('total_sessions', 0),
+                'total_skills': data.total_skills,
+                'total_agents': data_dict.get('config', {}).get('agent_count', 1) if data_dict.get('config') else 1,
+                'total_tokens': data_dict.get('total_tokens', 0),
+                'usage_days': data.usage_days,
+                'error_count': data.log_stats.error_count
             })
 
-            for skill in data.get('skills', []):
+            for skill in data_dict.get('skills', []):
                 database.insert_skill(skill)
 
             database.insert_evaluation({
-                'usage_level': evaluation['usage_level'],
-                'value_estimate': evaluation['value_estimate'],
-                'lobster_skill': evaluation['lobster_skill'],
-                'skill_score': evaluation['skill_score'],
-                'automation_score': evaluation['automation_score'],
-                'integration_score': evaluation['integration_score'],
-                'total_score': evaluation['total_score'],
-                'raw_data': json.dumps(evaluation['raw_data'], ensure_ascii=False)
+                'usage_level': evaluation.get('usage_level', 1),
+                'value_estimate': evaluation.get('value_estimate', '0元'),
+                'lobster_skill': evaluation.get('lobster_skill', ''),
+                'skill_score': evaluation.get('skill_score', 0),
+                'automation_score': evaluation.get('automation_score', 0),
+                'integration_score': evaluation.get('integration_score', 0),
+                'total_score': evaluation.get('total_score', 0),
+                'raw_data': json.dumps(evaluation.get('raw_data', {}), ensure_ascii=False)
             })
 
             return jsonify({
@@ -238,33 +251,34 @@ def get_evaluation():
 def get_evaluation_internal():
     """内部评估方法"""
     collector = DataCollector()
-    data = collector.collect_all()
+    data = collector.collect()
+    data_dict = data.to_dict()
 
     engine = EvaluationEngine()
-    evaluation = engine.generate_full_evaluation(data)
+    evaluation = engine.generate_full_evaluation(data_dict)
 
     database = get_db()
     database.insert_collection_record({
-        'total_sessions': data['total_sessions'],
-        'total_skills': data['total_skills'],
-        'total_agents': data['config'].get('agent_count', 1) if data['config'] else 1,
-        'total_tokens': data['total_tokens'],
-        'usage_days': data['usage_days'],
-        'error_count': data['errors']
+        'total_sessions': data_dict.get('total_sessions', 0),
+        'total_skills': data.total_skills,
+        'total_agents': data_dict.get('config', {}).get('agent_count', 1) if data_dict.get('config') else 1,
+        'total_tokens': data_dict.get('total_tokens', 0),
+        'usage_days': data.usage_days,
+        'error_count': data.log_stats.error_count
     })
 
-    for skill in data.get('skills', []):
+    for skill in data_dict.get('skills', []):
         database.insert_skill(skill)
 
     database.insert_evaluation({
-        'usage_level': evaluation['usage_level'],
-        'value_estimate': evaluation['value_estimate'],
-        'lobster_skill': evaluation['lobster_skill'],
-        'skill_score': evaluation['skill_score'],
-        'automation_score': evaluation['automation_score'],
-        'integration_score': evaluation['integration_score'],
-        'total_score': evaluation['total_score'],
-        'raw_data': json.dumps(evaluation['raw_data'], ensure_ascii=False)
+        'usage_level': evaluation.get('usage_level', 1),
+        'value_estimate': evaluation.get('value_estimate', '0元'),
+        'lobster_skill': evaluation.get('lobster_skill', ''),
+        'skill_score': evaluation.get('skill_score', 0),
+        'automation_score': evaluation.get('automation_score', 0),
+        'integration_score': evaluation.get('integration_score', 0),
+        'total_score': evaluation.get('total_score', 0),
+        'raw_data': json.dumps(evaluation.get('raw_data', {}), ensure_ascii=False)
     })
 
     return jsonify({
@@ -283,37 +297,38 @@ def refresh_data():
     """
     try:
         collector = DataCollector()
-        data = collector.collect_all()
+        data = collector.collect()
+        data_dict = data.to_dict()
 
         engine = EvaluationEngine()
-        evaluation = engine.generate_full_evaluation(data)
+        evaluation = engine.generate_full_evaluation(data_dict)
 
         database = get_db()
 
         # 插入采集记录
         database.insert_collection_record({
-            'total_sessions': data['total_sessions'],
-            'total_skills': data['total_skills'],
-            'total_agents': data['config'].get('agent_count', 1) if data['config'] else 1,
-            'total_tokens': data['total_tokens'],
-            'usage_days': data['usage_days'],
-            'error_count': data['errors']
+            'total_sessions': data_dict.get('total_sessions', 0),
+            'total_skills': data.total_skills,
+            'total_agents': data_dict.get('config', {}).get('agent_count', 1) if data_dict.get('config') else 1,
+            'total_tokens': data_dict.get('total_tokens', 0),
+            'usage_days': data.usage_days,
+            'error_count': data.log_stats.error_count
         })
 
         # 插入技能
-        for skill in data.get('skills', []):
+        for skill in data_dict.get('skills', []):
             database.insert_skill(skill)
 
         # 插入评估结果
         database.insert_evaluation({
-            'usage_level': evaluation['usage_level'],
-            'value_estimate': evaluation['value_estimate'],
-            'lobster_skill': evaluation['lobster_skill'],
-            'skill_score': evaluation['skill_score'],
-            'automation_score': evaluation['automation_score'],
-            'integration_score': evaluation['integration_score'],
-            'total_score': evaluation['total_score'],
-            'raw_data': json.dumps(evaluation['raw_data'], ensure_ascii=False)
+            'usage_level': evaluation.get('usage_level', 1),
+            'value_estimate': evaluation.get('value_estimate', '0元'),
+            'lobster_skill': evaluation.get('lobster_skill', ''),
+            'skill_score': evaluation.get('skill_score', 0),
+            'automation_score': evaluation.get('automation_score', 0),
+            'integration_score': evaluation.get('integration_score', 0),
+            'total_score': evaluation.get('total_score', 0),
+            'raw_data': json.dumps(evaluation.get('raw_data', {}), ensure_ascii=False)
         })
 
         return jsonify({
@@ -322,9 +337,11 @@ def refresh_data():
             'data': evaluation
         })
     except Exception as e:
+        import traceback
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': str(e),
+            'traceback': traceback.format_exc()
         }), 500
 
 
