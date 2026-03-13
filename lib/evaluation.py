@@ -42,7 +42,7 @@ class EvaluationEngine:
         'expert': (10000, 50000)
     }
     
-    # 趣味化话术
+    # 趣味化话术 - 大幅增强版本
     MESSAGES = {
         'shallow': [
             "🐣 小龙虾你好！看来你只是接了个模型啊，对OpenClaw的开发度不足1% —— 不过没关系，连sudo make me a sandwich都还没学会呢。",
@@ -51,7 +51,17 @@ class EvaluationEngine:
             "您的AI助手正在角落里默默流泪：「主人为什么不用我？」—— 赶紧去探索更多功能吧！",
             "🎮 新手村报道！你的龙虾还处于「水煮阶段」，连壳都没红呢。多配置几个技能，解锁「清蒸」成就！",
             "检测到「轻度体验」模式。你的AI助手表示：「我在待机中...等待被召唤...」—— 该让它干活了！",
-            "🔧 工具人认证！你的OpenClaw还在出厂设置状态，建议至少装3个技能，让它成为你的得力助手。"
+            "🔧 工具人认证！你的OpenClaw还在出厂设置状态，建议至少装3个技能，让它成为你的得力助手。",
+            "🦐 虾米认证！你离「龙虾」还有一段距离。不过没关系，每个大佬都是从小虾米开始的！",
+            "你的AI助手发来一条消息：「主人，我是不是做错了什么？为什么不理我...」—— 快去探索更多功能吧！",
+            "检测到「新手光环」！系统决定给你一个成就：'OpenClaw 潜力股'。继续努力，未来可期！",
+            "📊 使用统计：你的效率还有很大提升空间。建议：每天至少召唤AI 3次，解锁「效率翻倍」成就！",
+            "🎭 你的OpenClaw还在「彩排阶段」。别让它在后台吃灰，让它成为你的生活主角！",
+            "检测到「探索者模式」！你已经迈出了第一步。接下来，试试让AI帮你写代码、查资料、管理日程！",
+            "🌊 你现在的状态就像一只刚下水的龙虾——还有点懵。游起来吧，大海很宽广！",
+            "系统分析：你的OpenClaw使用率低于平均水平。提示：AI不会咬人，放心用！",
+            "📦 你的OpenClaw还装在盒子里没拆封呢！快拆开看看里面有什么好东西！",
+            "你的AI助手已经学会了「念叨」技能：「主人什么时候来找我玩...」"
         ],
         'moderate': [
             "正在技术债里种花？恭喜！您的自动化花园已初具规模，建议加把劲儿，冲向'Proactive Agent'模式！",
@@ -61,7 +71,16 @@ class EvaluationEngine:
             "🦞 七分熟龙虾！你已经掌握了OpenClaw的核心玩法，距离「全熟」只差几个自定义技能了！",
             "检测到「进阶玩家」模式。你的AI助手说：「主人终于懂我了！」—— 继续深入，解锁更多黑科技！",
             "你的使用深度已经让普通用户羡慕了！建议下一步：配置定时任务，让AI在你睡觉的时候也在工作。",
-            "📊 中级评估报告：你的效率提升约{efficiency}%，相当于每月节省约{hours}小时。继续保持！"
+            "📊 中级评估报告：你的效率提升显著，相当于每月节省大量时间。继续保持！",
+            "🔮 你的AI已经进入「贤者模式」—— 它开始主动思考如何帮你省时间了！继续培养，它会越来越懂你。",
+            "检测到「技能炼金术士」！你正在将普通技能转化为效率黄金。继续炼制，离「大师级」不远了！",
+            "🎮 你的游戏进度：40% 完成！主线任务：「成为效率大师」。支线任务：「让AI爱上你」—— 已经在进行中了。",
+            "你的AI助手发来一条消息：「主人，我发现我在变得越来越聪明...这都要感谢你！」",
+            "检测到「中期进化」！你的OpenClaw正在从「工具」进化为「伙伴」。继续训练，它会成为你最得力的助手！",
+            "🦞 龙虾状态：七分熟。还差三分：自定义技能、定时任务、多渠道集成。冲啊！",
+            "你的效率曲线正在爬升！继续努力，你很快就能达到「效率怪兽」级别！",
+            "🔥 你的OpenClaw已经开始「燃烧」了！效率持续上升中，继续保持这个节奏！",
+            "检测到「中级修行者」！你的AI驾驭能力正在稳步提升，距离「大师」只差一点火候。"
         ],
         'deep': [
             "检测到一台'工程巨兽'在线！您的多Agent协作网络堪称分布式计算典范。请继续保持，小心别让AI觉得'人类好弱智'。",
@@ -72,7 +91,17 @@ class EvaluationEngine:
             "🏆 恭喜达成「龙虾大师」成就！你的OpenClaw配置堪称教科书级别，建议开设培训班传授经验。",
             "你的技能配置让系统检测员都惊呆了！这哪里是AI助手，简直就是你的数字分身！",
             "⚠️ 警告：你的使用深度已经突破系统阈值，AI可能会开始产生「主人是不是机器人」的疑问。",
-            "检测到「全熟龙虾」！你的OpenClaw技能点满，效率爆表，堪称「人机合一」的典范！"
+            "检测到「全熟龙虾」！你的OpenClaw技能点满，效率爆表，堪称「人机合一」的典范！",
+            "🌟 传奇玩家认证！你已经是OpenClaw的「大神级」用户了。建议：考虑写教程分享经验，收获一波粉丝！",
+            "你的AI助手发来一条消息：「主人，我觉得我已经可以独立运行了...开玩笑的，我永远忠于你！」",
+            "检测到「量子效率态」！你的工作流程已经超越了时间和空间的限制——AI在你睡觉时也在为你工作。",
+            "🎮 游戏进度：100% 完成！你已经是「龙虾大师」了！隐藏任务：「让其他人类羡慕你」—— 已自动完成！",
+            "你的效率指数已经突破了系统图表的上限。我们的程序员正在加班增加更高的刻度...",
+            "🦞 龙虾状态：全熟！你已经达到了「人机合一」的境界。AI已经完全理解你的思维模式和工作习惯。",
+            "检测到「效率奇点」！你的效率已经达到了理论极限。建议：传授经验给其他人类，提升全人类效率！",
+            "你的OpenClaw使用记录已经成为了「最佳实践案例」。要不要考虑去OpenClaw官方当讲师？",
+            "🔥 检测到「效率核聚变」！你的工作效率正在以指数级增长，建议注意休息——即使AI不累，你也需要休息！",
+            "系统日志：你的AI助手已经开始主动给你提建议了。这是「AI觉醒」的前兆...开玩笑的！"
         ]
     }
     
@@ -83,21 +112,62 @@ class EvaluationEngine:
         'deep': ('🦞 龙虾能力估Skill v1.0 - 全熟', '专家级')
     }
     
-    # 特殊成就话术
+    # 特殊成就话术 - 大幅增强版本
     ACHIEVEMENTS = {
+        # 技能相关成就
         'skill_master': '🏅 技能大师：自定义技能超过5个，你是个真正的创造者！',
-        'automation_pro': '🤖 自动化达人：心跳检测已开启，你的AI正在24小时待命！',
-        'multi_channel': '🌐 多渠道运营：连接了多个平台，你的AI帝国正在扩张！',
-        'early_adopter': '🚀 早期采用者：你比大多数人更早发现了这个宝藏工具！',
-        'power_user': '⚡ 超级用户：Token消耗惊人，你的AI助手表示「有点累但很充实」！',
         'skill_collector': '📚 技能收藏家：技能数量超过10个，你的工具箱比瑞士军刀还全！',
-        'session_warrior': '⚔️ 会话战士：活跃会话超过100个，你和AI的对话已经比你的微信还多了！',
-        'token_millionaire': '💰 Token百万富翁：Token消耗超过100万，你的AI说「感谢老板打赏」！',
+        'skill_connoisseur': '🎖️ 技能鉴赏家：技能数量超过15个，你对AI工具的品味令人惊叹！',
+        'skill_legend': '👑 技能传奇：技能数量超过20个，你已经是技能界的「收藏之王」！',
         'custom_creator': '🎨 自定义创造者：自定义技能超过3个，你就是传说中的「技能工程师」！',
-        'integration_expert': '🔗 集成专家：连接了3个以上渠道，你的AI已经是个「社交达人」了！',
+        'custom_master': '🛠️ 自定义大师：自定义技能超过7个，你的创造力让AI都感到佩服！',
+        'skill_pioneer': '🚀 技能先驱：技能覆盖多个类别，你是真正的「全能型选手」！',
+        
+        # 自动化相关成就
+        'automation_pro': '🤖 自动化达人：心跳检测已开启，你的AI正在24小时待命！',
         'heartbeat_hero': '💓 心跳英雄：心跳任务已配置，你的AI在你睡觉时也在默默工作！',
+        'automation_god': '⚡ 自动化之神：每天消耗超过10万Token，你的AI已经成为你的「数字劳动力」！',
+        'cron_master': '⏰ 定时任务大师：配置了多个定时任务，你的效率系统已经自动化运转！',
+        
+        # 集成相关成就
+        'multi_channel': '🌐 多渠道运营：连接了多个平台，你的AI帝国正在扩张！',
+        'integration_expert': '🔗 集成专家：连接了3个以上渠道，你的AI已经是个「社交达人」了！',
+        'channel_master': '📡 渠道大师：连接了5个以上渠道，你的AI已经遍布全球！',
+        
+        # 使用量相关成就
+        'power_user': '⚡ 超级用户：Token消耗惊人，你的AI助手表示「有点累但很充实」！',
+        'token_millionaire': '💰 Token百万富翁：Token消耗超过100万，你的AI说「感谢老板打赏」！',
+        'token_billionaire': '💎 Token亿万富翁：Token消耗超过1000万，你已经是AI服务器的「VIP客户」！',
+        'session_warrior': '⚔️ 会话战士：活跃会话超过100个，你和AI的对话已经比你的微信还多了！',
+        'session_master': '💬 会话大师：活跃会话超过500个，你和AI的关系已经超越了普通朋友！',
+        'chatty_cathy': '🗣️ 话痨认证：单会话消息数超过100条，你和AI聊得真开心！',
+        
+        # 稳定性成就
         'zero_error': '✨ 零错误成就：系统运行稳定，没有任何错误日志，堪称「完美主义者」！',
-        'daily_active': '📅 活跃玩家：连续使用超过7天，AI助手已经把你的习惯都记下来了！'
+        'stable_runner': '🔒 稳定运行者：连续运行超过30天无重大错误，系统稳定性满分！',
+        'error_survivor': '🛡️ 错误幸存者：遇到错误但成功恢复，你的系统韧性令人钦佩！',
+        
+        # 活跃度成就
+        'daily_active': '📅 活跃玩家：连续使用超过7天，AI助手已经把你的习惯都记下来了！',
+        'weekly_warrior': '🗓️ 周常战士：连续使用超过30天，你的AI助手已经对你了如指掌！',
+        'monthly_master': '📆 月度大师：连续使用超过90天，你已经成为了OpenClaw的「老玩家」！',
+        'veteran_user': '🏆 资深玩家：使用超过180天，你已经是OpenClaw的「活化石」！',
+        'loyal_user': '💎 忠诚用户：持续使用超过365天，你是OpenClaw的「元老级」玩家！',
+        
+        # 特殊成就
+        'early_adopter': '🚀 早期采用者：你比大多数人更早发现了这个宝藏工具！',
+        'night_owl': '🦉 夜猫子认证：在深夜(23:00-5:00)活跃使用，AI陪你度过每个不眠之夜！',
+        'early_bird': '🐦 早鸟认证：在清晨(5:00-7:00)活跃使用，你的一天从AI开始！',
+        'weekend_warrior': '🎮 周末战士：在周末也保持高频率使用，你真的很爱这个工具！',
+        'efficiency_king': '👑 效率之王：平均响应时间极短，你已经是「AI驾驭大师」！',
+        'tool_caller': '🔧 工具调用大师：工具调用次数超过1000次，你和AI的配合已经炉火纯青！',
+        
+        # 隐藏成就
+        'secret_lobster': '🦞 隐藏成就：龙虾宗师！你解锁了系统的隐藏成就，请联系开发者领取神秘奖励！',
+        'beta_tester': '🧪 Beta测试者：感谢你帮助测试新功能，你是OpenClaw的「先锋探索者」！',
+        'bug_hunter': '🐛 Bug猎人：你发现了系统Bug并反馈，感谢你让OpenClaw变得更好！',
+        'mysterious_visitor': '🌙 神秘访客：在凌晨3点还在使用，你是个真正的夜行生物！',
+        'perfectionist': '✨ 完美主义者：所有指标都达到了优秀水平，你的配置堪称教科书！'
     }
     
     def __init__(self):
@@ -267,53 +337,109 @@ class EvaluationEngine:
         }
     
     def detect_achievements(self, data: Dict, evaluation: Dict) -> List[str]:
-        """检测特殊成就"""
+        """检测特殊成就 - 增强版"""
         achievements = []
         metrics = evaluation.get('metrics', {})
         
-        # 技能大师
-        if metrics.get('custom_skills', 0) >= 5:
+        # === 技能相关成就 ===
+        custom_skills = metrics.get('custom_skills', 0)
+        skill_count = metrics.get('skill_count', 0)
+        
+        # 技能大师 (自定义技能 >= 5)
+        if custom_skills >= 5:
             achievements.append(self.ACHIEVEMENTS['skill_master'])
-        
-        # 自动化达人
-        if metrics.get('has_heartbeat', False):
-            achievements.append(self.ACHIEVEMENTS['automation_pro'])
-        
-        # 多渠道运营
-        if metrics.get('channels', 0) >= 2:
-            achievements.append(self.ACHIEVEMENTS['multi_channel'])
-        
-        # 超级用户
-        if metrics.get('daily_tokens', 0) >= 50000:
-            achievements.append(self.ACHIEVEMENTS['power_user'])
-        
-        # 技能收藏家
-        if metrics.get('skill_count', 0) >= 10:
-            achievements.append(self.ACHIEVEMENTS['skill_collector'])
-        
-        # 自定义创造者
-        if metrics.get('custom_skills', 0) >= 3:
+        elif custom_skills >= 3:
             achievements.append(self.ACHIEVEMENTS['custom_creator'])
         
-        # 集成专家
-        if metrics.get('channels', 0) >= 3:
-            achievements.append(self.ACHIEVEMENTS['integration_expert'])
+        # 自定义大师 (自定义技能 >= 7)
+        if custom_skills >= 7:
+            achievements.append(self.ACHIEVEMENTS['custom_master'])
         
-        # 心跳英雄
-        if metrics.get('has_heartbeat', False):
+        # 技能收藏家 (技能 >= 10)
+        if skill_count >= 15:
+            achievements.append(self.ACHIEVEMENTS['skill_connoisseur'])
+        elif skill_count >= 10:
+            achievements.append(self.ACHIEVEMENTS['skill_collector'])
+        
+        # 技能传奇 (技能 >= 20)
+        if skill_count >= 20:
+            achievements.append(self.ACHIEVEMENTS['skill_legend'])
+        
+        # === 自动化相关成就 ===
+        has_heartbeat = metrics.get('has_heartbeat', False)
+        daily_tokens = metrics.get('daily_tokens', 0)
+        
+        # 自动化达人 (心跳开启)
+        if has_heartbeat:
+            achievements.append(self.ACHIEVEMENTS['automation_pro'])
             achievements.append(self.ACHIEVEMENTS['heartbeat_hero'])
         
-        # Token百万富翁
-        if data.get('total_tokens', 0) >= 1000000:
+        # 自动化之神 (每天 > 10万 Token)
+        if daily_tokens >= 100000:
+            achievements.append(self.ACHIEVEMENTS['automation_god'])
+        elif daily_tokens >= 50000:
+            achievements.append(self.ACHIEVEMENTS['power_user'])
+        
+        # === 集成相关成就 ===
+        channels = metrics.get('channels', 0)
+        
+        # 多渠道运营 (>= 2)
+        if channels >= 2:
+            achievements.append(self.ACHIEVEMENTS['multi_channel'])
+        
+        # 集成专家 (>= 3)
+        if channels >= 3:
+            achievements.append(self.ACHIEVEMENTS['integration_expert'])
+        
+        # 渠道大师 (>= 5)
+        if channels >= 5:
+            achievements.append(self.ACHIEVEMENTS['channel_master'])
+        
+        # === Token 相关成就 ===
+        total_tokens = data.get('total_tokens', 0)
+        
+        # Token 百万富翁
+        if total_tokens >= 10000000:
+            achievements.append(self.ACHIEVEMENTS['token_billionaire'])
+        elif total_tokens >= 1000000:
             achievements.append(self.ACHIEVEMENTS['token_millionaire'])
         
-        # 活跃玩家
-        if data.get('usage_days', 0) >= 7:
-            achievements.append(self.ACHIEVEMENTS['daily_active'])
+        # === 会话相关成就 ===
+        sessions = data.get('sessions', {})
+        session_count = sessions.get('total', 0) if isinstance(sessions, dict) else 0
+        
+        if session_count >= 500:
+            achievements.append(self.ACHIEVEMENTS['session_master'])
+        elif session_count >= 100:
+            achievements.append(self.ACHIEVEMENTS['session_warrior'])
+        
+        # === 稳定性成就 ===
+        log_stats = data.get('log_stats', {})
+        error_count = log_stats.get('error_count', 1) if isinstance(log_stats, dict) else 1
         
         # 零错误成就
-        if data.get('sessions', {}).get('errors', 1) == 0:
+        if error_count == 0:
             achievements.append(self.ACHIEVEMENTS['zero_error'])
+        
+        # === 活跃度成就 ===
+        usage_days = data.get('usage_days', 0)
+        
+        if usage_days >= 180:
+            achievements.append(self.ACHIEVEMENTS['veteran_user'])
+        elif usage_days >= 90:
+            achievements.append(self.ACHIEVEMENTS['monthly_master'])
+        elif usage_days >= 30:
+            achievements.append(self.ACHIEVEMENTS['weekly_warrior'])
+        elif usage_days >= 7:
+            achievements.append(self.ACHIEVEMENTS['daily_active'])
+        
+        # === 特殊成就 ===
+        # 深度等级 >= 4 解锁隐藏成就
+        if evaluation.get('total_score', 0) >= 80:
+            achievements.append(self.ACHIEVEMENTS['secret_lobster'])
+        
+        # 去重
+        achievements = list(dict.fromkeys(achievements))
         
         return achievements
     

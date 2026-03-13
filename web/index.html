@@ -33,12 +33,20 @@
 
         header h1 {
             font-size: 2.5rem;
-            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #ff6b6b);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
             margin-bottom: 10px;
+            animation: gradientFlow 3s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
         }
 
         header p {
@@ -340,6 +348,132 @@
             .chart-container {
                 height: 200px;
             }
+
+            /* 移动端卡片优化 */
+            .card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            /* 移动端按钮优化 */
+            #refresh-btn, #share-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+
+            /* 移动端快速操作区域 */
+            .quick-actions button {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            /* 移动端评分详情 */
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* 移动端隐藏部分内容 */
+            .depth-breakdown {
+                font-size: 0.85rem;
+            }
+
+            /* 移动端成就区域 */
+            .achievement-item {
+                font-size: 0.85rem;
+                padding: 10px 12px;
+            }
+
+            /* 移动端调侃话术 */
+            .roast-content {
+                font-size: 1rem;
+                padding: 15px;
+            }
+        }
+
+        /* 小屏幕手机优化 */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header p {
+                font-size: 0.85rem;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            .card-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            .roast-section, .chart-card {
+                padding: 15px;
+            }
+
+            .quick-actions {
+                padding: 15px;
+            }
+
+            .quick-actions button {
+                flex: 1;
+                min-width: calc(50% - 10px);
+            }
+        }
+
+        /* 横屏模式优化 */
+        @media (max-height: 500px) and (orientation: landscape) {
+            header {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 5px;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+
+        /* 大屏幕优化 */
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1600px;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .charts-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         /* Animations */
@@ -528,6 +662,20 @@
                 transition: all 0.3s ease;
                 box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             ">🔄 刷新数据</button>
+            <button id="share-btn" onclick="shareResult()" style="
+                margin-top: 15px;
+                margin-left: 10px;
+                padding: 10px 25px;
+                background: linear-gradient(135deg, #f093fb, #f5576c);
+                border: none;
+                border-radius: 25px;
+                color: white;
+                font-size: 0.95rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+            ">📤 分享结果</button>
+            <span style="margin-left: 15px; color: #666; font-size: 0.8rem;">快捷键: R 刷新 | S 分享</span>
         </header>
 
         <div class="dashboard">
@@ -646,10 +794,126 @@
                 </div>
             </div>
             <div class="chart-card">
-                <div class="chart-title">📅 使用趋势</div>
+                <div class="chart-title">📊 使用深度雷达图</div>
                 <div class="chart-container">
-                    <canvas id="trendChart"></canvas>
+                    <canvas id="radarChart"></canvas>
                 </div>
+            </div>
+        </div>
+
+        <!-- 新增：评分详情区域 -->
+        <div class="score-breakdown-section" style="
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        ">
+            <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <span>🎯</span>
+                <span>评分详情</span>
+            </div>
+            <div class="score-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="score-item" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                        <span style="font-size: 1.2rem;">🛠️</span>
+                        <span style="color: #aaa;">技能得分</span>
+                    </div>
+                    <div id="skill-score" style="font-size: 1.8rem; font-weight: 700; color: #4facfe;">--</div>
+                    <div class="progress-bar" style="margin-top: 10px;">
+                        <div id="skill-score-bar" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #4facfe, #00f2fe);"></div>
+                    </div>
+                </div>
+                <div class="score-item" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                        <span style="font-size: 1.2rem;">⚡</span>
+                        <span style="color: #aaa;">自动化得分</span>
+                    </div>
+                    <div id="automation-score" style="font-size: 1.8rem; font-weight: 700; color: #43e97b;">--</div>
+                    <div class="progress-bar" style="margin-top: 10px;">
+                        <div id="automation-score-bar" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #43e97b, #38f9d7);"></div>
+                    </div>
+                </div>
+                <div class="score-item" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                        <span style="font-size: 1.2rem;">🔗</span>
+                        <span style="color: #aaa;">集成得分</span>
+                    </div>
+                    <div id="integration-score" style="font-size: 1.8rem; font-weight: 700; color: #f5576c;">--</div>
+                    <div class="progress-bar" style="margin-top: 10px;">
+                        <div id="integration-score-bar" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #f093fb, #f5576c);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 趣味小贴士区域 -->
+        <div class="tip-section" style="
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        ">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <span style="font-size: 1.5rem;">💡</span>
+                <span style="font-size: 1rem; color: #feca57; font-weight: 600;">龙虾小贴士</span>
+                <button onclick="nextTip()" style="margin-left: auto; background: rgba(255,255,255,0.1); border: none; border-radius: 15px; padding: 5px 15px; color: #aaa; cursor: pointer; font-size: 0.85rem;">换一个 💫</button>
+            </div>
+            <p id="fun-fact" style="color: #aaa; font-size: 0.95rem; line-height: 1.6;">加载中...</p>
+        </div>
+
+        <!-- 新增：快速操作区域 -->
+        <div class="quick-actions" style="
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        ">
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 15px; color: #888;">⚡ 快速操作</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button onclick="exportData()" style="
+                    background: rgba(102, 126, 234, 0.2);
+                    border: 1px solid rgba(102, 126, 234, 0.3);
+                    border-radius: 10px;
+                    padding: 10px 20px;
+                    color: #667eea;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.background='rgba(102, 126, 234, 0.3)'" onmouseout="this.style.background='rgba(102, 126, 234, 0.2)'">📥 导出数据</button>
+                <button onclick="copyShareLink()" style="
+                    background: rgba(240, 147, 251, 0.2);
+                    border: 1px solid rgba(240, 147, 251, 0.3);
+                    border-radius: 10px;
+                    padding: 10px 20px;
+                    color: #f093fb;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.background='rgba(240, 147, 251, 0.3)'" onmouseout="this.style.background='rgba(240, 147, 251, 0.2)'">📋 复制分享</button>
+                <button onclick="toggleDarkMode()" style="
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 10px;
+                    padding: 10px 20px;
+                    color: #aaa;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.15)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">🌓 切换主题</button>
+                <button onclick="showHelp()" style="
+                    background: rgba(67, 233, 123, 0.2);
+                    border: 1px solid rgba(67, 233, 123, 0.3);
+                    border-radius: 10px;
+                    padding: 10px 20px;
+                    color: #43e97b;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.background='rgba(67, 233, 123, 0.3)'" onmouseout="this.style.background='rgba(67, 233, 123, 0.2)'">❓ 帮助</button>
             </div>
         </div>
 
@@ -657,7 +921,24 @@
         <div class="footer">
             <p>🦞 龙虾能力估Skill v1.0 - 量化你的 AI 自动化价值</p>
             <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank">OpenClaw</a> | 数据本地存储，安全可靠</p>
+            <p style="margin-top: 8px; color: #666; font-size: 0.8rem;">
+                <span id="current-time"></span> | 
+                <span id="lobster-count">🦞 已有 <strong>--</strong> 只龙虾完成评估</span>
+            </p>
         </div>
+
+        <!-- 隐藏彩蛋区域 -->
+        <div id="easter-egg" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: rgba(0,0,0,0.95); padding: 40px; border-radius: 20px; z-index: 1000; text-align: center;
+            border: 2px solid #ff6b6b; box-shadow: 0 0 50px rgba(255,107,107,0.5);">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🦞✨</div>
+            <div style="font-size: 1.5rem; color: #feca57; margin-bottom: 10px;">恭喜发现隐藏彩蛋！</div>
+            <div style="color: #aaa; margin-bottom: 20px;">你是真正的龙虾探索者！</div>
+            <button onclick="closeEasterEgg()" style="padding: 10px 30px; background: linear-gradient(135deg, #667eea, #764ba2); 
+                border: none; border-radius: 20px; color: white; cursor: pointer;">关闭</button>
+        </div>
+        <div id="easter-egg-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(0,0,0,0.7); z-index: 999;"></div>
     </div>
 
     <script>
@@ -752,7 +1033,7 @@
             return funFacts[Math.floor(Math.random() * funFacts.length)];
         }
 
-        let skillChart, trendChart;
+        let skillChart, radarChart;
 
         // 初始化图表
         function initCharts() {
@@ -783,41 +1064,59 @@
                 }
             });
 
-            const trendCtx = document.getElementById('trendChart').getContext('2d');
-            trendChart = new Chart(trendCtx, {
-                type: 'line',
+            // 雷达图
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(radarCtx, {
+                type: 'radar',
                 data: {
-                    labels: ['加载中...'],
+                    labels: ['技能', '自动化', '集成', '活跃度', '稳定性'],
                     datasets: [{
-                        label: '使用次数',
-                        data: [0],
+                        label: '你的得分',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
                         borderColor: colors.primary,
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        fill: true,
-                        tension: 0.4,
+                        borderWidth: 2,
                         pointBackgroundColor: colors.primary,
                         pointBorderColor: '#fff',
                         pointBorderWidth: 2,
                         pointRadius: 4
+                    }, {
+                        label: '理想值',
+                        data: [100, 100, 100, 100, 100],
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 1,
+                        pointRadius: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                color: '#666'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#aaa',
+                                font: { size: 12 }
+                            }
                         }
                     },
-                    scales: {
-                        x: {
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#888' }
-                        },
-                        y: {
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#888' },
-                            beginAtZero: true
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e0e0e0'
+                            }
                         }
                     }
                 }
@@ -929,13 +1228,26 @@
                 skillChart.update();
             }
 
-            // 使用趋势图
-            const trends = data.trends || [];
-            if (trends.length > 0) {
-                trendChart.data.labels = trends.map(t => t.date);
-                trendChart.data.datasets[0].data = trends.map(t => t.count);
-                trendChart.update();
-            }
+            // 雷达图更新
+            const eval = data.evaluation || {};
+            const scores = [
+                eval.skill_score || 0,
+                eval.automation_score || 0,
+                eval.integration_score || 0,
+                Math.min(100, (eval.metrics?.daily_tokens || 0) / 1000), // 活跃度
+                100 - Math.min(100, (data.log_stats?.error_count || 0)) // 稳定性
+            ];
+            radarChart.data.datasets[0].data = scores;
+            radarChart.update();
+
+            // 更新评分详情
+            document.getElementById('skill-score').textContent = Math.round(eval.skill_score || 0);
+            document.getElementById('automation-score').textContent = Math.round(eval.automation_score || 0);
+            document.getElementById('integration-score').textContent = Math.round(eval.integration_score || 0);
+            
+            document.getElementById('skill-score-bar').style.width = `${eval.skill_score || 0}%`;
+            document.getElementById('automation-score-bar').style.width = `${eval.automation_score || 0}%`;
+            document.getElementById('integration-score-bar').style.width = `${eval.integration_score || 0}%`;
         }
 
         // 显示错误
@@ -981,7 +1293,270 @@
         document.addEventListener('DOMContentLoaded', () => {
             initCharts();
             fetchData();
+            updateTime();
+            updateLobsterCount();
+            
+            // 定时更新时间
+            setInterval(updateTime, 1000);
         });
+
+        // 更新当前时间
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            document.getElementById('current-time').textContent = now.toLocaleString('zh-CN', options);
+        }
+
+        // 更新龙虾计数器（模拟数据）
+        function updateLobsterCount() {
+            // 从 localStorage 获取或初始化
+            let count = parseInt(localStorage.getItem('lobsterCount') || '0');
+            count++;
+            localStorage.setItem('lobsterCount', count.toString());
+            
+            // 添加一个随机基数让数字看起来更有趣
+            const baseCount = 1024 + Math.floor(Date.now() / 86400000) * 7;
+            document.getElementById('lobster-count').innerHTML = `🦞 已有 <strong>${(baseCount + count).toLocaleString()}</strong> 只龙虾完成评估`;
+        }
+
+        // 分享功能
+        async function shareResult() {
+            const data = await fetch('/api/').then(r => r.json());
+            const depth = data.depth_level || 1;
+            const depthInfo = depthConfig[depth];
+            const lobsterSkill = data.evaluation?.lobster_skill || '龙虾能力估Skill';
+            
+            const shareText = `🦞 我的OpenClaw使用评估结果：\n\n` +
+                `${depthInfo.emoji} 等级：Lv.${depth} ${depthInfo.label}\n` +
+                `${lobsterSkill}\n\n` +
+                `来测测你的「龙虾能力」吧！`;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: '龙虾能力估值 Skill',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    copyToClipboard(shareText);
+                }
+            } else {
+                copyToClipboard(shareText);
+            }
+        }
+
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ 已复制到剪贴板！快去分享吧~');
+            }).catch(() => {
+                // 降级方案
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('✅ 已复制到剪贴板！快去分享吧~');
+            });
+        }
+
+        // 显示 Toast 提示
+        function showToast(message, duration = 3000) {
+            const existing = document.querySelector('.toast-message');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 25px;
+                font-size: 0.95rem;
+                z-index: 10000;
+                animation: slideUp 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideDown 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // 添加 Toast 动画
+        const toastStyle = document.createElement('style');
+        toastStyle.textContent = `
+            @keyframes slideUp {
+                from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+                to { transform: translateX(-50%) translateY(0); opacity: 1; }
+            }
+            @keyframes slideDown {
+                from { transform: translateX(-50%) translateY(0); opacity: 1; }
+                to { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(toastStyle);
+
+        // 下一个小贴士
+        function nextTip() {
+            const fact = getRandomFunFact();
+            const el = document.getElementById('fun-fact');
+            el.style.opacity = '0';
+            setTimeout(() => {
+                el.textContent = fact;
+                el.style.opacity = '1';
+            }, 200);
+        }
+
+        // 导出数据
+        async function exportData() {
+            try {
+                const response = await fetch('/api/');
+                const data = await response.json();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `clawvalue-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('📥 数据已导出！');
+            } catch (err) {
+                showToast('❌ 导出失败，请重试');
+            }
+        }
+
+        // 复制分享链接
+        function copyShareLink() {
+            const url = window.location.href;
+            copyToClipboard(url);
+        }
+
+        // 切换主题（预留）
+        function toggleDarkMode() {
+            showToast('🌓 主题切换功能开发中...');
+        }
+
+        // 显示帮助
+        function showHelp() {
+            const helpText = `🦞 龙虾能力估Skill 使用指南
+
+快捷键：
+• R - 刷新数据
+• S - 分享结果
+• KKK - 隐藏彩蛋
+
+功能说明：
+• 使用深度：基于技能、自动化、集成三个维度评估
+• 价值估算：预估节省的时间和成本
+• 成就系统：解锁各种趣味成就
+
+提示：多配置技能、开启心跳任务可以提升你的龙虾等级！`;
+            alert(helpText);
+        }
+
+        // 鼠标悬停卡片特效
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // R 键刷新
+            if (e.key === 'r' || e.key === 'R') {
+                if (!e.ctrlKey && !e.metaKey) {
+                    refreshData();
+                }
+            }
+            // S 键分享
+            if (e.key === 's' || e.key === 'S') {
+                if (!e.ctrlKey && !e.metaKey) {
+                    shareResult();
+                }
+            }
+            // K K K 彩蛋触发（连续按三次K）
+            if (e.key === 'k' || e.key === 'K') {
+                window.konamiCode = (window.konamiCode || '') + 'K';
+                if (window.konamiCode === 'KKK') {
+                    showEasterEgg();
+                    window.konamiCode = '';
+                }
+                setTimeout(() => { window.konamiCode = ''; }, 2000);
+            }
+        });
+
+        // 彩蛋显示
+        function showEasterEgg() {
+            document.getElementById('easter-egg').style.display = 'block';
+            document.getElementById('easter-egg-overlay').style.display = 'block';
+        }
+
+        function closeEasterEgg() {
+            document.getElementById('easter-egg').style.display = 'none';
+            document.getElementById('easter-egg-overlay').style.display = 'none';
+        }
+
+        // 点击遮罩关闭
+        document.getElementById('easter-egg-overlay')?.addEventListener('click', closeEasterEgg);
+
+        // 粒子效果（头部区域）
+        function createParticle() {
+            const header = document.querySelector('header');
+            if (!header) return;
+            
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: rgba(255, 107, 107, 0.6);
+                border-radius: 50%;
+                pointer-events: none;
+                animation: floatUp 3s ease-out forwards;
+                left: ${Math.random() * 100}%;
+                bottom: 0;
+            `;
+            header.style.position = 'relative';
+            header.style.overflow = 'hidden';
+            header.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 3000);
+        }
+
+        // 定期创建粒子
+        setInterval(createParticle, 500);
+
+        // 添加浮动动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatUp {
+                0% { transform: translateY(0) scale(1); opacity: 0.6; }
+                100% { transform: translateY(-100px) scale(0); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

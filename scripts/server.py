@@ -22,6 +22,8 @@ import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, send_from_directory, request
+from functools import wraps
+import time
 
 # 添加 lib 目录到路径
 lib_path = os.path.join(os.path.dirname(__file__), '..', 'lib')
@@ -35,6 +37,53 @@ from models import ClawValueDB
 
 # 全局数据库实例
 _db_instance = None
+
+# 简单的内存缓存
+_cache = {}
+_CACHE_TTL = 60  # 缓存有效期（秒）
+
+def get_cache(key):
+    """获取缓存"""
+    if key in _cache:
+        data, timestamp = _cache[key]
+        if time.time() - timestamp < _CACHE_TTL:
+            return data
+        else:
+            del _cache[key]
+    return None
+
+def set_cache(key, data):
+    """设置缓存"""
+    _cache[key] = (data, time.time())
+
+def clear_cache():
+    """清空缓存"""
+    global _cache
+    _cache = {}
+
+def cached(timeout=_CACHE_TTL):
+    """缓存装饰器"""
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            cache_key = f.__name__
+            cached_data = get_cache(cache_key)
+            if cached_data is not None:
+                return jsonify(cached_data)
+            result = f(*args, **kwargs)
+            # 只缓存成功的响应
+            if isinstance(result, tuple):
+                data, status = result
+                if status == 200:
+                    set_cache(cache_key, data.get_json() if hasattr(data, 'get_json') else data)
+            else:
+                try:
+                    set_cache(cache_key, result.get_json() if hasattr(result, 'get_json') else result)
+                except:
+                    pass
+            return result
+        return decorated_function
+    return decorator
 
 def get_db():
     """获取数据库实例（单例模式）"""
@@ -55,6 +104,7 @@ def index():
 
 
 @app.route('/api/stats', methods=['GET'])
+@cached()
 def get_stats():
     """
     获取统计数据
@@ -81,6 +131,7 @@ def get_stats():
 
 
 @app.route('/api/skills', methods=['GET'])
+@cached()
 def get_skills():
     """
     获取技能列表
@@ -120,6 +171,7 @@ def get_skills():
 
 
 @app.route('/api/sessions', methods=['GET'])
+@cached()
 def get_sessions():
     """
     获取会话历史
@@ -296,6 +348,9 @@ def refresh_data():
     手动触发数据重新采集
     """
     try:
+        # 清除缓存
+        clear_cache()
+        
         collector = DataCollector()
         data = collector.collect()
         data_dict = data.to_dict()
@@ -383,7 +438,121 @@ def get_history():
         }), 500
 
 
+@app.route('/api/compare', methods=['GET'])
+def compare_history():
+    """
+    历史对比接口
+
+    比较当前数据与历史数据的变化
+
+    Query params:
+        - days: 对比天数（默认7天）
+
+    Returns:
+        - current: 当前数据
+        - previous: 历史数据
+        - changes: 变化详情
+    """
+    try:
+        days = request.args.get('days', 7, type=int)
+        database = get_db()
+
+        # 获取当前评估
+        current_list = database.get_evaluation_history(limit=1)
+        current = current_list[0] if current_list else {}
+
+        # 获取历史评估
+        history = database.get_evaluation_history(limit=days + 1)
+        previous = history[-1] if len(history) > 1 else {}
+
+        # 计算变化
+        changes = {}
+        if current and previous:
+            current_score = current.get('total_score', 0)
+            previous_score = previous.get('total_score', 0)
+            changes['total_score'] = {
+                'current': current_score,
+                'previous': previous_score,
+                'change': current_score - previous_score,
+                'percent': round((current_score - previous_score) / max(previous_score, 1) * 100, 1)
+            }
+
+            # 解析 raw_data 获取更多指标
+            try:
+                current_raw = json.loads(current.get('raw_data', '{}')) if current.get('raw_data') else {}
+                previous_raw = json.loads(previous.get('raw_data', '{}')) if previous.get('raw_data') else {}
+
+                changes['skill_count'] = {
+                    'current': current_raw.get('total_skills', 0),
+                    'previous': previous_raw.get('total_skills', 0),
+                    'change': current_raw.get('total_skills', 0) - previous_raw.get('total_skills', 0)
+                }
+
+                changes['custom_skills'] = {
+                    'current': current_raw.get('custom_skills', 0),
+                    'previous': previous_raw.get('custom_skills', 0),
+                    'change': current_raw.get('custom_skills', 0) - previous_raw.get('custom_skills', 0)
+                }
+            except:
+                pass
+
+        return jsonify({
+            'success': True,
+            'data': {
+                'current': current,
+                'previous': previous,
+                'changes': changes,
+                'days': days
+            }
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/export', methods=['GET'])
+def export_all_data():
+    """
+    导出所有数据
+
+    返回完整的评估数据，供用户保存或分享
+    """
+    try:
+        collector = DataCollector()
+        data = collector.collect()
+        data_dict = data.to_dict()
+
+        engine = EvaluationEngine()
+        evaluation = engine.generate_full_evaluation(data_dict)
+
+        export_data = {
+            'exported_at': datetime.now().isoformat(),
+            'version': '1.0',
+            'evaluation': evaluation,
+            'summary': {
+                'depth_level': evaluation.get('usage_level', '未知'),
+                'total_score': evaluation.get('total_score', 0),
+                'skill_count': data.total_skills,
+                'custom_skills': data.custom_skills,
+                'achievements_count': len(evaluation.get('achievements', []))
+            }
+        }
+
+        return jsonify({
+            'success': True,
+            'data': export_data
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 @app.route('/api/health', methods=['GET'])
+@cached(30)  # 健康检查缓存30秒
 def health_check():
     """健康检查"""
     return jsonify({
@@ -395,6 +564,7 @@ def health_check():
 
 @app.route('/api/', methods=['GET'])
 @app.route('/api/dashboard', methods=['GET'])
+@cached(30)  # 仪表盘数据缓存30秒
 def get_dashboard():
     """
     获取仪表盘完整数据（前端主入口）
@@ -477,25 +647,40 @@ def get_dashboard():
         # 成就列表
         achievements = evaluation.get('achievements', [])
 
+        response_data = {
+            'depth_level': depth_level,
+            'depth_breakdown': depth_breakdown,
+            'value_estimation': value_estimation,
+            'skills': skills,
+            'sessions': sessions,
+            'trends': trends,
+            'evaluation': evaluation,
+            'achievements': achievements,
+            'log_stats': {
+                'total_entries': data.log_stats.total_entries,
+                'info_count': data.log_stats.info_count,
+                'warn_count': data.log_stats.warn_count,
+                'error_count': data.log_stats.error_count,
+                'tool_calls': data.log_stats.tool_calls,
+                'model_calls': data.log_stats.model_calls
+            }
+        }
+
         return jsonify({
             'success': True,
-            'data': {
-                'depth_level': depth_level,
-                'depth_breakdown': depth_breakdown,
-                'value_estimation': value_estimation,
-                'skills': skills,
-                'sessions': sessions,
-                'trends': trends,
-                'evaluation': evaluation,
-                'achievements': achievements
-            }
+            'data': response_data
         })
     except Exception as e:
         import traceback
+        error_msg = str(e)
+        traceback_str = traceback.format_exc()
+        
+        # 生产环境不应该暴露详细错误
         return jsonify({
             'success': False,
-            'error': str(e),
-            'traceback': traceback.format_exc()
+            'error': '服务器内部错误，请稍后重试',
+            'error_detail': error_msg if os.environ.get('DEBUG') else None,
+            'traceback': traceback_str if os.environ.get('DEBUG') else None
         }), 500
 
 
