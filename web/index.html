@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v9.0</title>
+    <title>🦞 龙虾能力估值 Skill v10.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -2167,6 +2167,641 @@
         [data-theme="nordic-forest"] .btn-primary {
             background: linear-gradient(135deg, #4caf50, #8bc34a);
             color: white;
+        }
+        
+        /* ============================================
+           v10.0 新增爆款主题 - 2026-03-14
+           ============================================ */
+        
+        /* 主题 32: 👑 金色传说 - 奢华金色风 */
+        [data-theme="golden-legend"] {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-gradient: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+            --bg-card: rgba(26, 26, 46, 0.9);
+            --bg-card-hover: rgba(40, 40, 60, 0.95);
+            
+            --text-primary: #ffd700;
+            --text-secondary: #d4af37;
+            --text-muted: #b8860b;
+            
+            --accent-primary: #ffd700;
+            --accent-secondary: #daa520;
+            --accent-highlight: #fff8dc;
+            --accent-gradient: linear-gradient(90deg, #ffd700, #daa520, #b8860b, #ffd700);
+            
+            --color-success: #32cd32;
+            --color-warning: #ffd700;
+            --color-error: #ff6347;
+            --color-info: #00bfff;
+            
+            --border-color: rgba(255, 215, 0, 0.2);
+            --border-radius: 24px;
+            --border-radius-sm: 16px;
+            
+            --shadow-card: 0 8px 32px rgba(255, 215, 0, 0.15);
+            --shadow-glow: 0 0 30px rgba(255, 215, 0, 0.3);
+            
+            --font-display: 'Georgia', serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        [data-theme="golden-legend"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(218, 165, 32, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(184, 134, 11, 0.05) 0%, transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="golden-legend"] .card {
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+        
+        [data-theme="golden-legend"] .card:hover {
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2), 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        [data-theme="golden-legend"] .stat-value {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        [data-theme="golden-legend"] .btn-primary {
+            background: linear-gradient(135deg, #ffd700, #daa520);
+            color: #0a0a0f;
+            font-weight: 700;
+        }
+        
+        [data-theme="golden-legend"] header h1 {
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* 主题 33: 🎧 电音风暴 - EDM 音乐风 */
+        [data-theme="edm-storm"] {
+            --bg-primary: #0d0d1a;
+            --bg-secondary: #1a1a2e;
+            --bg-gradient: linear-gradient(180deg, #0d0d1a 0%, #1a1a2e 50%, #0d0d1a 100%);
+            --bg-card: rgba(26, 26, 46, 0.9);
+            --bg-card-hover: rgba(40, 40, 70, 0.95);
+            
+            --text-primary: #00ffff;
+            --text-secondary: #ff00ff;
+            --text-muted: #8b8ba7;
+            
+            --accent-primary: #00ffff;
+            --accent-secondary: #ff00ff;
+            --accent-highlight: #ffff00;
+            --accent-gradient: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            
+            --color-success: #00ff00;
+            --color-warning: #ffff00;
+            --color-error: #ff0066;
+            --color-info: #00ffff;
+            
+            --border-color: rgba(0, 255, 255, 0.2);
+            --border-radius: 0;
+            --border-radius-sm: 0;
+            
+            --shadow-card: 0 0 20px rgba(0, 255, 255, 0.3);
+            --shadow-glow: 0 0 40px rgba(255, 0, 255, 0.4);
+            
+            --font-display: 'Arial Black', sans-serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(5px);
+            --header-align: center;
+        }
+        
+        [data-theme="edm-storm"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(45deg, rgba(0, 255, 255, 0.03) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(255, 0, 255, 0.03) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(0, 255, 255, 0.03) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(255, 0, 255, 0.03) 75%);
+            background-size: 60px 60px;
+            animation: edmGrid 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes edmGrid {
+            0% { background-position: 0 0; }
+            100% { background-position: 60px 60px; }
+        }
+        
+        [data-theme="edm-storm"] .card {
+            border: 3px solid;
+            border-image: linear-gradient(135deg, #00ffff, #ff00ff) 1;
+            animation: edmPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes edmPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 255, 0.5); }
+        }
+        
+        [data-theme="edm-storm"] .stat-value {
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+            animation: edmText 1s ease-in-out infinite;
+        }
+        
+        @keyframes edmText {
+            0%, 100% { color: #00ffff; }
+            50% { color: #ff00ff; }
+        }
+        
+        [data-theme="edm-storm"] .btn-primary {
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            color: #0d0d1a;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* 主题 34: 🌵 仙人掌沙漠 - 美国西部风 */
+        [data-theme="cactus-desert"] {
+            --bg-primary: #f4e4c1;
+            --bg-secondary: #e8d4a8;
+            --bg-gradient: linear-gradient(180deg, #f4e4c1 0%, #e8d4a8 50%, #dcc496 100%);
+            --bg-card: rgba(255, 248, 235, 0.95);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            
+            --text-primary: #5d4037;
+            --text-secondary: #795548;
+            --text-muted: #8d6e63;
+            
+            --accent-primary: #388e3c;
+            --accent-secondary: #66bb6a;
+            --accent-highlight: #ff6f00;
+            --accent-gradient: linear-gradient(90deg, #388e3c, #66bb6a, #ff6f00, #388e3c);
+            
+            --color-success: #388e3c;
+            --color-warning: #ff6f00;
+            --color-error: #c62828;
+            --color-info: #0288d1;
+            
+            --border-color: rgba(93, 64, 55, 0.15);
+            --border-radius: 4px;
+            --border-radius-sm: 2px;
+            
+            --shadow-card: 4px 4px 0 rgba(93, 64, 55, 0.2);
+            --shadow-glow: none;
+            
+            --font-display: 'Courier New', monospace;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: none;
+            --header-align: center;
+        }
+        
+        [data-theme="cactus-desert"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(255, 111, 0, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 20% 80%, rgba(56, 142, 60, 0.08) 0%, transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="cactus-desert"] .card {
+            border: 2px solid #5d4037;
+            border-radius: 0;
+        }
+        
+        [data-theme="cactus-desert"] .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 0 rgba(93, 64, 55, 0.3);
+        }
+        
+        [data-theme="cactus-desert"] .stat-value {
+            color: #388e3c;
+        }
+        
+        [data-theme="cactus-desert"] .btn-primary {
+            background: #388e3c;
+            color: #f4e4c1;
+            border: 2px solid #2e7d32;
+            border-radius: 0;
+        }
+        
+        [data-theme="cactus-desert"] header h1 {
+            color: #5d4037;
+            text-shadow: 2px 2px 0 rgba(255, 111, 0, 0.3);
+        }
+        
+        /* 主题 35: ⚛️ 量子空间 - 科技未来风 */
+        [data-theme="quantum-space"] {
+            --bg-primary: #000814;
+            --bg-secondary: #001d3d;
+            --bg-gradient: linear-gradient(180deg, #000814 0%, #001d3d 50%, #000814 100%);
+            --bg-card: rgba(0, 29, 61, 0.8);
+            --bg-card-hover: rgba(0, 42, 85, 0.9);
+            
+            --text-primary: #00d4ff;
+            --text-secondary: #7bcffc;
+            --text-muted: #4a9eff;
+            
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7b2cbf;
+            --accent-highlight: #e0aaff;
+            --accent-gradient: linear-gradient(90deg, #00d4ff, #7b2cbf, #e0aaff, #00d4ff);
+            
+            --color-success: #00ff88;
+            --color-warning: #ffd700;
+            --color-error: #ff4757;
+            --color-info: #00d4ff;
+            
+            --border-color: rgba(0, 212, 255, 0.3);
+            --border-radius: 30px;
+            --border-radius-sm: 20px;
+            
+            --shadow-card: 0 0 30px rgba(0, 212, 255, 0.2);
+            --shadow-glow: 0 0 50px rgba(123, 44, 191, 0.3);
+            
+            --font-display: 'SF Pro Display', -apple-system, sans-serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(15px);
+            --header-align: center;
+        }
+        
+        [data-theme="quantum-space"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(0, 212, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(123, 44, 191, 0.08) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="quantum-space"] body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d4ff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+        
+        [data-theme="quantum-space"] .card {
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            backdrop-filter: blur(15px);
+        }
+        
+        [data-theme="quantum-space"] .card:hover {
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.3), 0 0 80px rgba(123, 44, 191, 0.2);
+        }
+        
+        [data-theme="quantum-space"] .stat-value {
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+        }
+        
+        [data-theme="quantum-space"] .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            color: white;
+        }
+        
+        /* 主题 36: 🧙 魔法森林 - 奇幻童话风 */
+        [data-theme="magic-forest"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-gradient: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --bg-card: rgba(26, 26, 46, 0.85);
+            --bg-card-hover: rgba(22, 33, 62, 0.95);
+            
+            --text-primary: #e94560;
+            --text-secondary: #ff6b9d;
+            --text-muted: #a8d8ea;
+            
+            --accent-primary: #e94560;
+            --accent-secondary: #a8d8ea;
+            --accent-highlight: #ffd369;
+            --accent-gradient: linear-gradient(90deg, #e94560, #a8d8ea, #ffd369, #e94560);
+            
+            --color-success: #4ecca3;
+            --color-warning: #ffd369;
+            --color-error: #e94560;
+            --color-info: #a8d8ea;
+            
+            --border-color: rgba(233, 69, 96, 0.3);
+            --border-radius: 50px;
+            --border-radius-sm: 30px;
+            
+            --shadow-card: 0 10px 40px rgba(233, 69, 96, 0.2);
+            --shadow-glow: 0 0 30px rgba(168, 216, 234, 0.3);
+            
+            --font-display: 'Georgia', serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(8px);
+            --header-align: center;
+        }
+        
+        [data-theme="magic-forest"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(233, 69, 96, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(168, 216, 234, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 50% 50%, rgba(255, 211, 105, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="magic-forest"] .card {
+            border: 2px solid rgba(233, 69, 96, 0.3);
+            box-shadow: 0 0 20px rgba(168, 216, 234, 0.1);
+        }
+        
+        [data-theme="magic-forest"] .card:hover {
+            box-shadow: 0 0 40px rgba(233, 69, 96, 0.3), 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 211, 105, 0.5);
+        }
+        
+        [data-theme="magic-forest"] .stat-value {
+            color: #e94560;
+            text-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+        }
+        
+        [data-theme="magic-forest"] .btn-primary {
+            background: linear-gradient(135deg, #e94560, #ff6b9d);
+            color: white;
+            border-radius: 25px;
+        }
+        
+        [data-theme="magic-forest"] header h1 {
+            text-shadow: 0 0 30px rgba(233, 69, 96, 0.5), 0 0 60px rgba(168, 216, 234, 0.3);
+        }
+        
+        /* 主题 37: 🎞️ 黑白胶片 - 经典电影风 */
+        [data-theme="film-noir-classic"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-gradient: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            --bg-card: rgba(30, 30, 30, 0.95);
+            --bg-card-hover: rgba(40, 40, 40, 0.98);
+            
+            --text-primary: #f5f5f5;
+            --text-secondary: #b0b0b0;
+            --text-muted: #707070;
+            
+            --accent-primary: #f5f5f5;
+            --accent-secondary: #b0b0b0;
+            --accent-highlight: #ffffff;
+            --accent-gradient: linear-gradient(90deg, #707070, #b0b0b0, #f5f5f5, #b0b0b0);
+            
+            --color-success: #90ee90;
+            --color-warning: #f0e68c;
+            --color-error: #ff6b6b;
+            --color-info: #87ceeb;
+            
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-radius: 0;
+            --border-radius-sm: 0;
+            
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.5);
+            --shadow-glow: none;
+            
+            --font-display: 'Times New Roman', serif;
+            --font-body: 'Georgia', serif;
+            
+            --card-blur: none;
+            --header-align: center;
+        }
+        
+        [data-theme="film-noir-classic"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.03) 2px,
+                    rgba(0, 0, 0, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        [data-theme="film-noir-classic"] .card {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0;
+        }
+        
+        [data-theme="film-noir-classic"] .card:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        [data-theme="film-noir-classic"] .stat-value {
+            color: #f5f5f5;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        [data-theme="film-noir-classic"] .btn-primary {
+            background: #f5f5f5;
+            color: #0a0a0a;
+            border-radius: 0;
+            font-family: 'Times New Roman', serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        [data-theme="film-noir-classic"] header h1 {
+            font-family: 'Times New Roman', serif;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        
+        /* 主题 38: 🥭 热带水果 - 夏日清爽风 */
+        [data-theme="tropical-fruits"] {
+            --bg-primary: #fff9f0;
+            --bg-secondary: #fff3e6;
+            --bg-gradient: linear-gradient(180deg, #fff9f0 0%, #fff3e6 50%, #ffecdb 100%);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            
+            --text-primary: #2d5016;
+            --text-secondary: #5a8f32;
+            --text-muted: #8bc34a;
+            
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff9f1c;
+            --accent-highlight: #2ec4b6;
+            --accent-gradient: linear-gradient(90deg, #ff6b35, #ff9f1c, #2ec4b6, #ff6b35);
+            
+            --color-success: #2ec4b6;
+            --color-warning: #ff9f1c;
+            --color-error: #ff6b6b;
+            --color-info: #3a86ff;
+            
+            --border-color: rgba(255, 107, 53, 0.2);
+            --border-radius: 25px;
+            --border-radius-sm: 18px;
+            
+            --shadow-card: 0 8px 30px rgba(255, 107, 53, 0.12);
+            --shadow-glow: 0 0 20px rgba(46, 196, 182, 0.2);
+            
+            --font-display: -apple-system, sans-serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(5px);
+            --header-align: center;
+        }
+        
+        [data-theme="tropical-fruits"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(255, 107, 53, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 75%, rgba(46, 196, 182, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 50% 50%, rgba(255, 159, 28, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="tropical-fruits"] .card {
+            border: 2px solid rgba(255, 159, 28, 0.2);
+        }
+        
+        [data-theme="tropical-fruits"] .card:hover {
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.15);
+            border-color: rgba(255, 107, 53, 0.4);
+        }
+        
+        [data-theme="tropical-fruits"] .stat-value {
+            color: #ff6b35;
+        }
+        
+        [data-theme="tropical-fruits"] .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #ff9f1c);
+            color: white;
+        }
+        
+        [data-theme="tropical-fruits"] header h1 {
+            background: linear-gradient(135deg, #ff6b35, #ff9f1c, #2ec4b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 主题 39: 🦇 暗夜魅影 - 暗黑神秘风 */
+        [data-theme="phantom-night"] {
+            --bg-primary: #0d0d14;
+            --bg-secondary: #141422;
+            --bg-gradient: linear-gradient(180deg, #0d0d14 0%, #141422 50%, #1a1a2e 100%);
+            --bg-card: rgba(20, 20, 34, 0.9);
+            --bg-card-hover: rgba(30, 30, 50, 0.95);
+            
+            --text-primary: #9d4edd;
+            --text-secondary: #c77dff;
+            --text-muted: #7b2cbf;
+            
+            --accent-primary: #9d4edd;
+            --accent-secondary: #e040fb;
+            --accent-highlight: #ea80fc;
+            --accent-gradient: linear-gradient(90deg, #9d4edd, #e040fb, #ea80fc, #9d4edd);
+            
+            --color-success: #69f0ae;
+            --color-warning: #ffab40;
+            --color-error: #ff5252;
+            --color-info: #40c4ff;
+            
+            --border-color: rgba(157, 78, 221, 0.3);
+            --border-radius: 20px;
+            --border-radius-sm: 14px;
+            
+            --shadow-card: 0 10px 40px rgba(157, 78, 221, 0.15);
+            --shadow-glow: 0 0 30px rgba(224, 64, 251, 0.2);
+            
+            --font-display: 'Georgia', serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        [data-theme="phantom-night"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(157, 78, 221, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(224, 64, 251, 0.08) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="phantom-night"] .card {
+            border: 1px solid rgba(157, 78, 221, 0.3);
+        }
+        
+        [data-theme="phantom-night"] .card:hover {
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(224, 64, 251, 0.5);
+        }
+        
+        [data-theme="phantom-night"] .stat-value {
+            color: #e040fb;
+            text-shadow: 0 0 20px rgba(224, 64, 251, 0.5);
+        }
+        
+        [data-theme="phantom-night"] .btn-primary {
+            background: linear-gradient(135deg, #9d4edd, #e040fb);
+            color: white;
+        }
+        
+        [data-theme="phantom-night"] header h1 {
+            text-shadow: 0 0 30px rgba(157, 78, 221, 0.5), 0 0 60px rgba(224, 64, 251, 0.3);
         }
         
         /* ============================================
@@ -5549,7 +6184,7 @@
 
         <!-- 底部版权区域 -->
         <footer class="footer" role="contentinfo">
-            <p>🦞 龙虾能力估值 Skill v9.0 - 量化你的 AI 自动化价值</p>
+            <p>🦞 龙虾能力估值 Skill v10.0 - 量化你的 AI 自动化价值</p>
             <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> | 数据本地存储，安全可靠</p>
             <p style="margin-top: 8px; font-size: 0.8rem;">
                 <span id="current-time"></span> | 
@@ -5973,6 +6608,63 @@
                 desc: '自然清新风',
                 type: 'light',
                 colors: ['#f8faf5', '#2e7d32', '#4caf50', '#8bc34a']
+            },
+            // v10.0 新增爆款主题 - 2026-03-14
+            'golden-legend': {
+                name: '金色传说',
+                icon: '👑',
+                desc: '奢华金色风',
+                type: 'special',
+                colors: ['#0a0a0f', '#ffd700', '#daa520', '#fff8dc']
+            },
+            'edm-storm': {
+                name: '电音风暴',
+                icon: '🎧',
+                desc: 'EDM 音乐风',
+                type: 'special',
+                colors: ['#0d0d1a', '#00ffff', '#ff00ff', '#ffff00']
+            },
+            'cactus-desert': {
+                name: '仙人掌沙漠',
+                icon: '🌵',
+                desc: '美国西部风',
+                type: 'light',
+                colors: ['#f4e4c1', '#388e3c', '#66bb6a', '#ff6f00']
+            },
+            'quantum-space': {
+                name: '量子空间',
+                icon: '⚛️',
+                desc: '科技未来风',
+                type: 'dark',
+                colors: ['#000814', '#00d4ff', '#7b2cbf', '#e0aaff']
+            },
+            'magic-forest': {
+                name: '魔法森林',
+                icon: '🧙',
+                desc: '奇幻童话风',
+                type: 'special',
+                colors: ['#1a1a2e', '#e94560', '#a8d8ea', '#ffd369']
+            },
+            'film-noir-classic': {
+                name: '黑白胶片',
+                icon: '🎞️',
+                desc: '经典电影风',
+                type: 'dark',
+                colors: ['#0a0a0a', '#f5f5f5', '#b0b0b0', '#707070']
+            },
+            'tropical-fruits': {
+                name: '热带水果',
+                icon: '🥭',
+                desc: '夏日清爽风',
+                type: 'light',
+                colors: ['#fff9f0', '#ff6b35', '#ff9f1c', '#2ec4b6']
+            },
+            'phantom-night': {
+                name: '暗夜魅影',
+                icon: '🦇',
+                desc: '暗黑神秘风',
+                type: 'dark',
+                colors: ['#0d0d14', '#9d4edd', '#e040fb', '#ea80fc']
             }
         };
         
