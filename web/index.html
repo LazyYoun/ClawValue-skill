@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v5.3</title>
+    <title>🦞 龙虾能力估值 Skill v6.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -276,6 +276,188 @@
             height: 60px;
             background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='rgba(255,107,107,0.1)' d='M0,30 C360,60 720,0 1080,30 C1260,45 1440,30 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E");
             background-size: cover;
+        }
+        
+        /* ============================================
+           v6.0 视觉冲击力增强
+           ============================================ */
+        
+        /* 龙虾图标 3D 旋转效果 */
+        .lobster-icon-3d {
+            display: inline-block;
+            animation: lobster3D 6s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+        
+        @keyframes lobster3D {
+            0% { transform: perspective(500px) rotateY(-15deg) rotateX(5deg); }
+            25% { transform: perspective(500px) rotateY(15deg) rotateX(-5deg); }
+            50% { transform: perspective(500px) rotateY(-15deg) rotateX(-5deg); }
+            75% { transform: perspective(500px) rotateY(15deg) rotateX(5deg); }
+            100% { transform: perspective(500px) rotateY(-15deg) rotateX(5deg); }
+        }
+        
+        /* 打字机效果 */
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid var(--accent-primary);
+            white-space: nowrap;
+            animation: typing 2s steps(20, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--accent-primary); }
+        }
+        
+        /* 渐变文字效果增强 */
+        .gradient-text-enhanced {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-highlight));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 数据卡片入场增强 */
+        .card-entrance {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            animation: cardEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        @keyframes cardEntrance {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .card-entrance:nth-child(1) { animation-delay: 0.1s; }
+        .card-entrance:nth-child(2) { animation-delay: 0.2s; }
+        .card-entrance:nth-child(3) { animation-delay: 0.3s; }
+        .card-entrance:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* 视觉焦点引导 */
+        .focus-highlight {
+            position: relative;
+        }
+        
+        .focus-highlight::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: calc(var(--border-radius) + 4px);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            z-index: -1;
+            opacity: 0;
+            animation: focusPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes focusPulse {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.02); }
+        }
+        
+        /* 动态背景网格 */
+        .dynamic-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 107, 107, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 107, 107, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* 发光边框效果 */
+        .glow-border {
+            position: relative;
+        }
+        
+        .glow-border::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: calc(var(--border-radius) + 2px);
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary), var(--accent-highlight), var(--accent-primary));
+            background-size: 400% 400%;
+            z-index: -1;
+            animation: glowRotate 3s ease infinite;
+            opacity: 0.5;
+        }
+        
+        @keyframes glowRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 数字跳动计数器 */
+        .counter-jump {
+            display: inline-block;
+        }
+        
+        .counter-jump span {
+            display: inline-block;
+            animation: counterJump 0.5s ease;
+        }
+        
+        @keyframes counterJump {
+            0% { transform: translateY(0); }
+            25% { transform: translateY(-8px); }
+            50% { transform: translateY(0); }
+            75% { transform: translateY(-4px); }
+            100% { transform: translateY(0); }
+        }
+        
+        /* 震动效果 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        /* 放大镜效果 */
+        .magnify-hover {
+            transition: transform 0.3s ease;
+        }
+        
+        .magnify-hover:hover {
+            transform: scale(1.05);
+            z-index: 10;
         }
         
         /* 浮动装饰元素 */
@@ -2918,25 +3100,32 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            padding: 10px 18px;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             border: none;
             border-radius: 25px;
             color: white;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
         .theme-toggle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
         }
 
         .theme-toggle-icon {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            animation: paletteRotate 3s ease-in-out infinite;
+        }
+        
+        @keyframes paletteRotate {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(15deg) scale(1.1); }
+            75% { transform: rotate(-15deg) scale(1.1); }
         }
 
         .theme-panel {
@@ -3404,6 +3593,36 @@
             position: relative;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 107, 107, 0.2);
             animation: cardPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        
+        /* v6.0 品牌水印 */
+        .share-card::after {
+            content: '🦞 ClawValue';
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+        
+        /* 装饰性背景图案 */
+        .share-card .decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-highlight), var(--accent-primary));
+            background-size: 300% 100%;
+            animation: decorationFlow 3s linear infinite;
+        }
+        
+        @keyframes decorationFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
         }
         
         @keyframes cardPopIn {
@@ -4017,33 +4236,36 @@
 
         <!-- 英雄区域 -->
         <section class="hero-section animate-in" aria-labelledby="main-title">
-            <div class="lobster-icon-hero" aria-hidden="true">🦞</div>
-            <h1 id="main-title" class="title-shine" style="font-size: 2.8rem; margin: 20px 0 15px;">
+            <!-- v6.0 动态背景网格 -->
+            <div class="dynamic-grid" aria-hidden="true"></div>
+            
+            <div class="lobster-icon-hero lobster-icon-3d" aria-hidden="true">🦞</div>
+            <h1 id="main-title" class="title-shine gradient-text-enhanced" style="font-size: 2.8rem; margin: 20px 0 15px;">
                 龙虾能力估值
             </h1>
             <p style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 25px;">
-                基于 OpenClaw 使用数据的深度分析与价值评估
+                <span id="hero-subtitle" class="typewriter-text">基于 OpenClaw 使用数据的深度分析与价值评估</span>
             </p>
             <div class="header-actions">
                 <button class="btn btn-secondary" id="refresh-btn" onclick="refreshData()">
                     <span style="display: inline-block; transition: transform 0.3s;">🔄</span> 刷新数据
                 </button>
-                <button class="btn btn-primary cta-pulse" id="share-btn" onclick="shareResult()">
+                <button class="btn btn-primary cta-pulse glow-border" id="share-btn" onclick="shareResult()">
                     ✨ 分享我的龙虾值
                 </button>
                 <span class="shortcut-hint">快捷键: R 刷新 | S 分享</span>
             </div>
             <!-- 实时数据指示器 -->
             <div style="margin-top: 30px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-                <div style="text-align: center;">
+                <div style="text-align: center;" class="magnify-hover">
                     <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">活跃用户</div>
                     <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);" id="live-users">--</div>
                 </div>
-                <div style="text-align: center;">
+                <div style="text-align: center;" class="magnify-hover">
                     <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">今日评估</div>
                     <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-secondary);" id="today-evals">--</div>
                 </div>
-                <div style="text-align: center;">
+                <div style="text-align: center;" class="magnify-hover">
                     <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">总价值</div>
                     <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-highlight);" id="total-value">--</div>
                 </div>
@@ -4267,6 +4489,7 @@
         <!-- 分享卡片弹窗 -->
         <div class="share-modal" id="share-modal" style="display: none;" onclick="closeShareModal(event)">
             <div class="share-card" onclick="event.stopPropagation()">
+                <div class="decoration"></div>
                 <button onclick="closeShareModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">×</button>
                 
                 <div class="share-card-header">
@@ -4326,7 +4549,7 @@
 
         <!-- 底部版权区域 -->
         <footer class="footer" role="contentinfo">
-            <p>🦞 龙虾能力估值 Skill v5.1 - 量化你的 AI 自动化价值</p>
+            <p>🦞 龙虾能力估值 Skill v6.0 - 量化你的 AI 自动化价值</p>
             <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> | 数据本地存储，安全可靠</p>
             <p style="margin-top: 8px; font-size: 0.8rem;">
                 <span id="current-time"></span> | 
@@ -4818,7 +5041,7 @@
             5: { label: '龙虾大师', emoji: '🦞', color: '#e17055' }
         };
 
-        // 调侃话术模板
+        // 调侃话术模板 - v6.0 大幅扩展
         const roastTemplates = {
             1: [
                 "🐣 小龙虾你好！看来你只是接了个模型啊，对OpenClaw的开发度不足1% —— 不过没关系，连sudo make me a sandwich都还没学会呢。",
@@ -4827,7 +5050,14 @@
                 "您的AI助手正在角落里默默流泪：「主人为什么不用我？」—— 赶紧去探索更多功能吧！",
                 "🎮 新手村报道！你的龙虾还处于「水煮阶段」，连壳都没红呢。多配置几个技能，解锁「清蒸」成就！",
                 "检测到「轻度体验」模式。你的AI助手表示：「我在待机中...等待被召唤...」—— 该让它干活了！",
-                "🔧 工具人认证！你的OpenClaw还在出厂设置状态，建议至少装3个技能，让它成为你的得力助手。"
+                "🔧 工具人认证！你的OpenClaw还在出厂设置状态，建议至少装3个技能，让它成为你的得力助手。",
+                "📊 数据分析：你的使用频率低于平均值 87%。别担心，每只龙虾都有自己的节奏~",
+                "🦐 小虾米阶段！你现在就像一只刚出生的龙虾，还没找到自己的方向。多试试不同的功能吧！",
+                // v6.0 新增话术
+                "💡 萌新提示：你的AI助手技能点为0，是不是忘记安装技能了？快去设置里看看吧！",
+                "🎯 进阶建议：配置一个天气查询技能，让你的AI助手学会「出门看天气」的第一课！",
+                "📚 懒人秘籍：心跳任务可以让AI在你睡觉时帮你查邮件、看天气，真正的睡后收入！",
+                "🌟 恭喜你迈出第一步！每个龙虾大师都是从「Hello World」开始的~"
             ],
             2: [
                 "正在技术债里种花？恭喜！您的自动化花园已初具规模，建议加把劲儿，冲向'Proactive Agent'模式！",
@@ -4836,20 +5066,43 @@
                 "你的技能树已经点亮了一半，AI助手对你的满意度：⭐⭐⭐☆☆。再加把劲，让它对你刮目相看！",
                 "🦞 七分熟龙虾！你已经掌握了OpenClaw的核心玩法，距离「全熟」只差几个自定义技能了！",
                 "检测到「进阶玩家」模式。你的AI助手说：「主人终于懂我了！」—— 继续深入，解锁更多黑科技！",
-                "你的使用深度已经让普通用户羡慕了！建议下一步：配置定时任务，让AI在你睡觉的时候也在工作。"
+                "你的使用深度已经让普通用户羡慕了！建议下一步：配置定时任务，让AI在你睡觉的时候也在工作。",
+                "📈 进步神速！你的龙虾值在过去7天提升了 23%，继续保持这个节奏！",
+                "🔑 解锁提示：配置更多自定义技能，你的龙虾值会「突突突」往上涨！",
+                // v6.0 新增话术
+                "⚡ 效率达人！你每天节省的时间已经可以多喝一杯咖啡了~继续加油！",
+                "🔥 热度上升中！你的AI助手活跃度超过了 65% 的用户，继续保持！",
+                "📊 数据解读：你的技能使用多样性正在提升，AI对你的理解越来越深！",
+                "🌟 小目标达成！你已经是一个合格的AI使用者了，下一步：成为AI训练师！"
             ],
             3: [
                 "💻 中级开发者！你已经是个合格的 Claude 用户了，各种功能信手拈来~",
                 "你的使用模式显示你是个「效率追求者」，懂得利用工具提升生产力！",
                 "恭喜达到中级水平！你已经是团队里那个「会用 AI 的人」了！",
-                "🦞 龙虾壳渐渐变红！你的 OpenClaw 使用技能正在升温，继续保持这个势头，全熟指日可待！"
+                "🦞 龙虾壳渐渐变红！你的 OpenClaw 使用技能正在升温，继续保持这个势头，全熟指日可待！",
+                "🔥 热门玩家！你的使用数据超过了 65% 的用户，属于「中上水平」~",
+                "📊 数据解读：你的自动化程度已经达到「入门专家」级别，AI助手开始「依赖」你了！",
+                // v6.0 新增话术
+                "⚡ 效率小能手！你的日常工作效率提升了约 30%，老板都要问你怎么做到的了~",
+                "🎯 目标达成！你已经成功让AI成为你的得力助手，下一步：让AI帮你管理其他AI！",
+                "📈 趋势分析：你的技能使用频率持续上升，AI对你的指令理解度已达 90%！",
+                "🌟 中级认证！你已经可以通过考核成为社区「AI 助手推广大使」了！",
+                "💡 小提示：开启心跳任务可以让你的AI在你睡觉时自动整理数据，真正的睡后收入！"
             ],
             4: [
                 "🚀 高级工程师！你对 Claude 的使用已经炉火纯青，堪称效率机器！",
                 "你的技能树已经点满大半，是时候考虑传授经验给新人了~",
                 "高级玩家认证！你用 Claude 的方式，让旁观者都忍不住想学习！",
                 "检测到「效率怪兽」！你的自动化程度已经突破了天际，建议考虑写一本《如何让AI帮你打工》的畅销书。",
-                "🦞 全熟龙虾！你的技能点已满，接下来就是进化成「龙虾王」的旅程了！"
+                "🦞 全熟龙虾！你的技能点已满，接下来就是进化成「龙虾王」的旅程了！",
+                "🏆 顶级玩家！你的龙虾值击败了 90% 的用户！要不要来当我们的代言人？",
+                "⚡ 效率指数爆表！你每天节省的时间相当于看 3 集电视剧~",
+                // v6.0 新增话术
+                "🎯 高级认证！你已经成功解锁「AI 管理员」成就，可以开始管理你的 AI 军团了！",
+                "📊 数据分析：你的自动化效率是普通用户的 3.5 倍，堪称效率达人！",
+                "🌟 传奇玩家！你的名字已经被 AI 深深记住，它会对其他用户提起你的！",
+                "💡 超级提示：你已经可以尝试多 Agent 协作模式，让多个 AI 同时为你工作！",
+                "🏆 荣誉认证：你已获得「龙虾养殖专家」称号，继续培养你的 AI 助手吧！"
             ],
             5: [
                 "🦞 龙虾大师！你已经达到了传说中的最高境界！Claude 见你都要叫一声「大佬」！",
@@ -4857,7 +5110,16 @@
                 "恭喜你成为「龙虾大师」！你的使用深度已经突破天际！建议你直接去写一本《Claude 使用指南》！",
                 "⚠️ 警告：你的使用深度已经突破系统阈值，AI可能会开始产生「主人是不是机器人」的疑问。",
                 "检测到「全熟龙虾」！你的OpenClaw技能点满，效率爆表，堪称「人机合一」的典范！",
-                "🏆 传奇龙虾王！你的名字将被刻在 OpenClaw 的史册上，后人将仰望你的背影！"
+                "🏆 传奇龙虾王！你的名字将被刻在 OpenClaw 的史册上，后人将仰望你的背影！",
+                "👑 龙虾王者降临！你的效率已经突破人类极限，建议考虑「AI 管理」这个新职业~",
+                "🌟 传说玩家！你的数据已进入「名人堂」，欢迎来当我们的社区导师！",
+                // v6.0 新增话术
+                "👑 皇冠成就！你已经获得「龙虾之王」称号，所有小龙虾都要向你致敬！",
+                "⚡ 超神玩家！你的 AI 助手已经在自学成才，试图超越你了（虽然不可能）！",
+                "🎯 终极目标达成！你已经解锁了 OpenClaw 的所有隐藏成就！",
+                "🌟 永恒传说！你的名字将被载入 OpenClaw 史册，成为后辈仰望的存在！",
+                "💡 大师提示：现在你可以开始帮助新手了，他们需要你的指导！",
+                "🏆 世界冠军！你的龙虾值已经全球领先，快去社交媒体炫耀吧！"
             ]
         };
 
@@ -5502,6 +5764,31 @@
             
             integBar.style.width = `${eval.integration_score || 0}%`;
             integBar.style.background = getScoreColor(eval.integration_score || 0);
+            
+            // v6.0 数据趋势展示
+            updateTrendIndicators(data);
+        }
+        
+        // v6.0 趋势指示器更新
+        function updateTrendIndicators(data) {
+            const trends = data.trends || [];
+            if (trends.length >= 2) {
+                const lastTwo = trends.slice(-2);
+                const change = lastTwo[1].count - lastTwo[0].count;
+                const changePercent = lastTwo[0].count > 0 ? Math.round((change / lastTwo[0].count) * 100) : 0;
+                
+                // 创建趋势指示器
+                const trendIndicator = document.getElementById('trend-indicator');
+                if (trendIndicator && change !== 0) {
+                    const isUp = change > 0;
+                    trendIndicator.innerHTML = `
+                        <span style="color: ${isUp ? 'var(--accent-success, #10ac84)' : 'var(--accent-danger, #ee5253)'}; font-size: 0.85rem;">
+                            ${isUp ? '📈' : '📉'} ${isUp ? '+' : ''}${changePercent}%
+                        </span>
+                    `;
+                    trendIndicator.style.display = 'inline-block';
+                }
+            }
         }
 
         function showError() {
@@ -5953,6 +6240,85 @@
             if (!switcher.contains(e.target)) {
                 panel.classList.remove('show');
             }
+        });
+        
+        // ============================================
+        // v6.0 视觉增强功能
+        // ============================================
+        
+        // 打字机效果
+        function initTypewriter() {
+            const element = document.getElementById('hero-subtitle');
+            if (!element) return;
+            
+            const text = element.textContent;
+            element.textContent = '';
+            element.style.borderRight = '2px solid var(--accent-primary)';
+            
+            let i = 0;
+            const typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                    // 打字完成后闪烁光标几次然后消失
+                    setTimeout(() => {
+                        element.style.borderRight = 'none';
+                    }, 1000);
+                }
+            }, 50);
+        }
+        
+        // 数字跳动计数器增强
+        function animateNumberJump(elementId, targetValue, duration) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const startValue = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // easeOutQuart 缓动函数
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * easeProgress);
+                
+                // 格式化数字
+                if (targetValue >= 10000) {
+                    element.textContent = (currentValue / 10000).toFixed(1) + '万';
+                } else if (targetValue >= 1000) {
+                    element.textContent = currentValue.toLocaleString();
+                } else {
+                    element.textContent = currentValue;
+                }
+                
+                // 添加跳动效果
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.classList.add('number-pop');
+                    setTimeout(() => element.classList.remove('number-pop'), 300);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // 卡片入场动画触发
+        function triggerCardEntrance() {
+            const cards = document.querySelectorAll('.card-entrance');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initTypewriter();
+            triggerCardEntrance();
         });
     </script>
 </body>
