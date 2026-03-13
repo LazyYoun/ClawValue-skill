@@ -11,6 +11,34 @@ from datetime import datetime
 class EvaluationEngine:
     """Claw度评估引擎"""
     
+    # 排名百分比计算基准（模拟全球用户分布）
+    RANK_PERCENTILES = {
+        90: {'min_score': 85, 'title': '🏆 全球前10%', 'badge': 'legendary'},
+        80: {'min_score': 75, 'title': '🌟 全球前20%', 'badge': 'epic'},
+        70: {'min_score': 65, 'title': '⭐ 全球前30%', 'badge': 'rare'},
+        60: {'min_score': 55, 'title': '✨ 全球前40%', 'badge': 'uncommon'},
+        50: {'min_score': 45, 'title': '🎯 全球前50%', 'badge': 'common'},
+        40: {'min_score': 35, 'title': '📈 全球前60%', 'badge': 'common'},
+        30: {'min_score': 25, 'title': '🌱 全球前70%', 'badge': 'common'},
+        20: {'min_score': 15, 'title': '🥚 新手玩家', 'badge': 'starter'},
+        10: {'min_score': 0, 'title': '🐣 萌新入门', 'badge': 'starter'},
+    }
+    
+    # 稀有称号系统
+    RARE_TITLES = {
+        # 技能相关
+        'skill_ancestor': {'name': '🔧 技能始祖', 'desc': '拥有超过20个自定义技能', 'condition': lambda m: m.get('custom_skills', 0) >= 20},
+        'automation_emperor': {'name': '🤖 自动化皇帝', 'desc': '每天Token消耗超过10万', 'condition': lambda m: m.get('daily_tokens', 0) >= 100000},
+        'channel_king': {'name': '📡 渠道之王', 'desc': '集成了5个以上渠道', 'condition': lambda m: m.get('channels', 0) >= 5},
+        'token_tycoon': {'name': '💎 Token大亨', 'desc': '累计消耗超过1000万Token', 'condition': lambda m, d: d.get('total_tokens', 0) >= 10000000},
+        'efficiency_monster': {'name': '🦖 效率怪兽', 'desc': '总评分超过90分', 'condition': lambda m, d, s: s >= 90},
+        'early_bird': {'name': '🌅 早起鸟儿', 'desc': '使用超过180天', 'condition': lambda m, d: d.get('usage_days', 0) >= 180},
+        'zero_hero': {'name': '🎯 零失误大神', 'desc': '运行零错误', 'condition': lambda m, d: d.get('log_stats', {}).get('error_count', 1) == 0},
+        'night_owl': {'name': '🦉 夜猫子', 'desc': '凌晨活跃用户', 'condition': None},  # 特殊检测
+        'hidden_gem': {'name': '🔮 隐藏宝石', 'desc': '评分超过80但技能数少于5', 'condition': lambda m, d, s: s >= 80 and m.get('skill_count', 0) < 5},
+        'balanced_master': {'name': '⚖️ 均衡大师', 'desc': '三项评分都超过60', 'condition': lambda scores: all(s >= 60 for s in scores)},
+    }
+    
     # 使用深度阈值
     THRESHOLDS = {
         'skill_count': {
@@ -443,6 +471,153 @@ class EvaluationEngine:
         
         return achievements
     
+    def calculate_rank_percentile(self, total_score: float) -> Dict:
+        """
+        计算排名百分比
+        
+        Args:
+            total_score: 总评分
+        
+        Returns:
+            排名信息
+        """
+        for percentile, info in sorted(self.RANK_PERCENTILES.items(), reverse=True):
+            if total_score >= info['min_score']:
+                return {
+                    'percentile': percentile,
+                    'title': info['title'],
+                    'badge': info['badge'],
+                    'description': f"你的龙虾值击败了全球 {percentile}% 的用户！"
+                }
+        
+        # 默认返回最低等级
+        return {
+            'percentile': 10,
+            'title': '🐣 萌新入门',
+            'badge': 'starter',
+            'description': "每只龙虾都是从虾米开始的，继续加油！"
+        }
+    
+    def detect_rare_titles(self, data: Dict, evaluation: Dict) -> List[Dict]:
+        """
+        检测稀有称号
+        
+        Args:
+            data: 原始数据
+            evaluation: 评估结果
+        
+        Returns:
+            稀有称号列表
+        """
+        titles = []
+        metrics = evaluation.get('metrics', {})
+        total_score = evaluation.get('total_score', 0)
+        scores = [
+            evaluation.get('skill_score', 0),
+            evaluation.get('automation_score', 0),
+            evaluation.get('integration_score', 0)
+        ]
+        
+        for title_id, title_info in self.RARE_TITLES.items():
+            condition = title_info['condition']
+            if condition is None:
+                continue
+            
+            try:
+                # 根据条件的参数数量动态调用
+                import inspect
+                params = inspect.signature(condition).parameters
+                
+                if len(params) == 1:
+                    result = condition(metrics)
+                elif len(params) == 2:
+                    result = condition(metrics, data)
+                elif len(params) == 3:
+                    result = condition(metrics, data, total_score)
+                else:
+                    result = condition(scores)
+                
+                if result:
+                    titles.append({
+                        'id': title_id,
+                        'name': title_info['name'],
+                        'desc': title_info['desc'],
+                        'rarity': 'legendary' if title_id in ['skill_ancestor', 'automation_emperor', 'efficiency_monster'] else 'epic'
+                    })
+            except Exception:
+                continue
+        
+        return titles
+    
+    def generate_share_content(self, data: Dict, evaluation: Dict) -> Dict:
+        """
+        生成分享内容（爆款属性增强版）
+        
+        Args:
+            data: 原始数据
+            evaluation: 评估结果
+        
+        Returns:
+            分享内容
+        """
+        total_score = evaluation.get('total_score', 0)
+        level = evaluation.get('usage_level', '浅度使用')
+        lobster_skill = evaluation.get('lobster_skill', '小龙虾')
+        
+        # 计算排名
+        rank_info = self.calculate_rank_percentile(total_score)
+        
+        # 检测稀有称号
+        rare_titles = self.detect_rare_titles(data, evaluation)
+        
+        # 生成分享文案
+        share_templates = []
+        
+        # 高分炫耀文案
+        if total_score >= 70:
+            share_templates = [
+                f"🦞 我的龙虾值 {total_score:.0f} 分，{rank_info['title']}！{evaluation.get('lobster_message', '')[:30]}",
+                f"🔥 OpenClaw 深度玩家认证！{rare_titles[0]['name'] if rare_titles else lobster_skill} 已解锁！",
+                f"⚡ 效率翻倍神器！我用 OpenClaw 省下了 {evaluation.get('value_estimate', '无数')}！"
+            ]
+        # 中等分数鼓励文案
+        elif total_score >= 40:
+            share_templates = [
+                f"🦞 龙虾值 Lv.{int(total_score/20)+1}！正在向「龙虾大师」进发～",
+                f"📊 OpenClaw 使用深度：{level}，距离顶级玩家只差一步！",
+                f"🎯 我的 AI 助手已经能帮我省时间了，你的呢？"
+            ]
+        # 低分幽默文案
+        else:
+            share_templates = [
+                f"🦐 我是一只还在沉睡的小龙虾，等待觉醒...",
+                f"🎮 OpenClaw 新手村报道！听说高手都在这里诞生～",
+                f"🌱 我的龙虾值才 {total_score:.0f} 分，但每个大佬都是从萌新开始的！"
+            ]
+        
+        # 生成海报数据
+        poster_data = {
+            'main_score': total_score,
+            'level': lobster_skill,
+            'rank_title': rank_info['title'],
+            'rank_description': rank_info['description'],
+            'rare_titles': rare_titles[:3],  # 最多显示3个
+            'key_stats': {
+                'skill_count': evaluation.get('metrics', {}).get('skill_count', 0),
+                'custom_skills': evaluation.get('metrics', {}).get('custom_skills', 0),
+                'value': evaluation.get('value_estimate', '0元')
+            },
+            'share_texts': share_templates,
+            'qr_text': '扫码测测你的龙虾值'
+        }
+        
+        return {
+            'poster_data': poster_data,
+            'rank_info': rank_info,
+            'rare_titles': rare_titles,
+            'share_texts': share_templates
+        }
+    
     def generate_full_evaluation(self, data: Dict) -> Dict:
         """
         生成完整评估报告
@@ -465,6 +640,25 @@ class EvaluationEngine:
         # 成就检测
         achievements = self.detect_achievements(data, usage_eval)
         
+        # 计算排名百分比
+        rank_info = self.calculate_rank_percentile(usage_eval['total_score'])
+        
+        # 检测稀有称号
+        rare_titles = self.detect_rare_titles(data, usage_eval)
+        
+        # 生成分享内容
+        share_content = self.generate_share_content(data, {
+            'total_score': usage_eval['total_score'],
+            'usage_level': usage_eval['level_name'],
+            'lobster_skill': lobster['title'],
+            'lobster_message': lobster['message'],
+            'value_estimate': value_eval['value_estimate'],
+            'metrics': usage_eval['metrics'],
+            'skill_score': usage_eval['skill_score'],
+            'automation_score': usage_eval['automation_score'],
+            'integration_score': usage_eval['integration_score']
+        })
+        
         return {
             'evaluated_at': datetime.now().isoformat(),
             'usage_level': usage_eval['level_name'],
@@ -480,6 +674,14 @@ class EvaluationEngine:
             'total_score': usage_eval['total_score'],
             'metrics': usage_eval['metrics'],
             'achievements': achievements,
+            # 新增：排名百分比
+            'rank_percentile': rank_info['percentile'],
+            'rank_title': rank_info['title'],
+            'rank_description': rank_info['description'],
+            # 新增：稀有称号
+            'rare_titles': rare_titles,
+            # 新增：分享内容
+            'share_content': share_content,
             'raw_data': data
         }
 

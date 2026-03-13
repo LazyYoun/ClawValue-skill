@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v5.1</title>
+    <title>🦞 龙虾能力估值 Skill v5.3</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -2302,6 +2302,110 @@
         .depth-5 { background: var(--accent-primary); color: #fff; }
 
         /* ============================================
+           排名展示区域 - 爆款属性核心
+           ============================================ */
+        .rank-section {
+            margin-bottom: 30px;
+        }
+        
+        .rank-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            backdrop-filter: var(--card-blur);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            border: 2px solid var(--accent-primary);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .rank-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+            animation: rank-shimmer 2s linear infinite;
+        }
+        
+        @keyframes rank-shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .rank-badge {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: rank-bounce 1s ease infinite;
+        }
+        
+        @keyframes rank-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .rank-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .rank-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .rare-titles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .rare-title-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .rare-title-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .rare-title-badge.legendary {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+            color: #ffd700;
+        }
+        
+        .rare-title-badge.epic {
+            border-color: var(--accent-secondary);
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(255, 0, 255, 0.05));
+            color: var(--accent-secondary);
+        }
+        
+        .rare-title-badge .title-icon {
+            font-size: 1.1rem;
+        }
+
+        /* ============================================
            调侃话术区域
            ============================================ */
         .roast-section {
@@ -3414,6 +3518,89 @@
             flex: 1;
         }
         
+        /* 分享卡片排名展示 */
+        .share-rank-section {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.15), rgba(254, 202, 87, 0.15));
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+        
+        .share-rank-badge {
+            font-size: 3rem;
+            animation: rankBounce 1.5s ease infinite;
+        }
+        
+        @keyframes rankBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .share-rank-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin: 10px 0 5px;
+        }
+        
+        .share-rank-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* 稀有称号展示 */
+        .share-rare-titles {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px dashed rgba(168, 85, 247, 0.3);
+        }
+        
+        .share-rare-titles-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .share-rare-titles-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .share-rare-title-tag {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(168, 85, 247, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
+        }
+        
+        .share-rare-title-tag.legendary {
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            animation: titleGlow 1s ease-in-out infinite;
+        }
+        
+        .share-rare-title-tag.epic {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+        }
+        
+        .share-rare-title-tag.rare {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+        }
+        
         /* ============================================
            响应式设计
            ============================================ */
@@ -3954,6 +4141,18 @@
             </div>
         </div>
 
+        <!-- 排名展示区 - 爆款属性核心 -->
+        <div class="rank-section animate-in animate-in-delay-4" id="rank-section" style="display: none;">
+            <div class="rank-card">
+                <div class="rank-badge" id="rank-badge">🏆</div>
+                <div class="rank-title" id="rank-title">全球前 10%</div>
+                <div class="rank-description" id="rank-description">你的龙虾值击败了全球 90% 的用户！</div>
+                <div class="rare-titles" id="rare-titles">
+                    <!-- 动态生成稀有称号 -->
+                </div>
+            </div>
+        </div>
+
         <!-- 趣味化调侃话术展示区 -->
         <div class="roast-section animate-in animate-in-delay-5">
             <div class="roast-header">
@@ -4081,6 +4280,13 @@
                     <p style="color: var(--text-secondary); font-size: 0.9rem;">我的 OpenClaw 龙虾等级</p>
                 </div>
                 
+                <!-- 排名展示区域（爆款属性核心） -->
+                <div class="share-rank-section" id="share-rank-section">
+                    <div class="share-rank-badge" id="share-rank-badge">🏆</div>
+                    <div class="share-rank-title" id="share-rank-title">全球前 10%</div>
+                    <div class="share-rank-desc" id="share-rank-desc">你的龙虾值击败了全球 90% 的用户！</div>
+                </div>
+                
                 <div class="share-stats">
                     <div class="share-stat-item">
                         <div class="share-stat-value" id="share-value">¥0</div>
@@ -4098,6 +4304,12 @@
                         <div class="share-stat-value" id="share-achievements-count">0</div>
                         <div class="share-stat-label">已解锁成就</div>
                     </div>
+                </div>
+                
+                <!-- 稀有称号展示 -->
+                <div class="share-rare-titles" id="share-rare-titles-section" style="display: none;">
+                    <div class="share-rare-titles-title">✨ 稀有称号</div>
+                    <div class="share-rare-titles-list" id="share-rare-titles-list"></div>
                 </div>
                 
                 <div class="share-achievements" id="share-achievements-section">
@@ -5046,6 +5258,83 @@
             requestAnimationFrame(update);
         }
         
+        // 更新排名区域（爆款属性核心）
+        function updateRankSection(data) {
+            const rankSection = document.getElementById('rank-section');
+            const evaluation = data.evaluation || {};
+            
+            // 获取排名信息
+            const rankPercentile = evaluation.rank_percentile || calculateRankFromScore(evaluation.total_score || 0);
+            const rankTitle = evaluation.rank_title || getRankTitle(rankPercentile);
+            const rankDescription = evaluation.rank_description || `你的龙虾值击败了全球 ${100 - rankPercentile}% 的用户！`;
+            const rareTitles = evaluation.rare_titles || [];
+            
+            // 显示排名区域
+            rankSection.style.display = 'block';
+            
+            // 更新排名徽章
+            document.getElementById('rank-badge').textContent = getRankBadge(rankPercentile);
+            document.getElementById('rank-title').textContent = rankTitle;
+            document.getElementById('rank-description').textContent = rankDescription;
+            
+            // 更新稀有称号
+            const rareTitlesContainer = document.getElementById('rare-titles');
+            if (rareTitles.length > 0) {
+                rareTitlesContainer.innerHTML = rareTitles.map(title => `
+                    <div class="rare-title-badge ${title.rarity || 'epic'}">
+                        <span class="title-icon">${title.name.split(' ')[0]}</span>
+                        <span>${title.name.split(' ').slice(1).join(' ')}</span>
+                    </div>
+                `).join('');
+            } else {
+                // 没有稀有称号时显示鼓励文字
+                rareTitlesContainer.innerHTML = `
+                    <div class="rare-title-badge" style="border-style: dashed;">
+                        <span>🔒 继续探索解锁稀有称号</span>
+                    </div>
+                `;
+            }
+        }
+        
+        // 根据分数计算排名百分比
+        function calculateRankFromScore(score) {
+            if (score >= 85) return 90;
+            if (score >= 75) return 80;
+            if (score >= 65) return 70;
+            if (score >= 55) return 60;
+            if (score >= 45) return 50;
+            if (score >= 35) return 40;
+            if (score >= 25) return 30;
+            if (score >= 15) return 20;
+            return 10;
+        }
+        
+        // 获取排名徽章
+        function getRankBadge(percentile) {
+            if (percentile >= 90) return '🏆';
+            if (percentile >= 80) return '🌟';
+            if (percentile >= 70) return '⭐';
+            if (percentile >= 60) return '✨';
+            if (percentile >= 50) return '🎯';
+            if (percentile >= 40) return '📈';
+            if (percentile >= 30) return '🌱';
+            if (percentile >= 20) return '🥚';
+            return '🐣';
+        }
+        
+        // 获取排名标题
+        function getRankTitle(percentile) {
+            if (percentile >= 90) return '🏆 全球前10%';
+            if (percentile >= 80) return '🌟 全球前20%';
+            if (percentile >= 70) return '⭐ 全球前30%';
+            if (percentile >= 60) return '✨ 全球前40%';
+            if (percentile >= 50) return '🎯 全球前50%';
+            if (percentile >= 40) return '📈 全球前60%';
+            if (percentile >= 30) return '🌱 全球前70%';
+            if (percentile >= 20) return '🥚 新手玩家';
+            return '🐣 萌新入门';
+        }
+
         // 格式化货币
         function formatCurrency(value) {
             if (value >= 10000) {
@@ -5061,6 +5350,9 @@
 
             const depth = data.depth_level || 1;
             const depthInfo = depthConfig[depth];
+            
+            // 更新排名区域（爆款属性核心）
+            updateRankSection(data);
             
             // 使用动画更新数字
             document.getElementById('depth-level').innerHTML = `${depthInfo.emoji} <span class="level-num">Lv.${depth}</span>`;
@@ -5324,6 +5616,33 @@
                     document.getElementById('share-score').textContent = card.total_score;
                     document.getElementById('share-achievements-count').textContent = card.achievements.length;
                     
+                    // 更新排名展示（爆款属性核心）
+                    const rankPercentile = card.rank_percentile || 40;
+                    const rankBadge = getShareRankBadge(rankPercentile);
+                    const rankTitle = card.rank_title || getRankTitle(rankPercentile);
+                    const rankDesc = `你的龙虾值击败了全球 ${100 - rankPercentile}% 的用户！`;
+                    
+                    document.getElementById('share-rank-badge').textContent = rankBadge;
+                    document.getElementById('share-rank-title').textContent = rankTitle;
+                    document.getElementById('share-rank-desc').textContent = rankDesc;
+                    
+                    // 更新稀有称号展示
+                    const rareTitlesSection = document.getElementById('share-rare-titles-section');
+                    const rareTitlesList = document.getElementById('share-rare-titles-list');
+                    
+                    if (card.rare_titles && card.rare_titles.length > 0) {
+                        rareTitlesSection.style.display = 'block';
+                        rareTitlesList.innerHTML = card.rare_titles.map(title => {
+                            const rarity = title.rarity || 'epic';
+                            const parts = title.name.split(' ');
+                            const icon = parts[0];
+                            const name = parts.slice(1).join(' ');
+                            return `<span class="share-rare-title-tag ${rarity}">${icon} ${name}</span>`;
+                        }).join('');
+                    } else {
+                        rareTitlesSection.style.display = 'none';
+                    }
+                    
                     // 更新成就列表
                     const achievementList = document.getElementById('share-achievement-list');
                     achievementList.innerHTML = card.achievements.map(a => {
@@ -5345,6 +5664,19 @@
                 copyToClipboard(window.location.href);
                 showToast('📋 已复制链接');
             }
+        }
+        
+        // 获取分享卡片排名徽章
+        function getShareRankBadge(percentile) {
+            if (percentile >= 90) return '🏆';
+            if (percentile >= 80) return '🌟';
+            if (percentile >= 70) return '⭐';
+            if (percentile >= 60) return '✨';
+            if (percentile >= 50) return '🎯';
+            if (percentile >= 40) return '📈';
+            if (percentile >= 30) return '🌱';
+            if (percentile >= 20) return '🥚';
+            return '🐣';
         }
         
         function closeShareModal(event) {

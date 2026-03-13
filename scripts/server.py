@@ -713,8 +713,12 @@ def generate_share_card():
             'custom_skills': data.custom_skills,
             'achievements': evaluation.get('achievements', [])[:3],  # 最多展示3个
             'value_estimate': evaluation.get('value_estimate', '0元'),
+            # 新增：排名信息
+            'rank_percentile': evaluation.get('rank_percentile', 10),
+            'rank_title': evaluation.get('rank_title', '🐣 萌新入门'),
+            'rare_titles': evaluation.get('rare_titles', [])[:3],  # 最多展示3个稀有称号
             'fun_messages': fun_messages,
-            'share_text': f"🦞 我的 OpenClaw 龙虾等级：{emoji} Lv.{level} {name}\n\n💰 价值估算：{evaluation.get('value_estimate', '0元')}\n🛠️ 技能数量：{data.total_skills} 个\n🏆 成就：{len(evaluation.get('achievements', []))} 个已解锁\n\n来测测你的「龙虾能力」吧！",
+            'share_text': f"🦞 我的 OpenClaw 龙虾等级：{emoji} Lv.{level} {name}\n\n{evaluation.get('rank_title', '')}\n💰 价值估算：{evaluation.get('value_estimate', '0元')}\n🛠️ 技能数量：{data.total_skills} 个\n🏆 成就：{len(evaluation.get('achievements', []))} 个已解锁\n\n来测测你的「龙虾能力」吧！",
             'generated_at': datetime.now().isoformat()
         }
         

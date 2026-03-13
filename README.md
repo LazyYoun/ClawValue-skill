@@ -1,4 +1,4 @@
-# 🦞 ClawValue - OpenClaw 龙虾值评估系统 v4.0
+# 🦞 ClawValue - OpenClaw 龙虾值评估系统 v5.3
 
 量化你在 OpenClaw 上的 AI 自动化能力，生成趣味化的"龙虾能力估值"评估报告。
 
