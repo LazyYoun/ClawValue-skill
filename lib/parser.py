@@ -75,13 +75,17 @@ class LogParser:
         """分类日志消息"""
         msg_lower = message.lower()
         
+        # 过滤掉非关键错误
         if 'error' in msg_lower or 'failed' in msg_lower:
+            # 这些不是真正的错误
+            if any(x in msg_lower for x in ['enoent', 'eisdir', 'deprecation', 'punycode', 'todo.md']):
+                return 'noise'
             return 'error'
         elif 'session' in msg_lower:
             return 'session'
         elif 'tool' in msg_lower or 'skill' in msg_lower:
             return 'tool'
-        elif 'model' in msg_lower or 'token' in msg_lower:
+        elif 'model' in msg_lower or 'token' in msg_lower or 'llm' in msg_lower:
             return 'model'
         elif 'webhook' in msg_lower or 'message' in msg_lower:
             return 'message'
@@ -156,8 +160,11 @@ class LogParser:
             'model_calls': 0,
             'info_count': 0,
             'warn_count': 0,
-            'error_count': 0
+            'error_count': 0,
+            'session_count': 0  # 真实会话数
         }
+        
+        session_ids = set()  # 用于去重会话
         
         for log in logs:
             stats['log_entries'] += 1
@@ -181,15 +188,33 @@ class LogParser:
                 stats['model_calls'] += 1
             elif log_type == 'connection':
                 stats['connections'] += 1
+            elif log_type == 'session':
+                stats['session_count'] += 1
             
             # 从原始数据中提取更多信息
             raw = log.get('raw', {})
             if raw:
-                # 检查是否有 token 使用信息
-                if 'tokens' in str(raw):
-                    stats['total_tokens'] += raw.get('tokens', 0)
+                # 提取 token 使用信息
+                msg = str(raw.get('0', ''))
+                # 匹配 token 使用模式
+                import re
+                token_match = re.search(r'(\d+)\s*tokens?', msg, re.IGNORECASE)
+                if token_match:
+                    stats['total_tokens'] += int(token_match.group(1))
+                
+                # 提取会话 ID
+                if 'session' in msg.lower():
+                    sid_match = re.search(r'session[=:\s]*([a-zA-Z0-9-]+)', msg, re.IGNORECASE)
+                    if sid_match:
+                        session_ids.add(sid_match.group(1))
         
-        stats['session_count'] = stats['log_entries']  # 用日志条目数作为活跃度指标
+        # 如果没有从日志中提取到会话数，使用估算
+        if stats['session_count'] == 0:
+            # 根据工具调用和模型调用估算活跃会话
+            stats['session_count'] = max(1, (stats['tool_calls'] + stats['model_calls']) // 10)
+        
+        # 加上从消息中提取的会话数
+        stats['session_count'] = max(stats['session_count'], len(session_ids))
         
         # 清理不能序列化的字段
         if 'sessions' in stats:
