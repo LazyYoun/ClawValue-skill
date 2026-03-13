@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v8.0</title>
+    <title>🦞 龙虾能力估值 Skill v9.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -1475,7 +1475,7 @@
         }
         
         /* ============================================
-           v8.0 新增爆款主题 - 2026-03-14
+           v9.0 新增爆款主题 - 2026-03-14
            ============================================ */
         
         /* 主题 22: 🌅 日出橙光 - 温暖活力风 */
@@ -1836,6 +1836,337 @@
         
         [data-theme="glacier-polar"] .btn-primary:hover {
             box-shadow: 0 6px 30px rgba(0, 188, 212, 0.5);
+        }
+        
+        /* ============================================
+           v9.0 新增爆款主题 - 2026-03-14
+           ============================================ */
+        
+        /* 主题 27: 🎴 和风浮世 - 日式浮世绘风 */
+        [data-theme="ukiyo-e"] {
+            --bg-primary: #f5f0e6;
+            --bg-secondary: #e8e0d0;
+            --bg-gradient: linear-gradient(180deg, #f5f0e6 0%, #e8e0d0 50%, #f0e8dc 100%);
+            --bg-card: rgba(255, 252, 245, 0.95);
+            --bg-card-hover: rgba(255, 255, 250, 1);
+            
+            --text-primary: #2d1810;
+            --text-secondary: #5c3d2e;
+            --text-muted: #8b6b5b;
+            
+            --accent-primary: #c41e3a;
+            --accent-secondary: #1a5276;
+            --accent-highlight: #d4af37;
+            --accent-gradient: linear-gradient(90deg, #c41e3a, #1a5276, #d4af37, #c41e3a);
+            
+            --color-success: #2e7d32;
+            --color-warning: #d4af37;
+            --color-error: #c41e3a;
+            --color-info: #1a5276;
+            
+            --border-color: rgba(196, 30, 58, 0.15);
+            --border-radius: 4px;
+            --border-radius-sm: 2px;
+            
+            --shadow-card: 3px 3px 0 rgba(196, 30, 58, 0.1);
+            --shadow-glow: none;
+            
+            --font-display: 'Noto Serif SC', serif;
+            --font-body: 'Noto Serif SC', serif;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        [data-theme="ukiyo-e"] body {
+            background-image: 
+                linear-gradient(90deg, transparent 49.5%, rgba(196, 30, 58, 0.03) 49.5%, rgba(196, 30, 58, 0.03) 50.5%, transparent 50.5%);
+            background-size: 100px 100px;
+        }
+        
+        [data-theme="ukiyo-e"] .card {
+            border: 2px solid rgba(196, 30, 58, 0.2);
+            border-radius: 0;
+        }
+        
+        [data-theme="ukiyo-e"] .stat-value {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 900;
+        }
+        
+        [data-theme="ukiyo-e"] .btn-primary {
+            background: #c41e3a;
+            border-radius: 0;
+            color: white;
+        }
+        
+        /* 主题 28: 🎬 电影胶片 - 复古电影风 */
+        [data-theme="film-noir"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-gradient: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            --bg-card: rgba(20, 20, 20, 0.95);
+            --bg-card-hover: rgba(30, 30, 30, 0.98);
+            
+            --text-primary: #f5f5f5;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            
+            --accent-primary: #f5f5f5;
+            --accent-secondary: #cccccc;
+            --accent-highlight: #ffd700;
+            --accent-gradient: linear-gradient(90deg, #f5f5f5, #cccccc, #ffd700, #f5f5f5);
+            
+            --color-success: #90ee90;
+            --color-warning: #ffd700;
+            --color-error: #ff6b6b;
+            --color-info: #87ceeb;
+            
+            --border-color: rgba(245, 245, 245, 0.15);
+            --border-radius: 0px;
+            --border-radius-sm: 0px;
+            
+            --shadow-card: 0 0 0 1px rgba(245, 245, 245, 0.1);
+            --shadow-glow: none;
+            
+            --font-display: 'Courier New', monospace;
+            --font-body: 'Courier New', monospace;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        [data-theme="film-noir"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        [data-theme="film-noir"] .card {
+            border: 1px solid rgba(245, 245, 245, 0.1);
+        }
+        
+        [data-theme="film-noir"] .stat-value {
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px rgba(245, 245, 245, 0.5);
+        }
+        
+        [data-theme="film-noir"] .btn-primary {
+            background: transparent;
+            border: 2px solid #f5f5f5;
+            color: #f5f5f5;
+            border-radius: 0;
+        }
+        
+        [data-theme="film-noir"] .btn-primary:hover {
+            background: #f5f5f5;
+            color: #0a0a0a;
+        }
+        
+        /* 主题 29: 🌈 彩虹糖果 - 多彩梦幻风 */
+        [data-theme="rainbow-candy"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --bg-card: rgba(255, 255, 255, 0.08);
+            --bg-card-hover: rgba(255, 255, 255, 0.12);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --text-muted: #a0a0a0;
+            
+            --accent-primary: #ff6b6b;
+            --accent-secondary: #4ecdc4;
+            --accent-highlight: #ffe66d;
+            --accent-gradient: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #ff6b6b);
+            
+            --color-success: #4ecdc4;
+            --color-warning: #ffe66d;
+            --color-error: #ff6b6b;
+            --color-info: #54a0ff;
+            
+            --border-color: rgba(255, 255, 255, 0.15);
+            --border-radius: 30px;
+            --border-radius-sm: 20px;
+            
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 30px rgba(255, 107, 107, 0.3);
+            
+            --font-display: 'Comic Sans MS', cursive, sans-serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        [data-theme="rainbow-candy"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255, 107, 107, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(78, 205, 196, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(255, 230, 109, 0.1) 0%, transparent 25%);
+            animation: rainbowFloat 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes rainbowFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(3%, 3%) scale(1.05); }
+            66% { transform: translate(-3%, -3%) scale(0.95); }
+        }
+        
+        [data-theme="rainbow-candy"] .card {
+            border: 2px solid transparent;
+            background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+                        linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3) border-box;
+        }
+        
+        [data-theme="rainbow-candy"] .stat-value {
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        [data-theme="rainbow-candy"] .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border-radius: 25px;
+        }
+        
+        /* 主题 30: 🏜️ 沙漠黄昏 - 温暖沙漠风 */
+        [data-theme="desert-dusk"] {
+            --bg-primary: #1a120b;
+            --bg-secondary: #2d1f15;
+            --bg-gradient: linear-gradient(180deg, #1a120b 0%, #2d1f15 50%, #3d2914 100%);
+            --bg-card: rgba(60, 40, 25, 0.9);
+            --bg-card-hover: rgba(75, 50, 30, 0.95);
+            
+            --text-primary: #f5e6d3;
+            --text-secondary: #d4b896;
+            --text-muted: #a08060;
+            
+            --accent-primary: #e67e22;
+            --accent-secondary: #d35400;
+            --accent-highlight: #f39c12;
+            --accent-gradient: linear-gradient(90deg, #e67e22, #d35400, #f39c12, #e67e22);
+            
+            --color-success: #27ae60;
+            --color-warning: #f39c12;
+            --color-error: #c0392b;
+            --color-info: #2980b9;
+            
+            --border-color: rgba(230, 126, 34, 0.25);
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 30px rgba(230, 126, 34, 0.2);
+            
+            --font-display: Georgia, serif;
+            --font-body: Georgia, serif;
+            
+            --card-blur: blur(8px);
+            --header-align: center;
+        }
+        
+        [data-theme="desert-dusk"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(243, 156, 18, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(230, 126, 34, 0.05) 0%, transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="desert-dusk"] .card {
+            border: 1px solid rgba(230, 126, 34, 0.2);
+        }
+        
+        [data-theme="desert-dusk"] .stat-value {
+            color: #f39c12;
+            text-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
+        }
+        
+        [data-theme="desert-dusk"] .btn-primary {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+        }
+        
+        /* 主题 31: 🌲 北欧森林 - 自然清新风 */
+        [data-theme="nordic-forest"] {
+            --bg-primary: #f8faf5;
+            --bg-secondary: #f0f4eb;
+            --bg-gradient: linear-gradient(180deg, #f8faf5 0%, #f0f4eb 50%, #e8efe0 100%);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            
+            --text-primary: #1a2f1a;
+            --text-secondary: #3d5c3d;
+            --text-muted: #6b8e6b;
+            
+            --accent-primary: #2e7d32;
+            --accent-secondary: #4caf50;
+            --accent-highlight: #8bc34a;
+            --accent-gradient: linear-gradient(90deg, #2e7d32, #4caf50, #8bc34a, #2e7d32);
+            
+            --color-success: #4caf50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+            --color-info: #2196f3;
+            
+            --border-color: rgba(46, 125, 50, 0.12);
+            --border-radius: 20px;
+            --border-radius-sm: 14px;
+            
+            --shadow-card: 0 4px 20px rgba(46, 125, 50, 0.08);
+            --shadow-glow: 0 0 20px rgba(76, 175, 80, 0.15);
+            
+            --font-display: -apple-system, sans-serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(5px);
+            --header-align: center;
+        }
+        
+        [data-theme="nordic-forest"] body {
+            background-image: 
+                radial-gradient(circle at 10% 90%, rgba(139, 195, 74, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 90% 10%, rgba(76, 175, 80, 0.05) 0%, transparent 30%);
+        }
+        
+        [data-theme="nordic-forest"] .card {
+            border: 1px solid rgba(46, 125, 50, 0.1);
+        }
+        
+        [data-theme="nordic-forest"] .stat-value {
+            color: #2e7d32;
+        }
+        
+        [data-theme="nordic-forest"] .btn-primary {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            color: white;
         }
         
         /* ============================================
@@ -3742,21 +4073,48 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 18px;
+            padding: 12px 22px;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             font-size: 0.95rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.15),
+                transparent
+            );
+            animation: themeBtnShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes themeBtnShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            50%, 100% { transform: translateX(100%) rotate(45deg); }
         }
 
         .theme-toggle:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.5);
+        }
+        
+        .theme-toggle:active {
+            transform: scale(1.02);
         }
 
         .theme-toggle-icon {
@@ -3905,12 +4263,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 14px 16px;
             background: var(--bg-card);
             border: 2px solid transparent;
             border-radius: var(--border-radius-sm);
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
         }
@@ -3922,7 +4280,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.03) 100%);
+            background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.05) 100%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -3934,14 +4292,14 @@
         .theme-option:hover {
             background: var(--bg-card-hover);
             border-color: var(--border-color);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
         }
         
         .theme-option.active {
             border-color: var(--accent-primary);
             background: var(--bg-card-hover);
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2), 0 8px 20px rgba(0,0,0,0.15);
         }
         
         [data-theme="cyber-neon"] .theme-option.active {
@@ -4865,7 +5223,7 @@
                         </div>
                         <div class="theme-panel-subtitle">
                             点击切换，自动保存您的偏好
-                            <span class="theme-count-badge">26 套可选</span>
+                            <span class="theme-count-badge">31 套可选</span>
                         </div>
                         <div id="theme-categories">
                             <!-- 动态生成分类主题 -->
@@ -4882,11 +5240,11 @@
             <div class="dynamic-grid" aria-hidden="true"></div>
             
             <div class="lobster-icon-hero lobster-icon-3d" aria-hidden="true">🦞</div>
-            <h1 id="main-title" class="title-shine gradient-text-enhanced" style="font-size: 2.8rem; margin: 20px 0 15px;">
+            <h1 id="main-title" class="title-shine gradient-text-enhanced" style="font-size: 3rem; margin: 20px 0 15px; font-weight: 900;">
                 龙虾能力估值
             </h1>
-            <p style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 25px;">
-                <span id="hero-subtitle" class="typewriter-text">基于 OpenClaw 使用数据的深度分析与价值评估</span>
+            <p style="font-size: 1.15rem; opacity: 0.85; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <span id="hero-subtitle" class="typewriter-text">🎯 基于真实数据的 AI 能力量化评估，看看你的「龙虾值」有多高</span>
             </p>
             <div class="header-actions">
                 <button class="btn btn-secondary" id="refresh-btn" onclick="refreshData()">
@@ -4895,21 +5253,21 @@
                 <button class="btn btn-primary cta-pulse glow-border" id="share-btn" onclick="shareResult()">
                     ✨ 分享我的龙虾值
                 </button>
-                <span class="shortcut-hint">快捷键: R 刷新 | S 分享</span>
+                <span class="shortcut-hint">快捷键: R 刷新 | S 分享 | T 切换主题</span>
             </div>
-            <!-- 实时数据指示器 -->
-            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-                <div style="text-align: center;" class="magnify-hover">
-                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">活跃用户</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);" id="live-users">--</div>
+            <!-- 实时数据指示器 - v9.0 增强版 -->
+            <div style="margin-top: 35px; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+                <div style="text-align: center; padding: 15px 25px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);" class="magnify-hover">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">🌍 活跃用户</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary);" id="live-users">--</div>
                 </div>
-                <div style="text-align: center;" class="magnify-hover">
-                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">今日评估</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-secondary);" id="today-evals">--</div>
+                <div style="text-align: center; padding: 15px 25px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);" class="magnify-hover">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">📊 今日评估</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-secondary);" id="today-evals">--</div>
                 </div>
-                <div style="text-align: center;" class="magnify-hover">
-                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">总价值</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-highlight);" id="total-value">--</div>
+                <div style="text-align: center; padding: 15px 25px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color);" class="magnify-hover">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">💰 总价值</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-highlight);" id="total-value">--</div>
                 </div>
             </div>
         </section>
@@ -5191,7 +5549,7 @@
 
         <!-- 底部版权区域 -->
         <footer class="footer" role="contentinfo">
-            <p>🦞 龙虾能力估值 Skill v8.0 - 量化你的 AI 自动化价值</p>
+            <p>🦞 龙虾能力估值 Skill v9.0 - 量化你的 AI 自动化价值</p>
             <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> | 数据本地存储，安全可靠</p>
             <p style="margin-top: 8px; font-size: 0.8rem;">
                 <span id="current-time"></span> | 
@@ -5544,7 +5902,7 @@
                 type: 'special',
                 colors: ['#0c0c14', '#e2e8f0', '#60a5fa', '#fbbf24']
             },
-            // v8.0 新增爆款主题 - 2026-03-14
+            // v9.0 新增爆款主题 - 2026-03-14
             'sunrise-orange': {
                 name: '日出橙光',
                 icon: '🌅',
@@ -5579,6 +5937,42 @@
                 desc: '清冷现代风',
                 type: 'light',
                 colors: ['#e0f7fa', '#00bcd4', '#26c6da', '#006064']
+            },
+            // v9.0 新增爆款主题 - 2026-03-14
+            'ukiyo-e': {
+                name: '和风浮世',
+                icon: '🎴',
+                desc: '日式浮世绘风',
+                type: 'light',
+                colors: ['#f5f0e6', '#c41e3a', '#1a5276', '#d4af37']
+            },
+            'film-noir': {
+                name: '电影胶片',
+                icon: '🎬',
+                desc: '复古电影风',
+                type: 'dark',
+                colors: ['#0a0a0a', '#f5f5f5', '#cccccc', '#ffd700']
+            },
+            'rainbow-candy': {
+                name: '彩虹糖果',
+                icon: '🌈',
+                desc: '多彩梦幻风',
+                type: 'special',
+                colors: ['#1a1a2e', '#ff6b6b', '#4ecdc4', '#ffe66d']
+            },
+            'desert-dusk': {
+                name: '沙漠黄昏',
+                icon: '🏜️',
+                desc: '温暖沙漠风',
+                type: 'dark',
+                colors: ['#1a120b', '#e67e22', '#d35400', '#f39c12']
+            },
+            'nordic-forest': {
+                name: '北欧森林',
+                icon: '🌲',
+                desc: '自然清新风',
+                type: 'light',
+                colors: ['#f8faf5', '#2e7d32', '#4caf50', '#8bc34a']
             }
         };
         
@@ -5648,25 +6042,57 @@
 
         // 设置主题
         function setTheme(themeId) {
-            document.documentElement.setAttribute('data-theme', themeId);
-            localStorage.setItem('clawvalue-theme', themeId);
+            const theme = themes[themeId];
+            if (!theme) return;
             
-            // 更新面板选中状态
-            document.querySelectorAll('.theme-option').forEach(el => {
-                const isActive = el.getAttribute('data-theme-id') === themeId;
-                el.classList.toggle('active', isActive);
+            // 添加过渡遮罩效果
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: ${theme.colors[0]};
+                opacity: 0;
+                z-index: 9999;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            `;
+            document.body.appendChild(overlay);
+            
+            // 淡入遮罩
+            requestAnimationFrame(() => {
+                overlay.style.opacity = '0.3';
             });
             
-            // 关闭面板
-            document.getElementById('theme-panel').classList.remove('show');
-            
-            // 更新粒子颜色基于主题
-            updateParticlesForTheme(themeId);
-            
-            showToast(`✅ 已切换到「${themes[themeId].name}」主题`);
-            
-            // 更新图表颜色
-            updateChartColors();
+            // 切换主题
+            setTimeout(() => {
+                document.documentElement.setAttribute('data-theme', themeId);
+                localStorage.setItem('clawvalue-theme', themeId);
+                
+                // 更新面板选中状态
+                document.querySelectorAll('.theme-option').forEach(el => {
+                    const isActive = el.getAttribute('data-theme-id') === themeId;
+                    el.classList.toggle('active', isActive);
+                });
+                
+                // 更新粒子颜色
+                updateParticlesForTheme(themeId);
+                
+                // 更新图表颜色
+                updateChartColors();
+                
+                // 淡出遮罩
+                overlay.style.opacity = '0';
+                
+                setTimeout(() => overlay.remove(), 300);
+                
+                // 关闭面板
+                document.getElementById('theme-panel').classList.remove('show');
+                
+                showToast(`🎨 已切换到「${theme.name}」主题`);
+            }, 150);
         }
         
         // 根据主题更新粒子颜色
