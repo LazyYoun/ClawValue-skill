@@ -1127,8 +1127,12 @@
         async function fetchData() {
             try {
                 const response = await fetch('/api/');
-                const data = await response.json();
-                updateUI(data);
+                const result = await response.json();
+                if (result.success && result.data) {
+                    updateUI(result.data);
+                } else {
+                    showError();
+                }
             } catch (error) {
                 console.error('获取数据失败:', error);
                 showError();
@@ -1168,7 +1172,7 @@
 
             // 更新技能统计
             const skills = data.skills || {};
-            document.getElementById('skill-count').textContent = Object.keys(skills.categories || {}).length;
+            document.getElementById('skill-count').textContent = skills.total || 0;
             
             const tagsHtml = Object.entries(skills.categories || {}).map(([name, count]) => `
                 <div class="skill-tag">
@@ -1197,7 +1201,7 @@
             `;
 
             // 更新成就
-            const achievements = data.evaluation?.achievements || [];
+            const achievements = data.achievements || data.evaluation?.achievements || [];
             const achievementsSection = document.getElementById('achievements-section');
             const achievementsList = document.getElementById('achievements-list');
             
@@ -1330,7 +1334,9 @@
 
         // 分享功能
         async function shareResult() {
-            const data = await fetch('/api/').then(r => r.json());
+            const response = await fetch('/api/');
+            const result = await response.json();
+            const data = result.data || {};
             const depth = data.depth_level || 1;
             const depthInfo = depthConfig[depth];
             const lobsterSkill = data.evaluation?.lobster_skill || '龙虾能力估Skill';
