@@ -362,6 +362,53 @@
         .card:nth-child(2) { animation-delay: 0.2s; }
         .card:nth-child(3) { animation-delay: 0.3s; }
         .card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* 刷新按钮悬浮效果 */
+        #refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 数据更新闪烁效果 */
+        @keyframes dataUpdate {
+            0% { background-color: rgba(102, 126, 234, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+        .data-updated {
+            animation: dataUpdate 0.5s ease;
+        }
+
+        /* 趣味化标题动画 */
+        @keyframes lobsterWiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        header h1:hover {
+            animation: lobsterWiggle 0.5s ease;
+        }
+
+        /* 成就弹出效果 */
+        @keyframes achievementPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .achievement-item {
+            animation: achievementPop 0.4s ease forwards;
+        }
+
+        .achievement-item:nth-child(1) { animation-delay: 0.1s; }
+        .achievement-item:nth-child(2) { animation-delay: 0.2s; }
+        .achievement-item:nth-child(3) { animation-delay: 0.3s; }
+        .achievement-item:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
@@ -369,6 +416,18 @@
         <header>
             <h1>🦞 龙虾能力估值 Skill v1.0</h1>
             <p>基于 Claude Code 使用数据的深度分析与价值评估</p>
+            <button id="refresh-btn" onclick="refreshData()" style="
+                margin-top: 15px;
+                padding: 10px 25px;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                border: none;
+                border-radius: 25px;
+                color: white;
+                font-size: 0.95rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            ">🔄 刷新数据</button>
         </header>
 
         <div class="dashboard">
@@ -742,6 +801,40 @@
         // 显示错误
         function showError() {
             document.getElementById('roast-content').innerHTML = '<p>⚠️ 数据加载失败，请检查 API 连接</p>';
+        }
+
+        // 刷新数据
+        async function refreshData() {
+            const btn = document.getElementById('refresh-btn');
+            btn.disabled = true;
+            btn.textContent = '⏳ 刷新中...';
+            btn.style.opacity = '0.7';
+
+            try {
+                const response = await fetch('/api/refresh', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 重新获取仪表盘数据
+                    await fetchData();
+                    btn.textContent = '✅ 已刷新';
+                    setTimeout(() => {
+                        btn.textContent = '🔄 刷新数据';
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                    }, 2000);
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('刷新失败:', error);
+                btn.textContent = '❌ 刷新失败';
+                setTimeout(() => {
+                    btn.textContent = '🔄 刷新数据';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }, 2000);
+            }
         }
 
         // 初始化
