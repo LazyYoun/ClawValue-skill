@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v10.0</title>
+    <title>🦞 龙虾能力估值 Skill v11.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -5922,6 +5922,414 @@
             display: flex;
             gap: 10px;
         }
+        
+        /* ============================================
+           v11.0 首屏视觉重塑
+           ============================================ */
+        
+        /* 英雄区域全屏增强 */
+        .hero-section-v11 {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* 龙虾大图标 - 入场动画 */
+        .lobster-mega {
+            font-size: 8rem;
+            filter: drop-shadow(0 20px 60px rgba(255, 107, 107, 0.5));
+            animation: lobsterEntrance 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transform-origin: center;
+        }
+        
+        @keyframes lobsterEntrance {
+            0% {
+                transform: translateX(100vw) rotate(180deg) scale(0);
+                opacity: 0;
+            }
+            60% {
+                transform: translateX(-20px) rotate(-10deg) scale(1.1);
+                opacity: 1;
+            }
+            80% {
+                transform: translateX(10px) rotate(5deg) scale(0.95);
+            }
+            100% {
+                transform: translateX(0) rotate(0deg) scale(1);
+            }
+        }
+        
+        /* 标题爆炸式出现 */
+        .title-explode {
+            animation: titleExplode 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards;
+            opacity: 0;
+        }
+        
+        @keyframes titleExplode {
+            0% {
+                transform: scale(0.3) translateY(50px);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.1) translateY(-10px);
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 波浪分隔线 */
+        .wave-separator {
+            height: 100px;
+            background: linear-gradient(180deg, transparent, var(--bg-secondary));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wave-separator::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='var(--bg-card)' d='M0,30 C360,60 720,0 1080,30 C1260,45 1440,30 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+        
+        /* 向下滚动引导 */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scrollBounce 2s ease-in-out infinite;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .scroll-indicator:hover {
+            opacity: 1;
+        }
+        
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(15px); }
+        }
+        
+        /* 数据卡片游戏风格 - 属性面板 */
+        .attr-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 25px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .attr-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-highlight));
+        }
+        
+        .attr-item {
+            text-align: center;
+            padding: 15px;
+            position: relative;
+        }
+        
+        .attr-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 8px rgba(255, 107, 107, 0.3));
+        }
+        
+        .attr-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .attr-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* 环形进度条 */
+        .progress-ring {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+        }
+        
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-bg {
+            fill: none;
+            stroke: var(--bg-card-hover);
+            stroke-width: 8;
+        }
+        
+        .progress-ring-fill {
+            fill: none;
+            stroke: var(--accent-primary);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 339.292;
+            stroke-dashoffset: 339.292;
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+        }
+        
+        /* 成就徽章墙 */
+        .badge-wall-v11 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+        
+        .badge-item {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .badge-item:hover {
+            transform: scale(1.15) rotate(5deg);
+        }
+        
+        .badge-item.unlocked {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
+            animation: badgeGlow 2s ease-in-out infinite;
+        }
+        
+        .badge-item.locked {
+            background: var(--bg-card-hover);
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+        
+        .badge-item.locked::after {
+            content: '?';
+            position: absolute;
+            font-size: 2rem;
+            color: var(--text-muted);
+        }
+        
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(255, 107, 107, 0.6); }
+        }
+        
+        /* 分享卡片增强 - v11.0 */
+        .share-card-v11 {
+            background: var(--bg-gradient);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 400px;
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 107, 107, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .share-card-v11::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 50%);
+            animation: cardShimmer 4s linear infinite;
+        }
+        
+        @keyframes cardShimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 趣味话术卡片 */
+        .fun-fact-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-card-hover));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-primary);
+            position: relative;
+        }
+        
+        .fun-fact-card::before {
+            content: '💡';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 1.5rem;
+            background: var(--bg-card);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+        
+        /* 主题特效 - 气泡上升 */
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            border-radius: 50%;
+            animation: bubbleRise linear infinite;
+        }
+        
+        @keyframes bubbleRise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) scale(0.5);
+                opacity: 0;
+            }
+        }
+        
+        /* 萤火虫效果 */
+        .firefly {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #52b788;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #52b788, 0 0 20px #52b788;
+            animation: fireflyFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes fireflyFloat {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(30px, -30px);
+                opacity: 1;
+            }
+        }
+        
+        /* 花瓣飘落 */
+        .petal {
+            position: absolute;
+            font-size: 1.2rem;
+            animation: petalFall linear infinite;
+        }
+        
+        @keyframes petalFall {
+            0% {
+                transform: translateY(-50px) rotate(0deg) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* 流星效果 */
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: shootingStar 3s ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(-100px) translateY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            30% {
+                transform: translateX(calc(100vw + 100px)) translateY(100px);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式 - v11.0 */
+        @media (max-width: 768px) {
+            .attr-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .lobster-mega {
+                font-size: 5rem;
+            }
+            
+            .progress-ring {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .badge-item {
+                width: 55px;
+                height: 55px;
+                font-size: 1.5rem;
+            }
+            
+            .bubbles, .firefly, .petal, .shooting-star {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -5945,7 +6353,7 @@
                         </div>
                         <div class="theme-panel-subtitle">
                             点击切换，自动保存您的偏好
-                            <span class="theme-count-badge">31 套可选</span>
+                            <span class="theme-count-badge">39 套可选</span>
                         </div>
                         <div id="theme-categories">
                             <!-- 动态生成分类主题 -->
@@ -6271,7 +6679,7 @@
 
         <!-- 底部版权区域 -->
         <footer class="footer" role="contentinfo">
-            <p>🦞 龙虾能力估值 Skill v10.0 - 量化你的 AI 自动化价值</p>
+            <p>🦞 龙虾能力估值 Skill v11.0 - 量化你的 AI 自动化价值</p>
             <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> | 数据本地存储，安全可靠</p>
             <p style="margin-top: 8px; font-size: 0.8rem;">
                 <span id="current-time"></span> | 
