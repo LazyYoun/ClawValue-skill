@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值 Skill v6.0</title>
+    <title>🦞 龙虾能力估值 Skill v8.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -1194,6 +1194,648 @@
             );
             pointer-events: none;
             z-index: 10000;
+        }
+        
+        /* ============================================
+           v7.0 新增爆款主题
+           ============================================ */
+        
+        /* 主题 19: 🌌 星河璀璨 - 宇宙探索风 */
+        [data-theme="galaxy-stars"] {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #1a1a3a;
+            --bg-gradient: linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 50%, #0f0f2f 100%);
+            --bg-card: rgba(20, 20, 50, 0.85);
+            --bg-card-hover: rgba(30, 30, 70, 0.9);
+            
+            --text-primary: #f0f0ff;
+            --text-secondary: #a0a0c0;
+            --text-muted: #7070a0;
+            
+            --accent-primary: #ff6b9d;
+            --accent-secondary: #c084fc;
+            --accent-highlight: #22d3ee;
+            --accent-gradient: linear-gradient(90deg, #ff6b9d, #c084fc, #22d3ee, #ff6b9d);
+            
+            --color-success: #22d3ee;
+            --color-warning: #fbbf24;
+            --color-error: #f43f5e;
+            --color-info: #c084fc;
+            
+            --border-color: rgba(192, 132, 252, 0.3);
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+            
+            --shadow-card: 0 8px 32px rgba(192, 132, 252, 0.15), 0 0 60px rgba(255, 107, 157, 0.1);
+            --shadow-glow: 0 0 40px rgba(192, 132, 252, 0.3);
+            
+            --font-display: 'Noto Serif SC', -apple-system, sans-serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(12px);
+            --header-align: center;
+        }
+        
+        /* 星河璀璨 - 星星闪烁背景 */
+        [data-theme="galaxy-stars"] body {
+            position: relative;
+        }
+        
+        [data-theme="galaxy-stars"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 107, 157, 0.9), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(192, 132, 252, 0.9), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(34, 211, 238, 0.8), transparent),
+                radial-gradient(1px 1px at 160px 120px, #fff, transparent),
+                radial-gradient(2px 2px at 200px 50px, rgba(255, 107, 157, 0.7), transparent),
+                radial-gradient(1px 1px at 250px 100px, rgba(192, 132, 252, 0.8), transparent),
+                radial-gradient(2px 2px at 280px 140px, #fff, transparent),
+                radial-gradient(1px 1px at 320px 80px, rgba(34, 211, 238, 0.9), transparent),
+                radial-gradient(2px 2px at 350px 160px, rgba(255, 107, 157, 0.6), transparent);
+            background-size: 400px 200px;
+            animation: starsTwinkle 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes starsTwinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        [data-theme="galaxy-stars"] .card {
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="galaxy-stars"] .stat-value {
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+        }
+        
+        /* 主题 20: 🌊 极光幻境 - 北欧极光风 */
+        [data-theme="aurora-dreams"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-gradient: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            --bg-card: rgba(30, 41, 59, 0.9);
+            --bg-card-hover: rgba(51, 65, 85, 0.95);
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --accent-primary: #34d399;
+            --accent-secondary: #60a5fa;
+            --accent-highlight: #f472b6;
+            --accent-gradient: linear-gradient(90deg, #34d399, #60a5fa, #f472b6, #34d399);
+            
+            --color-success: #34d399;
+            --color-warning: #fbbf24;
+            --color-error: #f43f5e;
+            --color-info: #60a5fa;
+            
+            --border-color: rgba(52, 211, 153, 0.3);
+            --border-radius: 24px;
+            --border-radius-sm: 16px;
+            
+            --shadow-card: 0 8px 32px rgba(52, 211, 153, 0.1), 0 0 60px rgba(96, 165, 250, 0.1);
+            --shadow-glow: 0 0 40px rgba(52, 211, 153, 0.3);
+            
+            --font-display: 'Noto Serif SC', -apple-system, sans-serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(15px);
+            --header-align: center;
+        }
+        
+        /* 极光幻境 - 极光波浪效果 */
+        [data-theme="aurora-dreams"] body {
+            position: relative;
+        }
+        
+        [data-theme="aurora-dreams"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: 
+                linear-gradient(180deg, 
+                    transparent 0%,
+                    rgba(52, 211, 153, 0.05) 20%,
+                    rgba(96, 165, 250, 0.08) 40%,
+                    rgba(244, 114, 182, 0.05) 60%,
+                    transparent 100%
+                );
+            animation: auroraWave 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes auroraWave {
+            0%, 100% { 
+                transform: translateY(0) scaleY(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translateY(-20px) scaleY(1.1);
+                opacity: 0.5;
+            }
+        }
+        
+        [data-theme="aurora-dreams"] body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(1px 1px at 50px 50px, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(1px 1px at 150px 100px, rgba(255, 255, 255, 0.6), transparent),
+                radial-gradient(1px 1px at 250px 60px, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 350px 130px, rgba(255, 255, 255, 0.5), transparent);
+            background-size: 400px 200px;
+            animation: snowFall 10s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        
+        @keyframes snowFall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(200px); }
+        }
+        
+        [data-theme="aurora-dreams"] .card {
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+        
+        [data-theme="aurora-dreams"] .stat-value {
+            background: linear-gradient(90deg, #34d399, #60a5fa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 主题 21: 💎 钻石闪耀 - 奢华优雅风 */
+        [data-theme="diamond-shine"] {
+            --bg-primary: #0c0c14;
+            --bg-secondary: #1a1a2e;
+            --bg-gradient: linear-gradient(180deg, #0c0c14 0%, #1a1a2e 50%, #0c0c14 100%);
+            --bg-card: rgba(26, 26, 46, 0.95);
+            --bg-card-hover: rgba(40, 40, 70, 0.98);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            
+            --accent-primary: #e2e8f0;
+            --accent-secondary: #60a5fa;
+            --accent-highlight: #fbbf24;
+            --accent-gradient: linear-gradient(90deg, #e2e8f0, #60a5fa, #fbbf24, #e2e8f0);
+            
+            --color-success: #22c55e;
+            --color-warning: #fbbf24;
+            --color-error: #ef4444;
+            --color-info: #60a5fa;
+            
+            --border-color: rgba(226, 232, 240, 0.2);
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 40px rgba(251, 191, 36, 0.1);
+            --shadow-glow: 0 0 40px rgba(251, 191, 36, 0.3);
+            
+            --font-display: 'Playfair Display', 'Noto Serif SC', serif;
+            --font-body: -apple-system, sans-serif;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        /* 钻石闪耀 - 光芒效果 */
+        [data-theme="diamond-shine"] body {
+            position: relative;
+        }
+        
+        [data-theme="diamond-shine"] body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(251, 191, 36, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(96, 165, 250, 0.03) 0%, transparent 50%);
+            animation: diamondGlow 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes diamondGlow {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(5%, 5%); }
+        }
+        
+        [data-theme="diamond-shine"] .card {
+            border: 1px solid rgba(226, 232, 240, 0.15);
+            box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        [data-theme="diamond-shine"] .card:hover {
+            border-color: rgba(251, 191, 36, 0.3);
+            box-shadow: var(--shadow-card), 0 0 20px rgba(251, 191, 36, 0.15);
+        }
+        
+        [data-theme="diamond-shine"] .stat-value {
+            background: linear-gradient(135deg, #f8fafc 0%, #fbbf24 50%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 2px 10px rgba(251, 191, 36, 0.3));
+        }
+        
+        [data-theme="diamond-shine"] .btn-primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        [data-theme="diamond-shine"] .btn-primary:hover {
+            box-shadow: 0 6px 25px rgba(251, 191, 36, 0.5);
+        }
+        
+        /* ============================================
+           v8.0 新增爆款主题 - 2026-03-14
+           ============================================ */
+        
+        /* 主题 22: 🌅 日出橙光 - 温暖活力风 */
+        [data-theme="sunrise-orange"] {
+            --bg-primary: #1a0a1a;
+            --bg-secondary: #2d1810;
+            --bg-gradient: linear-gradient(135deg, #1a0a1a 0%, #2d1810 50%, #0a0a0a 100%);
+            --bg-card: rgba(45, 24, 16, 0.85);
+            --bg-card-hover: rgba(60, 35, 20, 0.9);
+            
+            --text-primary: #fff5eb;
+            --text-secondary: #ffccaa;
+            --text-muted: #cc9977;
+            
+            --accent-primary: #ff7e5f;
+            --accent-secondary: #feb47b;
+            --accent-highlight: #ffd700;
+            --accent-gradient: linear-gradient(90deg, #ff7e5f, #feb47b, #ffd700, #ff7e5f);
+            
+            --color-success: #22c55e;
+            --color-warning: #ffd700;
+            --color-error: #ef4444;
+            --color-info: #ff7e5f;
+            
+            --border-color: rgba(255, 126, 95, 0.3);
+            --border-radius: 24px;
+            --border-radius-sm: 16px;
+            
+            --shadow-card: 0 8px 32px rgba(255, 126, 95, 0.15), 0 0 60px rgba(254, 180, 123, 0.1);
+            --shadow-glow: 0 0 40px rgba(255, 126, 95, 0.4);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(12px);
+            --header-align: center;
+        }
+        
+        /* 日出橙光 - 光芒放射效果 */
+        [data-theme="sunrise-orange"] body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center top, 
+                rgba(255, 126, 95, 0.15) 0%, 
+                rgba(254, 180, 123, 0.08) 30%, 
+                transparent 60%);
+            transform: translateX(-50%);
+            animation: sunriseGlow 5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes sunriseGlow {
+            0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+        
+        [data-theme="sunrise-orange"] .stat-value {
+            text-shadow: 0 0 30px rgba(255, 126, 95, 0.5);
+        }
+        
+        [data-theme="sunrise-orange"] .btn-primary {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            box-shadow: 0 4px 20px rgba(255, 126, 95, 0.4);
+        }
+        
+        /* 主题 23: 🌙 午夜蓝调 - 深沉专业风 */
+        [data-theme="midnight-blues"] {
+            --bg-primary: #0a1628;
+            --bg-secondary: #1a2744;
+            --bg-gradient: linear-gradient(180deg, #0a1628 0%, #1a2744 50%, #0f1f38 100%);
+            --bg-card: rgba(26, 39, 68, 0.9);
+            --bg-card-hover: rgba(40, 55, 90, 0.95);
+            
+            --text-primary: #f0f4f8;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --accent-primary: #3b82f6;
+            --accent-secondary: #60a5fa;
+            --accent-highlight: #93c5fd;
+            --accent-gradient: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd, #3b82f6);
+            
+            --color-success: #22c55e;
+            --color-warning: #fbbf24;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            
+            --border-color: rgba(59, 130, 246, 0.25);
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            
+            --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(59, 130, 246, 0.1);
+            --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.3);
+            
+            --font-display: 'Inter', -apple-system, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(10px);
+            --header-align: center;
+        }
+        
+        /* 午夜蓝调 - 星光点缀 */
+        [data-theme="midnight-blues"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(1px 1px at 30% 50%, rgba(147, 197, 253, 0.9), transparent),
+                radial-gradient(1px 1px at 60% 30%, rgba(255, 255, 255, 0.7), transparent),
+                radial-gradient(1px 1px at 80% 70%, rgba(96, 165, 250, 0.8), transparent),
+                radial-gradient(1px 1px at 90% 10%, rgba(255, 255, 255, 0.6), transparent);
+            background-size: 200px 200px;
+            animation: twinkle 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="midnight-blues"] .card {
+            border: 1px solid rgba(59, 130, 246, 0.15);
+        }
+        
+        [data-theme="midnight-blues"] .stat-value {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* 主题 24: 🌿 竹林禅意 - 东方自然风 */
+        [data-theme="bamboo-zen"] {
+            --bg-primary: #f5f5f0;
+            --bg-secondary: #e8f0e8;
+            --bg-gradient: linear-gradient(180deg, #f5f5f0 0%, #e8f0e8 50%, #f0f0e8 100%);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            
+            --text-primary: #2d3a2e;
+            --text-secondary: #5d8a66;
+            --text-muted: #8b7355;
+            
+            --accent-primary: #5d8a66;
+            --accent-secondary: #8b7355;
+            --accent-highlight: #c41e3a;
+            --accent-gradient: linear-gradient(90deg, #5d8a66, #8b7355, #c41e3a, #5d8a66);
+            
+            --color-success: #5d8a66;
+            --color-warning: #d4a373;
+            --color-error: #c41e3a;
+            --color-info: #5d8a66;
+            
+            --border-color: rgba(93, 138, 102, 0.2);
+            --border-radius: 4px;
+            --border-radius-sm: 2px;
+            
+            --shadow-card: 0 4px 20px rgba(93, 138, 102, 0.1);
+            --shadow-glow: none;
+            
+            --font-display: 'Noto Serif SC', 'Songti SC', serif;
+            --font-body: 'Noto Sans SC', -apple-system, sans-serif;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        /* 竹林禅意 - 水墨晕染效果 */
+        [data-theme="bamboo-zen"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 10% 90%, rgba(93, 138, 102, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 10%, rgba(139, 115, 85, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        [data-theme="bamboo-zen"] .card {
+            border: 1px solid rgba(93, 138, 102, 0.15);
+            box-shadow: var(--shadow-card);
+        }
+        
+        [data-theme="bamboo-zen"] .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        [data-theme="bamboo-zen"] header h1 {
+            -webkit-text-fill-color: var(--text-primary);
+            background: none;
+            animation: none;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+        }
+        
+        /* 主题 25: 🔥 烈焰红唇 - 热情奔放风 */
+        [data-theme="flame-red"] {
+            --bg-primary: #0a0000;
+            --bg-secondary: #1a0505;
+            --bg-gradient: linear-gradient(180deg, #0a0000 0%, #1a0505 50%, #0a0000 100%);
+            --bg-card: rgba(26, 5, 5, 0.95);
+            --bg-card-hover: rgba(40, 10, 10, 0.98);
+            
+            --text-primary: #fff5f5;
+            --text-secondary: #ffcccc;
+            --text-muted: #aa6666;
+            
+            --accent-primary: #ef4444;
+            --accent-secondary: #f97316;
+            --accent-highlight: #fbbf24;
+            --accent-gradient: linear-gradient(90deg, #ef4444, #f97316, #fbbf24, #ef4444);
+            
+            --color-success: #22c55e;
+            --color-warning: #fbbf24;
+            --color-error: #ef4444;
+            --color-info: #f97316;
+            
+            --border-color: rgba(239, 68, 68, 0.35);
+            --border-radius: 6px;
+            --border-radius-sm: 4px;
+            
+            --shadow-card: 0 10px 40px rgba(239, 68, 68, 0.2), 0 0 50px rgba(249, 115, 22, 0.1);
+            --shadow-glow: 0 0 40px rgba(239, 68, 68, 0.4);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(0px);
+            --header-align: center;
+        }
+        
+        /* 烈焰红唇 - 火焰光晕效果 */
+        [data-theme="flame-red"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 50%;
+            width: 200%;
+            height: 100%;
+            background: radial-gradient(ellipse at center top,
+                rgba(239, 68, 68, 0.12) 0%,
+                rgba(249, 115, 22, 0.06) 30%,
+                transparent 60%);
+            transform: translateX(-50%);
+            animation: flamePulse 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes flamePulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        [data-theme="flame-red"] .card {
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        [data-theme="flame-red"] .card:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: var(--shadow-card), 0 0 20px rgba(239, 68, 68, 0.15);
+        }
+        
+        [data-theme="flame-red"] .stat-value {
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+        
+        [data-theme="flame-red"] .btn-primary {
+            background: linear-gradient(135deg, #ef4444, #f97316);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        /* 主题 26: 🧊 冰川极地 - 清冷现代风 */
+        [data-theme="glacier-polar"] {
+            --bg-primary: #e0f7fa;
+            --bg-secondary: #b2ebf2;
+            --bg-gradient: linear-gradient(180deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%);
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-card-hover: rgba(255, 255, 255, 0.98);
+            
+            --text-primary: #006064;
+            --text-secondary: #00838f;
+            --text-muted: #4dd0e1;
+            
+            --accent-primary: #00bcd4;
+            --accent-secondary: #26c6da;
+            --accent-highlight: #006064;
+            --accent-gradient: linear-gradient(90deg, #00bcd4, #26c6da, #006064, #00bcd4);
+            
+            --color-success: #00c853;
+            --color-warning: #ff9800;
+            --color-error: #ff5252;
+            --color-info: #00bcd4;
+            
+            --border-color: rgba(0, 188, 212, 0.25);
+            --border-radius: 28px;
+            --border-radius-sm: 18px;
+            
+            --shadow-card: 0 8px 32px rgba(0, 188, 212, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            --shadow-glow: 0 0 30px rgba(0, 188, 212, 0.2);
+            
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            
+            --card-blur: blur(8px);
+            --header-align: center;
+        }
+        
+        /* 冰川极地 - 冰晶闪烁效果 */
+        [data-theme="glacier-polar"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(2px 2px at 15% 25%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(2px 2px at 45% 55%, rgba(0, 188, 212, 0.5), transparent),
+                radial-gradient(1px 1px at 75% 35%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(2px 2px at 85% 75%, rgba(38, 198, 218, 0.4), transparent),
+                radial-gradient(1px 1px at 25% 85%, rgba(255, 255, 255, 0.7), transparent);
+            background-size: 200px 200px;
+            animation: iceSparkle 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes iceSparkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        [data-theme="glacier-polar"] .card {
+            border: 1px solid rgba(0, 188, 212, 0.15);
+            backdrop-filter: blur(10px);
+        }
+        
+        [data-theme="glacier-polar"] header h1 {
+            -webkit-text-fill-color: var(--text-primary);
+            background: none;
+            animation: none;
+        }
+        
+        [data-theme="glacier-polar"] .btn-primary {
+            background: linear-gradient(135deg, #00bcd4, #26c6da);
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 188, 212, 0.3);
+        }
+        
+        [data-theme="glacier-polar"] .btn-primary:hover {
+            box-shadow: 0 6px 30px rgba(0, 188, 212, 0.5);
         }
         
         /* ============================================
@@ -4223,7 +4865,7 @@
                         </div>
                         <div class="theme-panel-subtitle">
                             点击切换，自动保存您的偏好
-                            <span class="theme-count-badge">18 套可选</span>
+                            <span class="theme-count-badge">26 套可选</span>
                         </div>
                         <div id="theme-categories">
                             <!-- 动态生成分类主题 -->
@@ -4549,7 +5191,7 @@
 
         <!-- 底部版权区域 -->
         <footer class="footer" role="contentinfo">
-            <p>🦞 龙虾能力估值 Skill v6.0 - 量化你的 AI 自动化价值</p>
+            <p>🦞 龙虾能力估值 Skill v8.0 - 量化你的 AI 自动化价值</p>
             <p style="margin-top: 8px;">Made with ❤️ by <a href="https://github.com/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a> | 数据本地存储，安全可靠</p>
             <p style="margin-top: 8px; font-size: 0.8rem;">
                 <span id="current-time"></span> | 
@@ -4879,6 +5521,64 @@
                 desc: '霓虹复古风',
                 type: 'special',
                 colors: ['#1a1a2e', '#ff6b6b', '#feca57', '#48dbfb']
+            },
+            // v7.0 新增爆款主题
+            'galaxy-stars': {
+                name: '星河璀璨',
+                icon: '🌌',
+                desc: '宇宙探索风',
+                type: 'special',
+                colors: ['#0a0a1a', '#ff6b9d', '#c084fc', '#22d3ee']
+            },
+            'aurora-dreams': {
+                name: '极光幻境',
+                icon: '🌊',
+                desc: '北欧极光风',
+                type: 'special',
+                colors: ['#0f172a', '#34d399', '#60a5fa', '#f472b6']
+            },
+            'diamond-shine': {
+                name: '钻石闪耀',
+                icon: '💎',
+                desc: '奢华优雅风',
+                type: 'special',
+                colors: ['#0c0c14', '#e2e8f0', '#60a5fa', '#fbbf24']
+            },
+            // v8.0 新增爆款主题 - 2026-03-14
+            'sunrise-orange': {
+                name: '日出橙光',
+                icon: '🌅',
+                desc: '温暖活力风',
+                type: 'special',
+                colors: ['#1a0a1a', '#ff7e5f', '#feb47b', '#ffd700']
+            },
+            'midnight-blues': {
+                name: '午夜蓝调',
+                icon: '🌙',
+                desc: '深沉专业风',
+                type: 'dark',
+                colors: ['#0a1628', '#3b82f6', '#60a5fa', '#93c5fd']
+            },
+            'bamboo-zen': {
+                name: '竹林禅意',
+                icon: '🌿',
+                desc: '东方自然风',
+                type: 'light',
+                colors: ['#f5f5f0', '#5d8a66', '#8b7355', '#c41e3a']
+            },
+            'flame-red': {
+                name: '烈焰红唇',
+                icon: '🔥',
+                desc: '热情奔放风',
+                type: 'dark',
+                colors: ['#0a0000', '#ef4444', '#f97316', '#fbbf24']
+            },
+            'glacier-polar': {
+                name: '冰川极地',
+                icon: '🧊',
+                desc: '清冷现代风',
+                type: 'light',
+                colors: ['#e0f7fa', '#00bcd4', '#26c6da', '#006064']
             }
         };
         
