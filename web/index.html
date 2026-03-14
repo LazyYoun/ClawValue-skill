@@ -160,7 +160,25 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .hero-info h1 { font-size: 2rem; font-weight: 800; }
         .hero-info .subtitle { font-size: 1rem; color: var(--text-secondary); }
-        .hero-info .roast { font-size: 0.85rem; color: var(--warning); font-style: italic; margin-top: 8px; }
+        .hero-info .roast { 
+            font-size: 0.85rem; 
+            color: var(--warning); 
+            font-style: italic; 
+            margin-top: 8px;
+            max-width: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+        .roast-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: roastScroll 20s linear infinite;
+            padding-right: 50px;
+        }
+        @keyframes roastScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
         
         /* ========== Stats ========== */
         .stat-value { font-size: 1.8rem; font-weight: 700; }
@@ -728,10 +746,15 @@
             const achHtml = currentAchievements.map(a => `<span class="achievement-tag">${a}</span>`).join('');
             document.getElementById('achievement-list').innerHTML = achHtml || '<span class="achievement-tag" style="opacity:0.5">暂无成就，继续努力！</span>';
             
-            // 调侃话术 - 完整显示
+            // 调侃话术 - 滚动显示
             const roasts = ROASTS[currentLevel] || ROASTS[2];
             const fullRoast = roasts[Math.floor(Math.random() * roasts.length)];
-            document.getElementById('hero-roast').textContent = `"${fullRoast.slice(0, 20)}..."`;
+            
+            // Hero 区域滚动显示
+            const heroRoastEl = document.getElementById('hero-roast');
+            heroRoastEl.innerHTML = `<span class="roast-text">${fullRoast}</span>`;
+            
+            // 底部完整显示
             document.getElementById('roast-full').textContent = fullRoast;
         }
         
