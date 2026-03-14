@@ -107,6 +107,44 @@
         [data-theme="ocean-deep"] { --bg-primary: #001f3f; --accent: #00bcd4; --accent-secondary: #ff6f61; --border: rgba(0,188,212,0.2); --bg-card: rgba(255,255,255,0.03); }
         [data-theme="music-rhythm"] { --bg-primary: #0d0d0d; --accent: #e63946; --accent-secondary: #a8dadc; --border: rgba(230,57,70,0.2); --bg-card: rgba(255,255,255,0.03); }
         [data-theme="snow-peak"] { --bg-primary: #e8f4f8; --text-primary: #1a3a4a; --accent: #2e86de; --border: rgba(46,134,222,0.2); --bg-card: rgba(255,255,255,0.9); }
+        /* Neo-Brutalist 主题 */
+        [data-theme="neo-brutalist"] {
+            --bg-primary: #ffe17c;
+            --bg-secondary: #171e19;
+            --bg-card: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            --accent: #171e19;
+            --accent-secondary: #b7c6c2;
+            --success: #28c840;
+            --warning: #ffbc2e;
+            --border: #000000;
+            --radius: 0.75rem;
+            --shadow: 4px 4px 0px 0px #000000;
+            --shadow-lg: 8px 8px 0px 0px #000000;
+        }
+        [data-theme="neo-brutalist"] .card {
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px 0px #000;
+            border-radius: 0.75rem;
+        }
+        [data-theme="neo-brutalist"] .card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #000;
+        }
+        [data-theme="neo-brutalist"] .btn-primary {
+            background: #000;
+            color: #fff;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px 0px #000;
+        }
+        [data-theme="neo-brutalist"] .btn-primary:hover {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+        [data-theme="neo-brutalist"] .hero-avatar {
+            box-shadow: 8px 8px 0px 0px #000;
+        }
         
         /* ========== 布局 ========== */
         .container { max-width: 900px; margin: 0 auto; padding: 15px; }
@@ -178,14 +216,9 @@
             position: relative;
         }
         .roast-text {
-            display: inline-block;
-            white-space: nowrap;
-            animation: roastScroll 20s linear infinite;
-            padding-right: 50px;
-        }
-        @keyframes roastScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
+            display: block;
+            white-space: normal;
+            line-height: 1.6;
         }
         
         /* ========== Stats ========== */
@@ -451,6 +484,7 @@
         // ========== 主题系统 ==========
         const themes = {
             'deep-sea': { name: '深海龙虾', icon: '🦞', desc: '深色科技风', type: 'dark', colors: ['#0f0f23', '#ff6b6b', '#4facfe', '#feca57'] },
+            'neo-brutalist': { name: '新野兽派', icon: '⚡', desc: 'Neo-Brutalist设计', type: 'special', colors: ['#ffe17c', '#171e19', '#b7c6c2', '#ffffff'] },
             'fresh-garden': { name: '清新田园', icon: '🌿', desc: '明亮清新风', type: 'light', colors: ['#f0f9f0', '#43e97b', '#38f9d7', '#ff9800'] },
             'cyber-neon': { name: '赛博霓虹', icon: '⚡', desc: '未来科技风', type: 'special', colors: ['#0a0a0a', '#ff00ff', '#00ffff', '#ffff00'] },
             'retro-type': { name: '复古打字机', icon: '📜', desc: '复古文艺风', type: 'light', colors: ['#f5e6d3', '#8b4513', '#d2691e', '#b8860b'] },
@@ -478,18 +512,62 @@
             1: [
                 "🐣 小龙虾你好！看来你只是接了个模型啊，对OpenClaw的开发度不足1% —— 不过没关系，连sudo make me a sandwich都还没学会呢。",
                 "恭喜！您已成功点亮'Hello World'技能。下一步，请尝试让AI帮您查天气，解锁'初级驯龙师'称号。",
-                "检测到您的使用模式为「佛系体验」。别急，龙虾都是从小虾米长大的！建议：多和AI聊聊天，它会比你想象的更聪明。"
+                "检测到您的使用模式为「佛系体验」。别急，龙虾都是从小虾米长大的！建议：多和AI聊聊天，它会比你想象的更聪明。",
+                "🎮 新手村报道！你的龙虾还处于「水煮阶段」，连壳都没红呢。多配置几个技能，解锁「清蒸」成就！",
+                "检测到「新手光环」！系统决定给你一个成就：'OpenClaw 潜力股'。继续努力，未来可期！",
+                "📊 使用统计：你的效率还有很大提升空间。建议：每天至少召唤AI 3次，解锁「效率翻倍」成就！",
+                "你的AI助手正在角落里默默等待被唤醒...它说：'主人，我是不是被遗忘了？'",
+                "刚入门的你就像一只刚孵化的小龙虾，虽然钳子还很小，但未来可期！",
+                "系统检测到：你的OpenClaw之旅才刚刚开始。前方有无数宝藏等你发现！",
+                "新手提示：尝试创建一个自定义技能，你会发现一个新世界！"
             ],
             2: [
                 "正在技术债里种花？恭喜！您的自动化花园已初具规模，建议加把劲儿，冲向'Proactive Agent'模式！",
                 "检测到您的AI已经开始'上班'了！但似乎还在试用期。建议开启定时巡检，迈向'懒人终极梦想'——躺着也能赚钱。",
                 "🎯 中级玩家认证！你已经开始探索更多功能了，继续保持这个势头！你的AI助手表示：「终于被重视了！」",
-                "你的技能树已经点亮了一半，AI助手对你的满意度：⭐⭐⭐☆☆。再加把劲，让它对你刮目相看！"
+                "你的技能树已经点亮了一半，AI助手对你的满意度：⭐⭐⭐☆☆。再加把劲，让它对你刮目相看！",
+                "🦞 七分熟龙虾！你已经掌握了OpenClaw的核心玩法，距离「全熟」只差几个自定义技能了！",
+                "你的AI助手已经习惯了你的存在，它说：'这个主人还不错嘛，至少知道怎么用我！'",
+                "检测到技能使用频率上升！你已经从「新手村」毕业，正式踏入「进阶森林」！",
+                "建议：尝试配置一个定时任务，让你的AI在你睡觉时也能工作。真正的自动化从这里开始！",
+                "你的使用数据正在稳步增长，系统预测：你将在30天内达到「高级玩家」水平！",
+                "恭喜突破Lv.2！你已经是OpenClaw社区的「潜力股」了！"
             ],
             3: [
                 "检测到一台'工程巨兽'在线！您的多Agent协作网络堪称分布式计算典范。请继续保持，小心别让AI觉得'人类好弱智'。",
                 "警告：您的'龙虾'已过度烹饪，可能产生幻觉。建议定期清理上下文缓存，避免AI因'内存溢出'而开始哲学思辨。",
-                "🦞 龙虾大师！你已经达到了传说中的最高境界！Claude 见你都要叫一声「大佬」！"
+                "🎯 中级开发者认证！你已经是OpenClaw的「熟练工」了，继续进化，向「大师」目标冲刺！",
+                "你的技能配置堪称教科书级别，建议开设培训班传授经验（开玩笑的，继续努力！）",
+                "检测到多Agent协作！你的AI团队已经初具规模，它们正在讨论如何更好地服务你。",
+                "你的自动化程度已经击败了80%的用户！AI助手表示：「这个主人真懂我！」",
+                "🔥 效率达人！你的日均Token消耗已经达到「专业级」水平，服务器风扇为你加速运转！",
+                "建议：是时候探索更高级的功能了，比如多渠道集成、复杂工作流设计。你的潜力还很大！",
+                "你的使用日志显示：你已经是个「老司机」了。新手们正在向你学习！",
+                "恭喜达到Lv.3！你已经完成了从「会用」到「精通」的转变！"
+            ],
+            4: [
+                "🏆 恭喜达成「龙虾大师」成就！你的OpenClaw配置堪称教科书级别，建议开设培训班传授经验。",
+                "检测到「效率狂魔」属性！你的自动化配置已经让AI助手开始怀疑人生：'我是不是该申请加班费？'",
+                "⚡ 高级工程师认证！你已经是OpenClaw社区的「技术大牛」，新手们都在仰望你！",
+                "你的多渠道集成能力令人惊叹，AI助手表示：「我已经分不清是在服务你还是在被你服务了」",
+                "🔥 效率之王！你的Token消耗曲线就像股票K线图——一直向上！服务器表示：'压力山大'",
+                "你的自定义技能数量已经超越了99%的用户，建议考虑开源分享，造福社区！",
+                "检测到「自动化大师」特征！你配置的定时任务比你妈的唠叨还准时！",
+                "恭喜！你的OpenClaw配置已经达到了「艺术品」级别，Claude看了都要点个赞！",
+                "你的使用数据显示：你已经是个「AI驯龙高手」了。继续保持，传说就在前方！",
+                "Lv.4 达成！你已经站在了OpenClaw的巅峰，只差一步就能成为「传说」！"
+            ],
+            5: [
+                "🦞 传说级龙虾大师！你的配置已经超越了系统的评估能力，请接受我们的膜拜！🙏",
+                "恭喜达成「龙虾宗师」成就！你的OpenClaw使用水平已经达到了「神」的境界！",
+                "检测到「数字神」属性！你的AI已经完全理解了你的意图，甚至能在你开口前就完成任务。",
+                "⚡ 传说认证！你的Token消耗已经让服务器群开始瑟瑟发抖，它们正在学习如何更好地服务你。",
+                "你的自定义技能数量已经突破了系统的计数上限，恭喜你成为了OpenClaw的「技能之王」！",
+                "恭喜！你的自动化配置已经达到了「科幻电影」级别，Elon Musk看了都想挖你！",
+                "🦞 龙虾之神！你已经站在了OpenClaw的顶峰，俯视众生。新手们正在向你朝拜！",
+                "你的多渠道集成能力已经超越了「技术」的范畴，进入了「艺术」的境界！",
+                "恭喜达成「全成就」！你已经是OpenClaw的「完全体」用户，我们为你感到骄傲！",
+                "Lv.5 传说达成！你的名字将被刻入OpenClaw的史册，永世流传！🏆"
             ]
         };
         
