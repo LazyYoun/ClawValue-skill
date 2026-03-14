@@ -34,6 +34,10 @@ WANX_MODEL = 'wan2.6-t2i'
 # 默认图片尺寸
 DEFAULT_SIZE = '1280*1280'
 
+# Icon尺寸（生成后缩放）
+ICON_SIZE = '1280*1280'
+ICON_OUTPUT_SIZE = (64, 64)  # 最终输出尺寸
+
 
 # =============================================================================
 # 提示词模板
@@ -340,6 +344,35 @@ class WanxImageGenerator:
                 success=False,
                 error=str(e)
             )
+    
+    def generate_achievement_icon(
+        self,
+        achievement_name: str,
+        achievement_desc: str
+    ) -> ImageGenerationResult:
+        """
+        生成成就图标
+        
+        Args:
+            achievement_name: 成就名称（如"技能大师"）
+            achievement_desc: 成就描述
+            
+        Returns:
+            ImageGenerationResult 生成结果
+        """
+        # 构建icon提示词 - 简洁的图标风格
+        prompt = f"一个精美的成就图标，{achievement_name}，{achievement_desc}，扁平化设计，简洁的图形符号，明亮的渐变色背景，居中构图，无文字，图标设计风格，适合小尺寸显示"
+        
+        negative_prompt = "复杂细节，文字，水印，照片级渲染，阴影，模糊，噪点"
+        
+        result = self.generate_image(
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            size=ICON_SIZE
+        )
+        
+        result.style = 'Icon'
+        return result
     
     def generate_lobster(
         self,
