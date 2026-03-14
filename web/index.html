@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦞 龙虾能力估值</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>🦞 ClawValue - 龙虾能力估值</title>
     <style>
         * {
             margin: 0;
@@ -12,340 +11,421 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --accent: #ff6b6b;
+            --bg: #0f0f1a;
+            --card: rgba(255,255,255,0.03);
+            --card-border: rgba(255,255,255,0.08);
+            --text: #fff;
+            --text-muted: #888;
+            --success: #43e97b;
+            --warning: #feca57;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: var(--bg);
+            background-image: 
+                radial-gradient(ellipse at top, rgba(102,126,234,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(118,75,162,0.1) 0%, transparent 50%);
             min-height: 100vh;
-            color: #fff;
-            padding: 15px;
+            color: var(--text);
+            padding: 12px;
+            line-height: 1.4;
         }
         
-        /* 紧凑容器 */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        /* 顶部标题栏 */
+        /* ========== Header ========== */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 20px;
-            background: rgba(255,255,255,0.05);
+            padding: 10px 16px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
             border-radius: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            margin-bottom: 12px;
         }
         
         .logo {
-            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
         
-        .header-title {
-            font-size: 1.2rem;
+        .logo-icon {
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .rank-badge {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
             font-weight: 600;
         }
         
-        .header-subtitle {
-            font-size: 0.75rem;
-            color: #888;
+        .header-actions {
+            display: flex;
+            gap: 8px;
         }
         
-        /* 主网格布局 - 紧凑版 */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: auto auto auto;
-            gap: 12px;
-        }
-        
-        /* 卡片基础样式 */
-        .card {
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .card-title {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 8px;
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            transition: all 0.2s;
         }
         
-        .card-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
         }
         
-        .card-sub {
+        /* ========== Bento Grid ========== */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            border-color: rgba(102,126,234,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .card-label {
             font-size: 0.7rem;
-            color: #666;
-            margin-top: 4px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
         
-        /* 等级卡片 - 跨两列 */
-        .level-card {
-            grid-column: span 1;
+        /* ========== Hero Cards ========== */
+        .hero-left {
+            grid-column: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2));
+        }
+        
+        .lobster-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(102,126,234,0.4);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(102,126,234,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(102,126,234,0.6); }
         }
         
         .level-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 20px;
-            font-weight: 600;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
         
-        .level-progress {
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            margin-top: 10px;
-            overflow: hidden;
+        .level-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
         }
         
-        .level-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.5s ease;
-        }
-        
-        /* 龙虾图片生成区 - 醒目 */
-        .generate-card {
-            grid-column: span 1;
-            background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(255,142,83,0.1));
-            border: 1px solid rgba(255,107,107,0.2);
-        }
-        
-        .generate-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
-        }
-        
-        .generate-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        /* 调侃话术 */
-        .roast-card {
-            grid-column: span 2;
-        }
-        
-        .roast-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #ddd;
-        }
-        
-        .roast-achievements {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        
-        .achievement-tag {
-            background: rgba(254, 202, 87, 0.15);
-            border: 1px solid rgba(254, 202, 87, 0.3);
-            padding: 4px 10px;
-            border-radius: 15px;
+        .roast-mini {
             font-size: 0.75rem;
-            color: #feca57;
+            color: var(--warning);
+            font-style: italic;
+            max-width: 200px;
         }
         
-        /* 图表区域 */
-        .chart-card {
-            grid-column: span 1;
+        .hero-right {
+            grid-column: 2;
+            background: linear-gradient(135deg, rgba(67,233,123,0.1), rgba(102,126,234,0.1));
         }
         
-        .chart-container {
-            height: 150px;
+        .value-big {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--success), #43e97b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
         }
         
-        /* 技能分布 */
-        .skills-card {
-            grid-column: span 1;
-        }
-        
-        .skill-tags {
+        .value-stats {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 6px;
         }
         
-        .skill-tag {
-            background: rgba(102, 126, 234, 0.15);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-        }
-        
-        .skill-tag span {
-            color: #667eea;
-            margin-left: 4px;
-        }
-        
-        /* 评分详情 */
-        .scores-card {
-            grid-column: span 1;
-        }
-        
-        .score-row {
+        .value-stat {
             display: flex;
             align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .value-stat span {
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        /* ========== Progress Bar ========== */
+        .progress-section {
+            margin-top: 12px;
+        }
+        
+        .progress-label {
+            display: flex;
             justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
         }
         
-        .score-row:last-child {
-            border-bottom: none;
-        }
-        
-        .score-label {
-            font-size: 0.75rem;
-            color: #888;
-        }
-        
-        .score-bar {
-            width: 100px;
+        .progress-bar {
             height: 6px;
             background: rgba(255,255,255,0.1);
             border-radius: 3px;
             overflow: hidden;
         }
         
-        .score-fill {
+        .progress-fill {
             height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
             border-radius: 3px;
             transition: width 0.5s ease;
         }
         
-        .score-fill.skill { background: #667eea; }
-        .score-fill.auto { background: #f093fb; }
-        .score-fill.integrate { background: #43e97b; }
-        
-        .score-value {
-            font-size: 0.75rem;
-            font-weight: 600;
-            width: 30px;
-            text-align: right;
+        /* ========== Stats Row ========== */
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
         
-        /* 操作按钮 */
-        .actions-card {
-            grid-column: span 3;
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        
+        .stat-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        /* ========== Achievements ========== */
+        .achievement-card {
+            grid-column: 1 / -1;
+        }
+        
+        .achievement-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
         
-        .action-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
+        .achievement-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: rgba(254,202,87,0.15);
+            border: 1px solid rgba(254,202,87,0.3);
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid;
         }
         
-        .btn-refresh {
-            background: rgba(67, 233, 123, 0.15);
-            border-color: rgba(67, 233, 123, 0.3);
-            color: #43e97b;
+        .achievement-badge:hover {
+            transform: scale(1.1);
         }
         
-        .btn-export {
-            background: rgba(102, 126, 234, 0.15);
-            border-color: rgba(102, 126, 234, 0.3);
-            color: #667eea;
+        .achievement-badge.locked {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+            opacity: 0.5;
         }
         
-        .btn-share {
-            background: rgba(240, 147, 251, 0.15);
-            border-color: rgba(240, 147, 251, 0.3);
-            color: #f093fb;
+        .achievement-names {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
         }
         
-        .btn-theme {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #aaa;
+        .achievement-name {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            background: rgba(254,202,87,0.1);
+            border-radius: 10px;
+            color: var(--warning);
         }
         
-        .action-btn:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.2);
+        /* ========== Roast Section ========== */
+        .roast-card {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(255,142,83,0.1));
+            border-color: rgba(255,107,107,0.2);
         }
         
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
-            padding: 10px 20px;
-            border-radius: 20px;
+        .roast-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        
+        .roast-text {
             font-size: 0.85rem;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s;
+            line-height: 1.5;
+            color: var(--text);
         }
         
-        .toast.show {
-            opacity: 1;
+        /* ========== Action Bar ========== */
+        .action-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 8px;
         }
         
-        /* 图片弹窗 */
-        .modal {
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #ff8e53);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* ========== Theme Panel ========== */
+        .theme-panel {
             position: fixed;
             top: 0;
-            left: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #1a1a2e;
+            border-left: 1px solid var(--card-border);
+            padding: 20px;
+            z-index: 1000;
+            transition: right 0.3s;
+            overflow-y: auto;
+        }
+        
+        .theme-panel.open {
             right: 0;
-            bottom: 0;
+        }
+        
+        .theme-panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .theme-item {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .theme-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .theme-item.active {
+            border-color: var(--primary);
+        }
+        
+        /* ========== Modal ========== */
+        .modal {
+            position: fixed;
+            inset: 0;
             background: rgba(0,0,0,0.9);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10000;
+            z-index: 2000;
             padding: 20px;
         }
         
         .modal-content {
             background: #1a1a2e;
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 24px;
             max-width: 90vw;
             max-height: 90vh;
             position: relative;
@@ -353,11 +433,11 @@
         
         .modal-close {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 12px;
+            right: 12px;
             background: rgba(255,255,255,0.1);
             border: none;
-            color: #fff;
+            color: white;
             width: 28px;
             height: 28px;
             border-radius: 50%;
@@ -365,224 +445,253 @@
             font-size: 16px;
         }
         
-        .modal-content img {
-            max-width: 100%;
-            max-height: 60vh;
-            border-radius: 10px;
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .modal-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.9);
+            padding: 12px 24px;
+            border-radius: 30px;
             font-size: 0.85rem;
-            cursor: pointer;
-            text-decoration: none;
+            z-index: 3000;
+            transition: transform 0.3s;
         }
         
-        .modal-btn-primary {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-            color: white;
-            border: none;
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
         }
         
-        .modal-btn-secondary {
-            background: rgba(102, 126, 234, 0.2);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            color: #667eea;
+        /* ========== Share Card ========== */
+        .share-card {
+            background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            width: 320px;
         }
         
-        /* 响应式 */
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr 1fr;
+        .share-card .big-emoji {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+        
+        .share-card .big-level {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .share-card .big-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 16px;
+        }
+        
+        .share-card .hashtags {
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-top: 16px;
+        }
+        
+        /* ========== Responsive ========== */
+        @media (min-width: 768px) {
+            .bento-grid {
+                max-width: 700px;
+                grid-template-columns: 1fr 1fr 1fr;
             }
-            .roast-card, .actions-card {
-                grid-column: span 2;
+            
+            .hero-left {
+                grid-column: 1;
+                grid-row: 1 / 3;
             }
-            .chart-card, .skills-card, .scores-card {
-                grid-column: span 1;
+            
+            .hero-right {
+                grid-column: 2 / 4;
             }
-        }
-        
-        @media (max-width: 600px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-            .level-card, .generate-card, .roast-card, .chart-card, .skills-card, .scores-card, .actions-card {
-                grid-column: span 1;
-            }
-            .card-value {
-                font-size: 1.5rem;
+            
+            .achievement-card {
+                grid-column: 2 / 4;
             }
         }
         
-        /* 浅色主题 */
-        body.light-theme {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
-            color: #333;
+        /* ========== Light Theme ========== */
+        body.light {
+            --bg: #f5f7fa;
+            --card: rgba(255,255,255,0.9);
+            --card-border: rgba(0,0,0,0.08);
+            --text: #1a1a2e;
+            --text-muted: #666;
         }
         
-        body.light-theme .card {
-            background: rgba(255,255,255,0.8);
-            border-color: rgba(0,0,0,0.05);
-        }
-        
-        body.light-theme .header {
-            background: rgba(255,255,255,0.9);
-        }
-        
-        body.light-theme .card-title,
-        body.light-theme .score-label,
-        body.light-theme .header-subtitle {
-            color: #666;
-        }
-        
-        body.light-theme .roast-text {
-            color: #444;
+        body.light .lobster-avatar {
+            box-shadow: 0 0 30px rgba(102,126,234,0.3);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 顶部标题栏 -->
-        <div class="header">
-            <div class="header-left">
-                <span class="logo">🦞</span>
-                <div>
-                    <div class="header-title">龙虾能力估值</div>
-                    <div class="header-subtitle">OpenClaw 使用深度评估</div>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <span class="logo-icon">🦞</span>
+            <span>ClawValue</span>
+        </div>
+        <div class="rank-badge" id="rank-badge">🌍 击败全球 92% 用户</div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleTheme()" title="切换主题 (T)">🌙</button>
+            <button class="icon-btn" onclick="showHelp()" title="帮助 (?)">❓</button>
+        </div>
+    </div>
+    
+    <!-- Bento Grid -->
+    <div class="bento-grid">
+        <!-- Hero Left: Avatar & Level -->
+        <div class="card hero-left">
+            <div class="lobster-avatar" id="lobster-avatar">🦞</div>
+            <div class="level-badge" id="level-badge">Lv.2</div>
+            <div class="level-title" id="level-title">初级玩家</div>
+            <div class="roast-mini" id="roast-mini">"你的钳子有点生锈了"</div>
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>升级进度</span>
+                    <span id="progress-percent">40%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 40%"></div>
                 </div>
             </div>
-            <div style="font-size: 0.75rem; color: #666;" id="update-time">加载中...</div>
         </div>
         
-        <!-- 主内容网格 -->
-        <div class="main-grid">
-            <!-- 等级卡片 -->
-            <div class="card level-card">
-                <div class="card-title">📊 使用深度</div>
-                <div class="level-badge" id="level-badge">
-                    <span id="level-emoji">🎮</span>
-                    <span>Lv.<span id="level-num">2</span></span>
-                    <span id="level-name">初级玩家</span>
+        <!-- Hero Right: Value -->
+        <div class="card hero-right">
+            <div class="card-label">💰 龙虾估值</div>
+            <div class="value-big" id="value-amount">¥2,000</div>
+            <div class="value-stats">
+                <div class="value-stat">⏱️ 节省工时: <span id="hours-saved">27</span> 小时</div>
+                <div class="value-stat">📈 效率提升: <span id="efficiency">+48</span>%</div>
+                <div class="value-stat">💎 ROI: <span id="roi">4</span>x</div>
+            </div>
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>距下一级</span>
+                    <span id="next-level">还差 2 个技能</span>
                 </div>
-                <div class="level-progress">
-                    <div class="level-progress-bar" id="level-progress" style="width: 40%"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%"></div>
                 </div>
-            </div>
-            
-            <!-- 价值估算 -->
-            <div class="card">
-                <div class="card-title">💰 价值估算</div>
-                <div class="card-value">¥<span id="value-amount">2,000</span></div>
-                <div class="card-sub">预估年度节省成本</div>
-            </div>
-            
-            <!-- 技能统计 -->
-            <div class="card">
-                <div class="card-title">🛠️ 技能统计</div>
-                <div class="card-value"><span id="skill-count">8</span> 个</div>
-                <div class="card-sub"><span id="custom-count">8</span> 个自定义</div>
-            </div>
-            
-            <!-- 龙虾图片生成 - 醒目 -->
-            <div class="card generate-card">
-                <div class="card-title">🎨 生成专属龙虾</div>
-                <button class="generate-btn" id="generate-btn" onclick="generateLobsterImage()">
-                    ✨ 生成我的龙虾形象
-                </button>
-                <div class="card-sub" style="margin-top: 8px; text-align: center;">AI 根据你的等级生成独特龙虾</div>
-            </div>
-            
-            <!-- 调侃话术 -->
-            <div class="card roast-card">
-                <div class="card-title">🔥 龙虾点评</div>
-                <div class="roast-text" id="roast-text">加载中...</div>
-                <div class="roast-achievements" id="achievements"></div>
-            </div>
-            
-            <!-- 评分详情 -->
-            <div class="card scores-card">
-                <div class="card-title">🎯 能力评分</div>
-                <div class="score-row">
-                    <span class="score-label">🛠️ 技能</span>
-                    <div class="score-bar"><div class="score-fill skill" id="score-skill" style="width: 70%"></div></div>
-                    <span class="score-value" id="score-skill-val">70</span>
-                </div>
-                <div class="score-row">
-                    <span class="score-label">⚡ 自动化</span>
-                    <div class="score-bar"><div class="score-fill auto" id="score-auto" style="width: 20%"></div></div>
-                    <span class="score-value" id="score-auto-val">20</span>
-                </div>
-                <div class="score-row">
-                    <span class="score-label">🔗 集成</span>
-                    <div class="score-bar"><div class="score-fill integrate" id="score-int" style="width: 30%"></div></div>
-                    <span class="score-value" id="score-int-val">30</span>
-                </div>
-            </div>
-            
-            <!-- 图表 -->
-            <div class="card chart-card">
-                <div class="card-title">📈 使用趋势</div>
-                <div class="chart-container">
-                    <canvas id="trend-chart"></canvas>
-                </div>
-            </div>
-            
-            <!-- 技能分布 -->
-            <div class="card skills-card">
-                <div class="card-title">🏷️ 技能分类</div>
-                <div class="skill-tags" id="skill-tags">
-                    <span class="skill-tag">加载中...</span>
-                </div>
-            </div>
-            
-            <!-- 操作按钮 -->
-            <div class="card actions-card">
-                <button class="action-btn btn-refresh" onclick="refreshData()">🔄 刷新</button>
-                <button class="action-btn btn-export" onclick="exportData()">📥 导出</button>
-                <button class="action-btn btn-share" onclick="shareResult()">📤 分享</button>
-                <button class="action-btn btn-theme" onclick="toggleTheme()">🌓 主题</button>
             </div>
         </div>
+        
+        <!-- Stats: Skills -->
+        <div class="card stat-card">
+            <div class="card-label">🛠️ 技能掌握</div>
+            <div class="stat-value"><span id="skill-count">8</span> <span style="font-size:0.8rem;color:var(--text-muted)">/ 自定义</span></div>
+            <div class="stat-sub" id="skill-cats">Media, Tools...</div>
+        </div>
+        
+        <!-- Stats: Sessions -->
+        <div class="card stat-card">
+            <div class="card-label">💬 会话强度</div>
+            <div class="stat-value"><span id="log-count">11.7k</span></div>
+            <div class="stat-sub">活跃 <span id="active-days">4</span> 天</div>
+        </div>
+        
+        <!-- Achievements -->
+        <div class="card achievement-card">
+            <div class="card-label">🏆 成就徽章 (点击查看详情)</div>
+            <div class="achievement-row" id="achievement-badges">
+                <div class="achievement-badge">🏅</div>
+                <div class="achievement-badge">🛠️</div>
+                <div class="achievement-badge locked">🔒</div>
+                <div class="achievement-badge locked">🔒</div>
+            </div>
+            <div class="achievement-names" id="achievement-names">
+                <span class="achievement-name">技能大师</span>
+                <span class="achievement-name">自定义达人</span>
+            </div>
+        </div>
+        
+        <!-- Roast -->
+        <div class="card roast-card">
+            <div class="roast-title">🔥 龙虾毒舌点评</div>
+            <div class="roast-text" id="roast-text">加载中...</div>
+        </div>
+        
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="generateImage()">🎨 生成龙虾海报</button>
+            <button class="btn btn-secondary" onclick="refreshData()">🔄 刷新</button>
+            <button class="btn btn-secondary" onclick="shareResult()">🚀 分享 (S)</button>
+        </div>
+    </div>
+    
+    <!-- Theme Panel -->
+    <div class="theme-panel" id="theme-panel">
+        <div class="theme-panel-title">🎨 选择主题风格</div>
+        <div class="theme-grid" id="theme-grid"></div>
     </div>
     
     <!-- Toast -->
     <div class="toast" id="toast"></div>
-    
+
     <script>
-        // 全局变量
+        // ========== 全局变量 ==========
+        let currentData = {};
         let currentLevel = 1;
-        let currentAchievements = [];
-        let trendChart = null;
         
-        // 等级配置
+        // ========== 等级配置 ==========
         const LEVELS = {
-            1: { emoji: '🐣', name: '入门小白' },
-            2: { emoji: '🎮', name: '初级玩家' },
-            3: { emoji: '💻', name: '中级开发者' },
-            4: { emoji: '🚀', name: '高级工程师' },
-            5: { emoji: '🦞', name: '龙虾大师' }
+            1: { emoji: '🐣', title: '入门小白', roast: '你还在用手动模式？龙虾都比你快！' },
+            2: { emoji: '🎮', title: '初级玩家', roast: '你的钳子有点生锈了，多写几个 Skill 吧！' },
+            3: { emoji: '💻', title: '中级开发者', roast: '有点样子了，但离大师还差得远呢~' },
+            4: { emoji: '🚀', title: '高级工程师', roast: '效率怪兽！你的 AI 助手表示：这班上得值！' },
+            5: { emoji: '🦞', title: '龙虾大师', roast: '大佬受我一拜！这配置简直是赛博坦星球来的！' }
         };
         
-        // 初始化
+        // ========== 趣味化文案 ==========
+        const ROASTS = {
+            1: [
+                '你还在用手动模式？龙虾都比你快！',
+                '看来 OpenClaw 只是你的记事本啊...',
+                '小龙虾你好！建议先装 3 个技能再来说话'
+            ],
+            2: [
+                '你的钳子有点生锈了，多写几个 Skill 吧！',
+                '有点样子了，但离大师还差十万八千里',
+                '技能树是不是点歪了？'
+            ],
+            3: [
+                '中级玩家认证！继续保持这个势头',
+                '你的 AI 助手对你满意度：⭐⭐⭐☆☆',
+                '已经超过了一半的用户，但不包括我'
+            ],
+            4: [
+                '效率怪兽！你的 AI 助手表示：这班上得值！',
+                '检测到工程巨兽在线！请继续保持',
+                '你的配置让普通人类望尘莫及'
+            ],
+            5: [
+                '大佬受我一拜！这配置简直是赛博坦星球来的！',
+                '龙虾大师！Claude 见你都要叫一声「大佬」！',
+                '传说级存在！建议写本《如何让 AI 帮你打工》'
+            ]
+        };
+        
+        // ========== 初始化 ==========
         document.addEventListener('DOMContentLoaded', () => {
             fetchData();
-            initChart();
+            initThemes();
         });
         
-        // 获取数据
+        // ========== 数据获取 ==========
         async function fetchData() {
             try {
                 const res = await fetch('/api/');
                 const json = await res.json();
                 if (json.success && json.data) {
+                    currentData = json.data;
                     updateUI(json.data);
                 }
             } catch (e) {
@@ -590,126 +699,135 @@
             }
         }
         
-        // 更新界面
+        // ========== UI 更新 ==========
         function updateUI(data) {
             currentLevel = data.depth_level || 1;
-            currentAchievements = data.achievements || [];
-            
-            // 更新等级
             const level = LEVELS[currentLevel];
-            document.getElementById('level-emoji').textContent = level.emoji;
-            document.getElementById('level-num').textContent = currentLevel;
-            document.getElementById('level-name').textContent = level.name;
-            document.getElementById('level-progress').style.width = `${currentLevel * 20}%`;
             
-            // 更新价值
-            document.getElementById('value-amount').textContent = (data.value_estimation?.amount || 0).toLocaleString();
+            // 等级
+            document.getElementById('lobster-avatar').textContent = level.emoji;
+            document.getElementById('level-badge').textContent = `Lv.${currentLevel}`;
+            document.getElementById('level-title').textContent = level.title;
+            document.getElementById('roast-mini').textContent = `"${level.roast.slice(0, 15)}..."`;
             
-            // 更新技能
+            // 进度
+            const progress = currentLevel * 20;
+            document.getElementById('progress-percent').textContent = `${progress}%`;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            
+            // 价值
+            document.getElementById('value-amount').textContent = `¥${(data.value_estimation?.amount || 0).toLocaleString()}`;
+            document.getElementById('hours-saved').textContent = data.value_estimation?.hours_saved || 0;
+            document.getElementById('efficiency').textContent = `+${data.value_estimation?.efficiency || 0}`;
+            document.getElementById('roi').textContent = data.value_estimation?.roi || '0x';
+            
+            // 技能
             document.getElementById('skill-count').textContent = data.skills?.total || 0;
-            document.getElementById('custom-count').textContent = data.skills?.custom || 0;
+            const cats = Object.keys(data.skills?.categories || {}).slice(0, 2).join(', ');
+            document.getElementById('skill-cats').textContent = cats || '暂无分类';
             
-            // 更新评分
-            const eval = data.evaluation || {};
-            document.getElementById('score-skill').style.width = `${eval.skill_score || 0}%`;
-            document.getElementById('score-skill-val').textContent = eval.skill_score || 0;
-            document.getElementById('score-auto').style.width = `${eval.automation_score || 0}%`;
-            document.getElementById('score-auto-val').textContent = eval.automation_score || 0;
-            document.getElementById('score-int').style.width = `${eval.integration_score || 0}%`;
-            document.getElementById('score-int-val').textContent = eval.integration_score || 0;
+            // 会话
+            const logs = data.sessions?.total || 0;
+            document.getElementById('log-count').textContent = logs >= 1000 ? `${(logs/1000).toFixed(1)}k` : logs;
+            document.getElementById('active-days').textContent = data.sessions?.active_days || 1;
             
-            // 更新调侃
-            document.getElementById('roast-text').textContent = eval.lobster_message || '加载中...';
+            // 成就
+            const achievements = data.achievements || [];
+            const badgesHtml = achievements.map(a => 
+                `<div class="achievement-badge">${a.split(' ')[0]}</div>`
+            ).join('') + '<div class="achievement-badge locked">🔒</div>'.repeat(Math.max(0, 4 - achievements.length));
+            document.getElementById('achievement-badges').innerHTML = badgesHtml;
             
-            // 更新成就
-            const achHtml = currentAchievements.map(a => 
-                `<span class="achievement-tag">${a}</span>`
+            document.getElementById('achievement-names').innerHTML = achievements.slice(0, 2).map(a =>
+                `<span class="achievement-name">${a.split(' ').slice(1).join(' ')}</span>`
             ).join('');
-            document.getElementById('achievements').innerHTML = achHtml;
             
-            // 更新技能分类
-            const tagsHtml = Object.entries(data.skills?.categories || {}).map(([name, count]) =>
-                `<span class="skill-tag">${name} <span>${count}</span></span>`
-            ).join('');
-            document.getElementById('skill-tags').innerHTML = tagsHtml || '<span class="skill-tag">暂无</span>';
+            // 毒舌点评
+            const roasts = ROASTS[currentLevel] || ROASTS[2];
+            document.getElementById('roast-text').textContent = roasts[Math.floor(Math.random() * roasts.length)];
             
-            // 更新图表
-            if (trendChart && data.trends) {
-                trendChart.data.labels = data.trends.map(t => t.date);
-                trendChart.data.datasets[0].data = data.trends.map(t => t.count);
-                trendChart.update();
+            // 排名
+            const rank = Math.min(99, Math.max(1, 100 - currentLevel * 15 - Math.floor(Math.random() * 10)));
+            document.getElementById('rank-badge').textContent = `🌍 击败全球 ${rank}% 用户`;
+            
+            // 下一级提示
+            const nextTips = ['还差 2 个技能', '开启心跳检测', '添加更多渠道'];
+            document.getElementById('next-level').textContent = nextTips[Math.floor(Math.random() * nextTips.length)];
+        }
+        
+        // ========== 主题系统 ==========
+        const THEMES = {
+            dark: { name: '深邃夜空', bg: '#0f0f1a', primary: '#667eea' },
+            light: { name: '清新明亮', bg: '#f5f7fa', primary: '#667eea' },
+            ocean: { name: '深海龙虾', bg: '#0a1628', primary: '#00d4ff' },
+            sunset: { name: '落日余晖', bg: '#1a0a1e', primary: '#ff6b6b' },
+            forest: { name: '森林秘境', bg: '#0a1a0a', primary: '#43e97b' },
+            cyber: { name: '赛博朋克', bg: '#0d0d0d', primary: '#ff00ff' }
+        };
+        
+        let currentTheme = 'dark';
+        
+        function initThemes() {
+            const grid = document.getElementById('theme-grid');
+            grid.innerHTML = Object.entries(THEMES).map(([key, t]) => `
+                <div class="theme-item ${key === currentTheme ? 'active' : ''}" 
+                     style="background: linear-gradient(135deg, ${t.bg}, ${t.primary})"
+                     onclick="setTheme('${key}')"></div>
+            `).join('');
+        }
+        
+        function setTheme(key) {
+            currentTheme = key;
+            const t = THEMES[key];
+            document.documentElement.style.setProperty('--bg', t.bg);
+            document.documentElement.style.setProperty('--primary', t.primary);
+            
+            if (key === 'light') {
+                document.body.classList.add('light');
+            } else {
+                document.body.classList.remove('light');
             }
             
-            // 更新时间
-            document.getElementById('update-time').textContent = new Date().toLocaleTimeString();
+            document.querySelectorAll('.theme-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            showToast(`✨ 已切换到「${t.name}」主题`);
         }
         
-        // 初始化图表
-        function initChart() {
-            const ctx = document.getElementById('trend-chart').getContext('2d');
-            trendChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { 
-                            grid: { display: false },
-                            ticks: { color: '#666', font: { size: 9 } }
-                        },
-                        y: { 
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#666', font: { size: 9 } }
-                        }
-                    }
-                }
-            });
+        function toggleTheme() {
+            const panel = document.getElementById('theme-panel');
+            panel.classList.toggle('open');
         }
         
-        // 生成龙虾图片
-        async function generateLobsterImage() {
-            const btn = document.getElementById('generate-btn');
-            btn.disabled = true;
-            btn.textContent = '🎨 生成中...';
+        // ========== 功能按钮 ==========
+        async function refreshData() {
+            showToast('🔄 刷新中...');
+            await fetchData();
+            showToast('✅ 数据已刷新！');
+        }
+        
+        async function generateImage() {
+            showToast('🎨 正在生成龙虾海报...');
             
             try {
                 const res = await fetch('/api/generate-image', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        level: currentLevel,
-                        achievements: currentAchievements
-                    })
+                    body: JSON.stringify({ level: currentLevel })
                 });
                 
                 const json = await res.json();
                 if (json.success) {
                     showImageModal(json.data);
-                    showToast('✅ 龙虾图片生成成功！');
+                    showToast('✅ 龙虾海报生成成功！');
                 } else {
-                    showToast('❌ ' + (json.error || '生成失败'));
+                    showToast('⚠️ ' + (json.error || '生成失败'));
                 }
             } catch (e) {
-                showToast('❌ 网络错误');
+                showToast('❌ 生成失败，请检查 API 配置');
             }
-            
-            btn.disabled = false;
-            btn.textContent = '✨ 生成我的龙虾形象';
         }
         
-        // 显示图片弹窗
         function showImageModal(data) {
             const modal = document.createElement('div');
             modal.className = 'modal';
@@ -717,56 +835,69 @@
             modal.innerHTML = `
                 <div class="modal-content">
                     <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
-                    <div style="font-size:0.8rem;color:#888;margin-bottom:10px;">🎨 ${data.style} | Lv.${currentLevel}</div>
-                    <img src="${data.image_url}" />
-                    <div class="modal-actions">
-                        <a href="${data.image_url}" download="my-lobster.png" class="modal-btn modal-btn-primary">📥 保存</a>
-                        <button class="modal-btn modal-btn-secondary" onclick="navigator.clipboard.writeText('${data.image_url}');showToast('✅ 已复制链接')">📋 复制链接</button>
+                    <img src="${data.image_url}" style="max-width:100%;max-height:60vh;border-radius:12px;">
+                    <div style="margin-top:16px;display:flex;gap:10px;">
+                        <a href="${data.image_url}" download="my-lobster.png" style="
+                            flex:1;padding:12px;background:linear-gradient(135deg,#ff6b6b,#ff8e53);
+                            color:white;border-radius:10px;text-align:center;text-decoration:none;
+                        ">📥 保存图片</a>
+                        <button onclick="shareImage('${data.image_url}')" style="
+                            flex:1;padding:12px;background:rgba(102,126,234,0.2);
+                            color:#667eea;border:1px solid rgba(102,126,234,0.3);border-radius:10px;cursor:pointer;
+                        ">📤 分享</button>
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
         }
         
-        // 刷新数据
-        async function refreshData() {
-            showToast('🔄 刷新中...');
-            await fetchData();
-            showToast('✅ 数据已刷新');
-        }
-        
-        // 导出数据
-        async function exportData() {
-            const res = await fetch('/api/');
-            const json = await res.json();
-            const blob = new Blob([JSON.stringify(json, null, 2)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'clawvalue-report.json';
-            a.click();
-            showToast('✅ 数据已导出');
-        }
-        
-        // 分享
         async function shareResult() {
-            const text = `🦞 我的OpenClaw龙虾等级 Lv.${currentLevel}！\n\n技能: ${document.getElementById('skill-count').textContent}个\n价值: ¥${document.getElementById('value-amount').textContent}\n\n来测测你的龙虾能力吧！`;
-            
+            const level = LEVELS[currentLevel];
+            const text = `🦞 我的龙虾能力值评估结果！
+
+${level.emoji} Lv.${currentLevel} ${level.title}
+💰 估值: ¥${currentData.value_estimation?.amount || 0}
+🛠️ 技能: ${currentData.skills?.total || 0} 个
+
+${ROASTS[currentLevel][0]}
+
+#ClawValue #我的龙虾值 #OpenClaw`;
+
             if (navigator.share) {
-                await navigator.share({ title: '龙虾能力估值', text });
+                await navigator.share({ title: '我的龙虾能力值', text });
             } else {
                 await navigator.clipboard.writeText(text);
-                showToast('✅ 已复制到剪贴板');
+                showToast('✅ 已复制到剪贴板！');
             }
         }
         
-        // 切换主题
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            showToast(document.body.classList.contains('light-theme') ? '☀️ 浅色主题' : '🌙 深色主题');
+        function shareImage(url) {
+            if (navigator.share) {
+                navigator.share({ title: '我的专属龙虾', url });
+            } else {
+                navigator.clipboard.writeText(url);
+                showToast('✅ 图片链接已复制！');
+            }
         }
         
-        // Toast
+        function showHelp() {
+            alert(`🦞 ClawValue 使用指南
+
+快捷键:
+• R - 刷新数据
+• S - 分享结果  
+• T - 切换主题
+
+功能说明:
+• 使用深度: 基于技能、自动化、集成评估
+• 价值估算: 预估节省的时间和成本
+• 成就系统: 解锁各种趣味成就
+• 龙虾海报: AI 生成个性化图片
+
+提示: 多配置技能、开启心跳任务可提升等级！`);
+        }
+        
+        // ========== Toast ==========
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -774,10 +905,23 @@
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
         
-        // 快捷键
+        // ========== 快捷键 ==========
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'r' || e.key === 'R') refreshData();
-            if (e.key === 's' || e.key === 'S') shareResult();
+            if (e.target.tagName === 'INPUT') return;
+            const key = e.key.toLowerCase();
+            if (key === 'r') refreshData();
+            if (key === 's') shareResult();
+            if (key === 't') toggleTheme();
+        });
+        
+        // 点击外部关闭主题面板
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('theme-panel');
+            if (panel.classList.contains('open') && 
+                !panel.contains(e.target) && 
+                !e.target.closest('.icon-btn')) {
+                panel.classList.remove('open');
+            }
         });
     </script>
 </body>
