@@ -28,7 +28,7 @@ metadata:
 在项目根目录执行：
 
 ```bash
-cd /Users/lazyyoun/Documents/bak/clawValue
+cd 到skill安装目录/clawValue
 pip install -r requirements.txt
 ```
 
@@ -55,7 +55,6 @@ export DASHSCOPE_API_KEY="your-api-key"
 ### 方式一：一键启动（推荐）
 
 ```bash
-cd /Users/lazyyoun/Documents/bak/clawValue
 python scripts/server.py
 ```
 
