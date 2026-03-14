@@ -4,23 +4,53 @@ __pycache__/
 *$py.class
 *.so
 .Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
 venv/
 ENV/
 
-# 数据文件
-data/*.db
-data/*.sqlite
-
-# 系统文件
-.DS_Store
-*.log
-
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
 *.swo
+*~
 
-# 临时文件
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+*.local
+
+# Cache
+.cache/
+*.cache
+
+# Generated files
+data/*.json
+data/*.jsonl
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary
+tmp/
+temp/
 *.tmp
 *.bak
+
+# Dependencies
+node_modules/
