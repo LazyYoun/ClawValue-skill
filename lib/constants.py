@@ -272,22 +272,56 @@ class SkillCategory:
     
     用于分类和统计用户技能
     """
-    SEARCH = 'Search & Research'
-    DEVOPS = 'DevOps & Cloud'
-    TOOLS = 'Tools & Utilities'
-    COMMUNICATION = 'Communication'
-    DATA = 'Data & Storage'
-    MEDIA = 'Media & Content'
-    OTHER = 'Other'
+    # 中文分类名称
+    搜索研究 = '搜索研究'
+    开发运维 = '开发运维'
+    工具效率 = '工具效率'
+    沟通协作 = '沟通协作'
+    数据存储 = '数据存储'
+    媒体内容 = '媒体内容'
+    自动化 = '自动化'
+    安全认证 = '安全认证'
+    社交媒体 = '社交媒体'
+    其他 = '其他'
     
-    # 关键词映射
+    # 英文别名映射（兼容旧代码）
+    SEARCH = '搜索研究'
+    DEVOPS = '开发运维'
+    TOOLS = '工具效率'
+    COMMUNICATION = '沟通协作'
+    DATA = '数据存储'
+    MEDIA = '媒体内容'
+    OTHER = '其他'
+    
+    # 关键词映射（中文优先）
     KEYWORDS = {
-        'Search & Research': ['搜索', 'search', '查询', 'web', '研究', 'research'],
-        'DevOps & Cloud': ['devops', '部署', 'ci/cd', 'docker', 'k8s', 'cloud'],
-        'Tools & Utilities': ['mcp', '工具', 'tool', 'utility', 'util'],
-        'Communication': ['消息', 'message', '通知', 'notify', 'notify', '聊天'],
-        'Data & Storage': ['数据库', 'database', 'sql', '存储', 'storage', 'db'],
-        'Media & Content': ['媒体', 'media', '图片', 'image', '视频', 'video', '音频']
+        '搜索研究': ['搜索', 'search', '查询', 'web', '研究', 'research', '搜索引擎', '百科', '知识库', '资讯', '新闻'],
+        '开发运维': ['devops', '部署', 'ci/cd', 'docker', 'k8s', 'cloud', 'kubernetes', '容器', '运维', '发布', 'github', 'git', '代码'],
+        '工具效率': ['mcp', '工具', 'tool', 'utility', 'util', '效率', '辅助', 'cli', '命令行', '脚本', '自动化工具'],
+        '沟通协作': ['消息', 'message', '通知', 'notify', '聊天', 'im', '通讯', '协作', '机器人', 'bot', '群聊'],
+        '数据存储': ['数据库', 'database', 'sql', '存储', 'storage', 'db', 'redis', 'mysql', 'postgres', 'mongodb', '缓存'],
+        '媒体内容': ['媒体', 'media', '图片', 'image', '视频', 'video', '音频', 'audio', '音乐', '封面', '海报', '截图'],
+        '自动化': ['自动化', 'automation', '定时', 'cron', '任务', '调度', 'heartbeat', '心跳', '监控', '提醒', '日程'],
+        '安全认证': ['安全', 'security', '认证', 'auth', '密码', 'password', '加密', 'ssl', 'token', 'oauth', '登录'],
+        '社交媒体': ['微信', 'wechat', '微博', 'weibo', '小红书', 'xiaohongshu', '抖音', 'tiktok', 'twitter', 'x平台', '社交']
+    }
+
+
+class SkillSource:
+    """
+    技能来源定义
+    
+    区分技能的来源类型
+    """
+    WORKSPACE = 'workspace'      # 自定义技能（workspace/skills 目录）
+    BUILTIN = 'builtin'          # 内置技能（OpenClaw bundled）
+    EXTRA = 'extra'              # 扩展技能（插件如 qqbot）
+    
+    # 中文标签
+    LABELS = {
+        'workspace': '自定义技能',
+        'builtin': '内置技能',
+        'extra': '扩展技能'
     }
 
 

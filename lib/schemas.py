@@ -251,6 +251,7 @@ class Skill:
         is_custom: 是否为自定义技能
         is_high_risk: 是否为高风险技能
         category: 技能类别
+        source: 技能来源（workspace/builtin/extra）
         filepath: 文件路径
     """
     name: str
@@ -259,16 +260,18 @@ class Skill:
     author: str = ''
     is_custom: bool = True
     is_high_risk: bool = False
-    category: str = SkillCategory.OTHER
+    category: str = SkillCategory.其他
+    source: str = 'workspace'  # workspace/builtin/extra
     filepath: str = ''
     
     @classmethod
-    def from_skill_md(cls, filepath: str) -> Optional['Skill']:
+    def from_skill_md(cls, filepath: str, source: str = 'workspace') -> Optional['Skill']:
         """
         从 SKILL.md 文件解析技能信息
         
         Args:
             filepath: SKILL.md 文件路径
+            source: 技能来源（workspace/builtin/extra）
             
         Returns:
             Skill 实例，解析失败返回 None
@@ -296,9 +299,10 @@ class Skill:
                 description=description,
                 version=metadata.get('version', '1.0.0'),
                 author=metadata.get('author', ''),
-                is_custom=True,
+                is_custom=(source == 'workspace'),
                 is_high_risk=is_high_risk,
                 category=category,
+                source=source,
                 filepath=filepath
             )
         except FileNotFoundError:
@@ -324,14 +328,25 @@ class Skill:
     
     @staticmethod
     def _guess_category(description: str) -> str:
-        """根据描述猜测技能类别"""
+        """
+        根据描述猜测技能类别
+        
+        使用中文分类名称，支持更丰富的关键词匹配
+        
+        Args:
+            description: 技能描述文本
+            
+        Returns:
+            分类名称（中文）
+        """
         desc_lower = description.lower()
         
+        # 按优先级匹配分类
         for category, keywords in SkillCategory.KEYWORDS.items():
             if any(kw in desc_lower for kw in keywords):
                 return category
         
-        return SkillCategory.OTHER
+        return SkillCategory.其他
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式"""

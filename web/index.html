@@ -1,819 +1,868 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="deep-sea">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦞 ClawValue - 龙虾能力估值</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --primary: #667eea;
-            --primary-dark: #764ba2;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(255,255,255,0.03);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
             --accent: #ff6b6b;
-            --bg: #0f0f1a;
-            --card: rgba(255,255,255,0.03);
-            --card-border: rgba(255,255,255,0.08);
-            --text: #fff;
-            --text-muted: #888;
+            --accent-secondary: #4facfe;
             --success: #43e97b;
             --warning: #feca57;
+            --border: rgba(255,255,255,0.08);
         }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            background-image: 
-                radial-gradient(ellipse at top, rgba(102,126,234,0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at bottom, rgba(118,75,162,0.1) 0%, transparent 50%);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            color: var(--text);
-            padding: 12px;
-            line-height: 1.4;
+            line-height: 1.5;
         }
         
-        /* ========== Header ========== */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px;
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
-        .logo-icon {
-            font-size: 1.5rem;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        .rank-badge {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .icon-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-muted);
-            cursor: pointer;
+        /* ========== 加载动画 ========== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
         }
-        
-        .icon-btn:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--text);
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
-        
-        /* ========== Bento Grid ========== */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto auto auto;
-            gap: 10px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .card {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 16px;
-            transition: all 0.3s;
-        }
-        
-        .card:hover {
-            border-color: rgba(102,126,234,0.3);
-            transform: translateY(-2px);
-        }
-        
-        .card-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-        
-        /* ========== Hero Cards ========== */
-        .hero-left {
-            grid-column: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .loading-content {
             text-align: center;
-            background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2));
         }
-        
-        .lobster-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 0 30px rgba(102,126,234,0.4);
+        .loading-lobster {
+            font-size: 5rem;
+            animation: lobsterBounce 1s ease-in-out infinite;
         }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(102,126,234,0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(102,126,234,0.6); }
+        @keyframes lobsterBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
         }
-        
-        .level-badge {
+        .loading-banner {
             font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 4px;
-        }
-        
-        .level-title {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        
-        .roast-mini {
-            font-size: 0.75rem;
-            color: var(--warning);
-            font-style: italic;
-            max-width: 200px;
-        }
-        
-        .hero-right {
-            grid-column: 2;
-            background: linear-gradient(135deg, rgba(67,233,123,0.1), rgba(102,126,234,0.1));
-        }
-        
-        .value-big {
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--success), #43e97b);
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--success));
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
+            animation: textShimmer 2s linear infinite;
         }
-        
-        .value-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        @keyframes textShimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
         }
-        
-        .value-stat {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        
-        .value-stat span {
-            color: var(--text);
-            font-weight: 600;
-        }
-        
-        /* ========== Progress Bar ========== */
-        .progress-section {
-            margin-top: 12px;
-        }
-        
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-        
-        .progress-bar {
+        .loading-progress {
+            width: 300px;
             height: 6px;
             background: rgba(255,255,255,0.1);
             border-radius: 3px;
             overflow: hidden;
+            margin: 20px auto;
         }
-        
-        .progress-fill {
+        .loading-progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
             border-radius: 3px;
-            transition: width 0.5s ease;
+            transition: width 0.3s ease-out;
         }
-        
-        /* ========== Stats Row ========== */
-        .stat-card {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .stat-value {
-            font-size: 1.4rem;
+        .loading-percent {
+            font-size: 2rem;
             font-weight: 700;
+            color: var(--accent-secondary);
         }
         
-        .stat-sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
+        /* ========== 主题定义 ========== */
+        [data-theme="deep-sea"] { --bg-primary: #0f0f23; --accent: #ff6b6b; --accent-secondary: #4facfe; }
+        [data-theme="fresh-garden"] { --bg-primary: #f0f9f0; --text-primary: #1a1a1a; --text-secondary: #666; --accent: #43e97b; }
+        [data-theme="cyber-neon"] { --bg-primary: #0a0a0a; --accent: #ff00ff; --accent-secondary: #00ffff; }
+        [data-theme="retro-type"] { --bg-primary: #f5e6d3; --text-primary: #3d2914; --text-secondary: #6b4423; --accent: #8b4513; }
+        [data-theme="minimal-ink"] { --bg-primary: #fafafa; --text-primary: #2c2c2c; --text-secondary: #666; --accent: #2c2c2c; }
+        [data-theme="dark-forest"] { --bg-primary: #0d1b2a; --accent: #52b788; --accent-secondary: #40916c; }
+        [data-theme="summer-beach"] { --bg-primary: #fefae0; --text-primary: #283618; --accent: #bc6c25; }
+        [data-theme="candy-land"] { --bg-primary: #fff0f5; --text-primary: #c71585; --accent: #ff69b4; }
+        [data-theme="dark-gothic"] { --bg-primary: #0a0a0a; --accent: #8b0000; --accent-secondary: #c0c0c0; }
+        [data-theme="vaporwave"] { --bg-primary: #0d0221; --accent: #ff71ce; --accent-secondary: #01cdfe; }
+        [data-theme="sakura-bloom"] { --bg-primary: #fff5f8; --text-primary: #c44569; --accent: #ff6b9d; }
+        [data-theme="pixel-game"] { --bg-primary: #1a1c2c; --accent: #29adff; --accent-secondary: #00e436; }
+        [data-theme="ocean-deep"] { --bg-primary: #001f3f; --accent: #00bcd4; --accent-secondary: #ff6f61; }
+        [data-theme="music-rhythm"] { --bg-primary: #0d0d0d; --accent: #e63946; --accent-secondary: #a8dadc; }
+        [data-theme="snow-peak"] { --bg-primary: #e8f4f8; --text-primary: #1a3a4a; --accent: #2e86de; }
         
-        /* ========== Achievements ========== */
-        .achievement-card {
-            grid-column: 1 / -1;
-        }
+        /* ========== 布局 ========== */
+        .container { max-width: 900px; margin: 0 auto; padding: 15px; }
         
-        .achievement-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .achievement-badge {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+        .header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            background: rgba(254,202,87,0.15);
-            border: 1px solid rgba(254,202,87,0.3);
-            cursor: pointer;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; }
+        .logo-icon { font-size: 1.8rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        
+        .header-actions { display: flex; gap: 8px; }
+        .icon-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            color: var(--text-secondary); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
+        .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
         
-        .achievement-badge:hover {
-            transform: scale(1.1);
+        /* ========== 网格布局 ========== */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.3s;
         }
+        .card:hover { border-color: rgba(102,126,234,0.3); }
+        .card.span-2 { grid-column: span 2; }
+        .card.span-3 { grid-column: span 3; }
+        .card-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
         
-        .achievement-badge.locked {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.1);
-            opacity: 0.5;
+        /* ========== Hero Section ========== */
+        .hero { display: flex; align-items: center; gap: 20px; }
+        .hero-avatar {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(255,107,107,0.4);
         }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .hero-info h1 { font-size: 2rem; font-weight: 800; }
+        .hero-info .subtitle { font-size: 1rem; color: var(--text-secondary); }
+        .hero-info .roast { font-size: 0.85rem; color: var(--warning); font-style: italic; margin-top: 8px; }
         
-        .achievement-names {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
+        /* ========== Stats ========== */
+        .stat-value { font-size: 1.8rem; font-weight: 700; }
+        .stat-sub { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
         
-        .achievement-name {
-            font-size: 0.65rem;
-            padding: 2px 8px;
-            background: rgba(254,202,87,0.1);
-            border-radius: 10px;
+        /* ========== Progress ========== */
+        .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); }
+        
+        /* ========== Scores ========== */
+        .score-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .score-item:last-child { border-bottom: none; }
+        .score-name { flex: 1; font-size: 0.85rem; }
+        .score-bar { width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .score-fill { height: 100%; border-radius: 3px; }
+        .score-value { font-size: 0.85rem; font-weight: 600; width: 35px; text-align: right; }
+        
+        /* ========== Achievements ========== */
+        .achievement-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .achievement-tag {
+            padding: 4px 12px; border-radius: 15px; font-size: 0.8rem;
+            background: rgba(254,202,87,0.15); border: 1px solid rgba(254,202,87,0.3);
             color: var(--warning);
         }
         
+        /* ========== Depth Breakdown ========== */
+        .breakdown-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+        .breakdown-level { width: 24px; height: 24px; border-radius: 6px; background: rgba(102,126,234,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; }
+        .breakdown-name { flex: 1; font-size: 0.85rem; }
+        .breakdown-count { font-weight: 600; }
+        
+        /* ========== Log Stats ========== */
+        .log-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .log-stat { text-align: center; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+        .log-stat-value { font-size: 1.2rem; font-weight: 700; }
+        .log-stat-label { font-size: 0.65rem; color: var(--text-secondary); }
+        
         /* ========== Roast Section ========== */
-        .roast-card {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(255,142,83,0.1));
-            border-color: rgba(255,107,107,0.2);
-        }
+        .roast-card { background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(255,142,83,0.1)); border-color: rgba(255,107,107,0.2); }
+        .roast-text { font-size: 0.95rem; line-height: 1.6; }
         
-        .roast-title {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-        
-        .roast-text {
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: var(--text);
-        }
-        
-        /* ========== Action Bar ========== */
-        .action-bar {
-            grid-column: 1 / -1;
-            display: flex;
-            gap: 8px;
-        }
-        
+        /* ========== Actions ========== */
+        .actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
+            padding: 12px 24px; border-radius: 12px; font-size: 0.9rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s; border: none;
         }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), #ff8e53);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-        }
+        .btn-primary { background: linear-gradient(135deg, #ff6b6b, #ff8e53); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,107,107,0.3); }
+        .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-primary); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
         
         /* ========== Theme Panel ========== */
         .theme-panel {
-            position: fixed;
-            top: 0;
-            right: -300px;
-            width: 280px;
-            height: 100vh;
-            background: #1a1a2e;
-            border-left: 1px solid var(--card-border);
-            padding: 20px;
-            z-index: 1000;
-            transition: right 0.3s;
-            overflow-y: auto;
+            position: fixed; top: 0; right: -320px; width: 300px; height: 100vh;
+            background: var(--bg-secondary); border-left: 1px solid var(--border);
+            padding: 20px; z-index: 1000; transition: right 0.3s; overflow-y: auto;
         }
-        
-        .theme-panel.open {
-            right: 0;
+        .theme-panel.show { right: 0; }
+        .theme-panel-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
+        .theme-category { margin-bottom: 16px; }
+        .theme-category-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 0.85rem; color: var(--text-secondary); }
+        .theme-option {
+            display: flex; align-items: center; gap: 12px; padding: 10px;
+            border-radius: 10px; cursor: pointer; transition: all 0.2s;
+            border: 2px solid transparent; margin-bottom: 6px;
         }
-        
-        .theme-panel-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        
-        .theme-item {
-            aspect-ratio: 1;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
-        
-        .theme-item:hover {
-            transform: scale(1.05);
-        }
-        
-        .theme-item.active {
-            border-color: var(--primary);
-        }
+        .theme-option:hover { background: rgba(255,255,255,0.05); }
+        .theme-option.active { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .theme-preview { display: flex; width: 50px; height: 30px; border-radius: 6px; overflow: hidden; position: relative; }
+        .theme-preview-color { flex: 1; }
+        .theme-preview-icon { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 1rem; }
+        .theme-info { flex: 1; }
+        .theme-name { font-size: 0.85rem; font-weight: 600; }
+        .theme-desc { font-size: 0.7rem; color: var(--text-secondary); }
+        .theme-check { color: var(--accent); font-weight: bold; }
+        .theme-type-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-right: 6px; }
+        .theme-type-badge.dark { background: rgba(0,0,0,0.3); }
+        .theme-type-badge.light { background: rgba(255,255,255,0.2); }
+        .theme-type-badge.special { background: linear-gradient(135deg, rgba(255,0,255,0.3), rgba(0,255,255,0.3)); }
         
         /* ========== Modal ========== */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: #1a1a2e;
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 90vw;
-            max-height: 90vh;
-            position: relative;
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-        }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .modal-content { background: var(--bg-secondary); border-radius: 20px; padding: 24px; max-width: 90vw; position: relative; }
+        .modal-close { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px; }
         
         /* ========== Toast ========== */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(0,0,0,0.9);
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            z-index: 3000;
-            transition: transform 0.3s;
-        }
-        
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        /* ========== Share Card ========== */
-        .share-card {
-            background: linear-gradient(135deg, #1a1a2e, #2d2d44);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            width: 320px;
-        }
-        
-        .share-card .big-emoji {
-            font-size: 4rem;
-            margin-bottom: 16px;
-        }
-        
-        .share-card .big-level {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-        
-        .share-card .big-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--success);
-            margin-bottom: 16px;
-        }
-        
-        .share-card .hashtags {
-            font-size: 0.75rem;
-            color: var(--primary);
-            margin-top: 16px;
-        }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.9); padding: 12px 24px; border-radius: 30px; font-size: 0.85rem; z-index: 3000; transition: transform 0.3s; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
         
         /* ========== Responsive ========== */
-        @media (min-width: 768px) {
-            .bento-grid {
-                max-width: 700px;
-                grid-template-columns: 1fr 1fr 1fr;
-            }
-            
-            .hero-left {
-                grid-column: 1;
-                grid-row: 1 / 3;
-            }
-            
-            .hero-right {
-                grid-column: 2 / 4;
-            }
-            
-            .achievement-card {
-                grid-column: 2 / 4;
-            }
-        }
-        
-        /* ========== Light Theme ========== */
-        body.light {
-            --bg: #f5f7fa;
-            --card: rgba(255,255,255,0.9);
-            --card-border: rgba(0,0,0,0.08);
-            --text: #1a1a2e;
-            --text-muted: #666;
-        }
-        
-        body.light .lobster-avatar {
-            box-shadow: 0 0 30px rgba(102,126,234,0.3);
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .card.span-2, .card.span-3 { grid-column: span 1; }
+            .hero { flex-direction: column; text-align: center; }
+            .log-stats { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="logo">
-            <span class="logo-icon">🦞</span>
-            <span>ClawValue</span>
-        </div>
-        <div class="rank-badge" id="rank-badge">🌍 击败全球 92% 用户</div>
-        <div class="header-actions">
-            <button class="icon-btn" onclick="toggleTheme()" title="切换主题 (T)">🌙</button>
-            <button class="icon-btn" onclick="showHelp()" title="帮助 (?)">❓</button>
+    <!-- 加载进度遮罩 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-lobster">🦞</div>
+            <div class="loading-banner" id="loading-banner">数据收集中...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loading-progress-bar"></div>
+            </div>
+            <div class="loading-percent" id="loading-percent">0%</div>
         </div>
     </div>
-    
-    <!-- Bento Grid -->
-    <div class="bento-grid">
-        <!-- Hero Left: Avatar & Level -->
-        <div class="card hero-left">
-            <div class="lobster-avatar" id="lobster-avatar">🦞</div>
-            <div class="level-badge" id="level-badge">Lv.2</div>
-            <div class="level-title" id="level-title">初级玩家</div>
-            <div class="roast-mini" id="roast-mini">"你的钳子有点生锈了"</div>
-            <div class="progress-section">
-                <div class="progress-label">
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <span class="logo-icon">🦞</span>
+                <span>ClawValue</span>
+            </div>
+            <div class="header-actions">
+                <select id="mock-selector" onchange="selectMockLevel(this.value)" style="padding:6px 12px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-primary);cursor:pointer;">
+                    <option value="real">📊 真实数据</option>
+                    <option value="1">🐣 入门小白</option>
+                    <option value="2">🎮 初级玩家</option>
+                    <option value="3">💻 中级开发者</option>
+                    <option value="4">🚀 高级工程师</option>
+                    <option value="5">🦞 龙虾大师</option>
+                </select>
+                <button class="icon-btn" onclick="toggleThemePanel()" title="切换主题">🎨</button>
+                <button class="icon-btn" onclick="showHelp()" title="帮助">❓</button>
+            </div>
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="grid">
+            <!-- Hero Card -->
+            <div class="card span-3">
+                <div class="hero">
+                    <div class="hero-avatar" id="hero-avatar">🦞</div>
+                    <div class="hero-info">
+                        <h1 id="hero-title">Lv.2 初级玩家</h1>
+                        <div class="subtitle" id="hero-subtitle">全球排名: Top 15%</div>
+                        <div class="roast" id="hero-roast">加载中...</div>
+                    </div>
+                </div>
+                <div class="progress-bar" style="margin-top: 16px;">
+                    <div class="progress-fill" id="hero-progress" style="width: 40%; background: linear-gradient(90deg, var(--accent), var(--accent-secondary));"></div>
+                </div>
+                <div class="progress-label" style="margin-top: 8px;">
                     <span>升级进度</span>
-                    <span id="progress-percent">40%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill" style="width: 40%"></div>
+                    <span id="progress-text">40% - 距下一级还需 60 分</span>
                 </div>
             </div>
-        </div>
-        
-        <!-- Hero Right: Value -->
-        <div class="card hero-right">
-            <div class="card-label">💰 龙虾估值</div>
-            <div class="value-big" id="value-amount">¥2,000</div>
-            <div class="value-stats">
-                <div class="value-stat">⏱️ 节省工时: <span id="hours-saved">27</span> 小时</div>
-                <div class="value-stat">📈 效率提升: <span id="efficiency">+48</span>%</div>
-                <div class="value-stat">💎 ROI: <span id="roi">4</span>x</div>
+            
+            <!-- 价值估算 -->
+            <div class="card">
+                <div class="card-label">💰 龙虾估值</div>
+                <div class="stat-value" style="background: linear-gradient(135deg, var(--success), #43e97b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="value-amount">¥2,000</div>
+                <div class="stat-sub">预估年度节省成本</div>
             </div>
-            <div class="progress-section">
-                <div class="progress-label">
-                    <span>距下一级</span>
-                    <span id="next-level">还差 2 个技能</span>
+            
+            <!-- 技能统计 -->
+            <div class="card">
+                <div class="card-label">🛠️ 技能统计</div>
+                <div class="stat-value"><span id="skill-total">8</span> <span style="font-size:0.8rem;color:var(--text-secondary)">/ <span id="skill-custom">8</span> 自定义</span></div>
+                <div class="stat-sub" id="skill-cats">Media, Tools...</div>
+            </div>
+            
+            <!-- 会话统计 -->
+            <div class="card">
+                <div class="card-label">💬 会话强度</div>
+                <div class="stat-value"><span id="log-total">11.7k</span></div>
+                <div class="stat-sub">活跃 <span id="active-days">4</span> 天</div>
+            </div>
+            
+            <!-- 评分详情 -->
+            <div class="card">
+                <div class="card-label">🎯 能力评分</div>
+                <div class="score-item">
+                    <span class="score-name">🛠️ 技能</span>
+                    <div class="score-bar"><div class="score-fill" id="skill-bar" style="width: 70%; background: #667eea;"></div></div>
+                    <span class="score-value" id="skill-score">70</span>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 60%"></div>
+                <div class="score-item">
+                    <span class="score-name">⚡ 自动化</span>
+                    <div class="score-bar"><div class="score-fill" id="auto-bar" style="width: 20%; background: #f093fb;"></div></div>
+                    <span class="score-value" id="auto-score">20</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-name">🔗 集成</span>
+                    <div class="score-bar"><div class="score-fill" id="int-bar" style="width: 30%; background: #43e97b;"></div></div>
+                    <span class="score-value" id="int-score">30</span>
                 </div>
             </div>
-        </div>
-        
-        <!-- Stats: Skills -->
-        <div class="card stat-card">
-            <div class="card-label">🛠️ 技能掌握</div>
-            <div class="stat-value"><span id="skill-count">8</span> <span style="font-size:0.8rem;color:var(--text-muted)">/ 自定义</span></div>
-            <div class="stat-sub" id="skill-cats">Media, Tools...</div>
-        </div>
-        
-        <!-- Stats: Sessions -->
-        <div class="card stat-card">
-            <div class="card-label">💬 会话强度</div>
-            <div class="stat-value"><span id="log-count">11.7k</span></div>
-            <div class="stat-sub">活跃 <span id="active-days">4</span> 天</div>
-        </div>
-        
-        <!-- Achievements -->
-        <div class="card achievement-card">
-            <div class="card-label">🏆 成就徽章 (点击查看详情)</div>
-            <div class="achievement-row" id="achievement-badges">
-                <div class="achievement-badge">🏅</div>
-                <div class="achievement-badge">🛠️</div>
-                <div class="achievement-badge locked">🔒</div>
-                <div class="achievement-badge locked">🔒</div>
+            
+            <!-- 深度分布 -->
+            <div class="card">
+                <div class="card-label">📊 深度分布</div>
+                <div id="depth-breakdown">
+                    <div class="breakdown-item"><span class="breakdown-level">1</span><span class="breakdown-name">技能数量</span><span class="breakdown-count" id="bd-skill">8</span></div>
+                    <div class="breakdown-item"><span class="breakdown-level">2</span><span class="breakdown-name">自定义技能</span><span class="breakdown-count" id="bd-custom">8</span></div>
+                    <div class="breakdown-item"><span class="breakdown-level">3</span><span class="breakdown-name">日志条目</span><span class="breakdown-count" id="bd-logs">11.7k</span></div>
+                    <div class="breakdown-item"><span class="breakdown-level">4</span><span class="breakdown-name">Agent数量</span><span class="breakdown-count" id="bd-agent">1</span></div>
+                </div>
             </div>
-            <div class="achievement-names" id="achievement-names">
-                <span class="achievement-name">技能大师</span>
-                <span class="achievement-name">自定义达人</span>
+            
+            <!-- 日志统计 -->
+            <div class="card">
+                <div class="card-label">📝 日志详情</div>
+                <div class="log-stats">
+                    <div class="log-stat"><div class="log-stat-value" id="log-info">10k</div><div class="log-stat-label">INFO</div></div>
+                    <div class="log-stat"><div class="log-stat-value" style="color: var(--warning)" id="log-warn">209</div><div class="log-stat-label">WARN</div></div>
+                    <div class="log-stat"><div class="log-stat-value" style="color: var(--accent)" id="log-error">131</div><div class="log-stat-label">ERROR</div></div>
+                    <div class="log-stat"><div class="log-stat-value" style="color: var(--accent-secondary)" id="log-tools">27</div><div class="log-stat-label">工具调用</div></div>
+                </div>
             </div>
-        </div>
-        
-        <!-- Roast -->
-        <div class="card roast-card">
-            <div class="roast-title">🔥 龙虾毒舌点评</div>
-            <div class="roast-text" id="roast-text">加载中...</div>
-        </div>
-        
-        <!-- Action Bar -->
-        <div class="action-bar">
-            <button class="btn btn-primary" onclick="generateImage()">🎨 生成龙虾海报</button>
-            <button class="btn btn-secondary" onclick="refreshData()">🔄 刷新</button>
-            <button class="btn btn-secondary" onclick="shareResult()">🚀 分享 (S)</button>
+            
+            <!-- 成就 -->
+            <div class="card span-2">
+                <div class="card-label">🏆 成就徽章</div>
+                <div class="achievement-list" id="achievement-list">
+                    <span class="achievement-tag">🏅 技能大师</span>
+                </div>
+            </div>
+            
+            <!-- 调侃话术 -->
+            <div class="card span-3 roast-card">
+                <div class="card-label">🔥 龙虾毒舌点评</div>
+                <div class="roast-text" id="roast-full">加载中...</div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="card span-3">
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="generateImage()">🎨 生成龙虾海报</button>
+                    <button class="btn btn-secondary" onclick="refreshData()">🔄 刷新</button>
+                    <button class="btn btn-secondary" onclick="shareResult()">🚀 分享 (S)</button>
+                    <button class="btn btn-secondary" onclick="exportData()">📥 导出</button>
+                </div>
+            </div>
         </div>
     </div>
     
     <!-- Theme Panel -->
     <div class="theme-panel" id="theme-panel">
         <div class="theme-panel-title">🎨 选择主题风格</div>
-        <div class="theme-grid" id="theme-grid"></div>
+        <div id="theme-categories"></div>
     </div>
     
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
-        // ========== 全局变量 ==========
-        let currentData = {};
-        let currentLevel = 1;
-        
-        // ========== 等级配置 ==========
-        const LEVELS = {
-            1: { emoji: '🐣', title: '入门小白', roast: '你还在用手动模式？龙虾都比你快！' },
-            2: { emoji: '🎮', title: '初级玩家', roast: '你的钳子有点生锈了，多写几个 Skill 吧！' },
-            3: { emoji: '💻', title: '中级开发者', roast: '有点样子了，但离大师还差得远呢~' },
-            4: { emoji: '🚀', title: '高级工程师', roast: '效率怪兽！你的 AI 助手表示：这班上得值！' },
-            5: { emoji: '🦞', title: '龙虾大师', roast: '大佬受我一拜！这配置简直是赛博坦星球来的！' }
+        // ========== 主题系统 ==========
+        const themes = {
+            'deep-sea': { name: '深海龙虾', icon: '🦞', desc: '深色科技风', type: 'dark', colors: ['#0f0f23', '#ff6b6b', '#4facfe', '#feca57'] },
+            'fresh-garden': { name: '清新田园', icon: '🌿', desc: '明亮清新风', type: 'light', colors: ['#f0f9f0', '#43e97b', '#38f9d7', '#ff9800'] },
+            'cyber-neon': { name: '赛博霓虹', icon: '⚡', desc: '未来科技风', type: 'special', colors: ['#0a0a0a', '#ff00ff', '#00ffff', '#ffff00'] },
+            'retro-type': { name: '复古打字机', icon: '📜', desc: '复古文艺风', type: 'light', colors: ['#f5e6d3', '#8b4513', '#d2691e', '#b8860b'] },
+            'minimal-ink': { name: '极简水墨', icon: '🎨', desc: '东方禅意风', type: 'light', colors: ['#fafafa', '#2c2c2c', '#666666', '#c41e3a'] },
+            'dark-forest': { name: '暗夜森林', icon: '🌙', desc: '神秘自然风', type: 'dark', colors: ['#0d1b2a', '#52b788', '#40916c', '#d4a373'] },
+            'summer-beach': { name: '夏日海滩', icon: '🏖️', desc: '清爽度假风', type: 'light', colors: ['#fefae0', '#606c38', '#bc6c25', '#dda15e'] },
+            'candy-land': { name: '糖果乐园', icon: '🍬', desc: '可爱甜美风', type: 'special', colors: ['#fff0f5', '#ff69b4', '#ff1493', '#87ceeb'] },
+            'dark-gothic': { name: '暗黑哥特', icon: '🦇', desc: '暗黑神秘风', type: 'dark', colors: ['#0a0a0a', '#8b0000', '#4a0a0a', '#c0c0c0'] },
+            'vaporwave': { name: '蒸汽波', icon: '💜', desc: '复古未来风', type: 'special', colors: ['#0d0221', '#ff71ce', '#01cdfe', '#05ffa1'] },
+            'sakura-bloom': { name: '樱花物语', icon: '🌸', desc: '日系浪漫风', type: 'light', colors: ['#fff5f8', '#ff6b9d', '#fd79a8', '#c44569'] },
+            'pixel-game': { name: '像素游戏', icon: '🎮', desc: '复古游戏风', type: 'special', colors: ['#1a1c2c', '#29adff', '#00e436', '#ffec27'] },
+            'ocean-deep': { name: '海洋深处', icon: '🌊', desc: '海洋探索风', type: 'dark', colors: ['#001f3f', '#00bcd4', '#ff6f61', '#ff9800'] },
+            'music-rhythm': { name: '音乐律动', icon: '🎵', desc: '音乐可视化风', type: 'dark', colors: ['#0d0d0d', '#e63946', '#a8dadc', '#f1faee'] },
+            'snow-peak': { name: '雪山之巅', icon: '🏔️', desc: '极地纯净风', type: 'light', colors: ['#e8f4f8', '#2e86de', '#54a0ff', '#feca57'] }
         };
         
-        // ========== 趣味化文案 ==========
+        const themeCategories = {
+            dark: { name: '深色系', icon: '🌙' },
+            light: { name: '浅色系', icon: '☀️' },
+            special: { name: '特色系', icon: '✨' }
+        };
+        
+        // ========== 趣味文案 ==========
         const ROASTS = {
             1: [
-                '你还在用手动模式？龙虾都比你快！',
-                '看来 OpenClaw 只是你的记事本啊...',
-                '小龙虾你好！建议先装 3 个技能再来说话'
+                "🐣 小龙虾你好！看来你只是接了个模型啊，对OpenClaw的开发度不足1% —— 不过没关系，连sudo make me a sandwich都还没学会呢。",
+                "恭喜！您已成功点亮'Hello World'技能。下一步，请尝试让AI帮您查天气，解锁'初级驯龙师'称号。",
+                "检测到您的使用模式为「佛系体验」。别急，龙虾都是从小虾米长大的！建议：多和AI聊聊天，它会比你想象的更聪明。"
             ],
             2: [
-                '你的钳子有点生锈了，多写几个 Skill 吧！',
-                '有点样子了，但离大师还差十万八千里',
-                '技能树是不是点歪了？'
+                "正在技术债里种花？恭喜！您的自动化花园已初具规模，建议加把劲儿，冲向'Proactive Agent'模式！",
+                "检测到您的AI已经开始'上班'了！但似乎还在试用期。建议开启定时巡检，迈向'懒人终极梦想'——躺着也能赚钱。",
+                "🎯 中级玩家认证！你已经开始探索更多功能了，继续保持这个势头！你的AI助手表示：「终于被重视了！」",
+                "你的技能树已经点亮了一半，AI助手对你的满意度：⭐⭐⭐☆☆。再加把劲，让它对你刮目相看！"
             ],
             3: [
-                '中级玩家认证！继续保持这个势头',
-                '你的 AI 助手对你满意度：⭐⭐⭐☆☆',
-                '已经超过了一半的用户，但不包括我'
-            ],
-            4: [
-                '效率怪兽！你的 AI 助手表示：这班上得值！',
-                '检测到工程巨兽在线！请继续保持',
-                '你的配置让普通人类望尘莫及'
-            ],
-            5: [
-                '大佬受我一拜！这配置简直是赛博坦星球来的！',
-                '龙虾大师！Claude 见你都要叫一声「大佬」！',
-                '传说级存在！建议写本《如何让 AI 帮你打工》'
+                "检测到一台'工程巨兽'在线！您的多Agent协作网络堪称分布式计算典范。请继续保持，小心别让AI觉得'人类好弱智'。",
+                "警告：您的'龙虾'已过度烹饪，可能产生幻觉。建议定期清理上下文缓存，避免AI因'内存溢出'而开始哲学思辨。",
+                "🦞 龙虾大师！你已经达到了传说中的最高境界！Claude 见你都要叫一声「大佬」！"
             ]
         };
         
+        const LEVELS = {
+            1: { emoji: '🐣', title: '入门小白' },
+            2: { emoji: '🎮', title: '初级玩家' },
+            3: { emoji: '💻', title: '中级开发者' },
+            4: { emoji: '🚀', title: '高级工程师' },
+            5: { emoji: '🦞', title: '龙虾大师' }
+        };
+        
+        // ========== Mock 数据 ==========
+        const MOCK_DATA = {
+            1: {
+                depth_level: 1,
+                value_estimation: { amount: 500 },
+                skills: { total: 2, custom: 2, categories: { '工具效率': 2 } },
+                sessions: { total: 150, active_days: 2 },
+                evaluation: { skill_score: 20, automation_score: 10, integration_score: 15 },
+                depth_breakdown: [
+                    { name: '技能数量', count: 2 },
+                    { name: '自定义技能', count: 2 },
+                    { name: '日志条目', count: 150 },
+                    { name: 'Agent数量', count: 1 }
+                ],
+                log_stats: { info_count: 120, warn_count: 20, error_count: 10, tool_calls: 5 },
+                achievements: []
+            },
+            2: {
+                depth_level: 2,
+                value_estimation: { amount: 2000 },
+                skills: { total: 5, custom: 5, categories: { '工具效率': 2, '搜索研究': 2, '沟通协作': 1 } },
+                sessions: { total: 800, active_days: 5 },
+                evaluation: { skill_score: 40, automation_score: 25, integration_score: 30 },
+                depth_breakdown: [
+                    { name: '技能数量', count: 5 },
+                    { name: '自定义技能', count: 5 },
+                    { name: '日志条目', count: 800 },
+                    { name: 'Agent数量', count: 1 }
+                ],
+                log_stats: { info_count: 700, warn_count: 60, error_count: 40, tool_calls: 15 },
+                achievements: ['🐣 新手上路']
+            },
+            3: {
+                depth_level: 3,
+                value_estimation: { amount: 8000 },
+                skills: { total: 12, custom: 10, categories: { '工具效率': 4, '搜索研究': 3, '自动化': 3, '媒体内容': 2 } },
+                sessions: { total: 5000, active_days: 15 },
+                evaluation: { skill_score: 60, automation_score: 50, integration_score: 55 },
+                depth_breakdown: [
+                    { name: '技能数量', count: 12 },
+                    { name: '自定义技能', count: 10 },
+                    { name: '日志条目', count: 5000 },
+                    { name: 'Agent数量', count: 2 }
+                ],
+                log_stats: { info_count: 4500, warn_count: 300, error_count: 200, tool_calls: 80 },
+                achievements: ['🎮 技能达人', '⚡ 自动化新手']
+            },
+            4: {
+                depth_level: 4,
+                value_estimation: { amount: 25000 },
+                skills: { total: 25, custom: 20, categories: { '工具效率': 6, '搜索研究': 5, '自动化': 5, '媒体内容': 4, '开发运维': 3, '数据存储': 2 } },
+                sessions: { total: 25000, active_days: 45 },
+                evaluation: { skill_score: 80, automation_score: 75, integration_score: 70 },
+                depth_breakdown: [
+                    { name: '技能数量', count: 25 },
+                    { name: '自定义技能', count: 20 },
+                    { name: '日志条目', count: 25000 },
+                    { name: 'Agent数量', count: 3 }
+                ],
+                log_stats: { info_count: 22000, warn_count: 1800, error_count: 1200, tool_calls: 350 },
+                achievements: ['🚀 技能大师', '🤖 自动化达人', '🌐 多渠道运营', '⚡ 超级用户']
+            },
+            5: {
+                depth_level: 5,
+                value_estimation: { amount: 88888 },
+                skills: { total: 50, custom: 45, categories: { '工具效率': 10, '搜索研究': 8, '自动化': 10, '媒体内容': 8, '开发运维': 7, '数据存储': 4, '安全认证': 3 } },
+                sessions: { total: 100000, active_days: 180 },
+                evaluation: { skill_score: 98, automation_score: 95, integration_score: 92 },
+                depth_breakdown: [
+                    { name: '技能数量', count: 50 },
+                    { name: '自定义技能', count: 45 },
+                    { name: '日志条目', count: 100000 },
+                    { name: 'Agent数量', count: 5 }
+                ],
+                log_stats: { info_count: 90000, warn_count: 6000, error_count: 4000, tool_calls: 2000 },
+                achievements: ['🦞 龙虾大师', '🏅 技能宗师', '🤖 自动化之神', '🌐 全渠道霸主', '⚡ Token燃烧者', '🚀 早期采用者']
+            }
+        };
+        
+        // ========== 全局变量 ==========
+        let currentData = {};
+        let currentLevel = 1;
+        let currentAchievements = [];
+        
         // ========== 初始化 ==========
         document.addEventListener('DOMContentLoaded', () => {
+            initThemePanel();
             fetchData();
-            initThemes();
         });
+        
+        // ========== 主题面板 ==========
+        function initThemePanel() {
+            const container = document.getElementById('theme-categories');
+            const savedTheme = localStorage.getItem('clawvalue-theme') || 'deep-sea';
+            
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const categorized = {};
+            Object.entries(themes).forEach(([id, t]) => {
+                const type = t.type || 'dark';
+                if (!categorized[type]) categorized[type] = [];
+                categorized[type].push({ id, ...t });
+            });
+            
+            container.innerHTML = Object.entries(themeCategories).map(([type, catInfo]) => {
+                const list = categorized[type] || [];
+                if (list.length === 0) return '';
+                return `
+                    <div class="theme-category">
+                        <div class="theme-category-header">${catInfo.icon} ${catInfo.name} (${list.length}套)</div>
+                        ${list.map(t => `
+                            <div class="theme-option ${t.id === savedTheme ? 'active' : ''}" onclick="setTheme('${t.id}')">
+                                <div class="theme-preview">${t.colors.map(c => `<div class="theme-preview-color" style="background:${c}"></div>`).join('')}<span class="theme-preview-icon">${t.icon}</span></div>
+                                <div class="theme-info"><div class="theme-name">${t.name}</div><div class="theme-desc"><span class="theme-type-badge ${t.type}">${t.type === 'dark' ? '深色' : t.type === 'light' ? '浅色' : '特色'}</span>${t.desc}</div></div>
+                                ${t.id === savedTheme ? '<div class="theme-check">✓</div>' : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function toggleThemePanel() {
+            document.getElementById('theme-panel').classList.toggle('show');
+        }
+        
+        function setTheme(id) {
+            document.documentElement.setAttribute('data-theme', id);
+            localStorage.setItem('clawvalue-theme', id);
+            document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            showToast(`✅ 已切换到「${themes[id].name}」主题`);
+            document.getElementById('theme-panel').classList.remove('show');
+        }
         
         // ========== 数据获取 ==========
         async function fetchData() {
+            const banner = document.getElementById('loading-banner');
+            const progressBar = document.getElementById('loading-progress-bar');
+            const percentEl = document.getElementById('loading-percent');
+            
+            // 阶段1：数据收集中
+            banner.textContent = '数据收集中...';
+            await animateProgress(0, 30, 800);
+            
             try {
                 const res = await fetch('/api/');
                 const json = await res.json();
+                
+                // 阶段2：快好了
+                banner.textContent = '快好了...';
+                await animateProgress(30, 70, 500);
+                
                 if (json.success && json.data) {
                     currentData = json.data;
+                    
+                    // 阶段3：计算中
+                    banner.textContent = '计算中，您的全球排名是...';
+                    await animateProgress(70, 90, 400);
+                    
+                    // 更新UI
                     updateUI(json.data);
+                    
+                    // 阶段4：完成
+                    banner.textContent = '收集完成！';
+                    await animateProgress(90, 100, 300);
+                    
+                    // 隐藏加载层
+                    setTimeout(() => {
+                        document.getElementById('loading-overlay').classList.add('hidden');
+                    }, 300);
                 }
             } catch (e) {
+                banner.textContent = '数据加载失败';
+                progressBar.style.background = '#ff6b6b';
                 showToast('❌ 数据加载失败');
             }
+        }
+        
+        async function animateProgress(from, to, duration) {
+            const progressBar = document.getElementById('loading-progress-bar');
+            const percentEl = document.getElementById('loading-percent');
+            const startTime = Date.now();
+            
+            return new Promise(resolve => {
+                function update() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const current = from + (to - from) * progress;
+                    
+                    progressBar.style.width = current + '%';
+                    percentEl.textContent = Math.round(current) + '%';
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        resolve();
+                    }
+                }
+                update();
+            });
         }
         
         // ========== UI 更新 ==========
         function updateUI(data) {
             currentLevel = data.depth_level || 1;
+            currentAchievements = data.achievements || [];
             const level = LEVELS[currentLevel];
             
-            // 等级
-            document.getElementById('lobster-avatar').textContent = level.emoji;
-            document.getElementById('level-badge').textContent = `Lv.${currentLevel}`;
-            document.getElementById('level-title').textContent = level.title;
-            document.getElementById('roast-mini').textContent = `"${level.roast.slice(0, 15)}..."`;
+            // Hero - 带动画
+            animateValue('hero-avatar', level.emoji, true);
+            animateText('hero-title', `Lv.${currentLevel} ${level.title}`);
             
-            // 进度
-            const progress = currentLevel * 20;
-            document.getElementById('progress-percent').textContent = `${progress}%`;
-            document.getElementById('progress-fill').style.width = `${progress}%`;
+            // 排名进度条动画
+            const targetProgress = currentLevel * 20;
+            animateProgressBar('hero-progress', 0, targetProgress, 1000);
+            document.getElementById('progress-text').textContent = `${targetProgress}% - 距下一级还需 ${100 - targetProgress} 分`;
             
-            // 价值
-            document.getElementById('value-amount').textContent = `¥${(data.value_estimation?.amount || 0).toLocaleString()}`;
-            document.getElementById('hours-saved').textContent = data.value_estimation?.hours_saved || 0;
-            document.getElementById('efficiency').textContent = `+${data.value_estimation?.efficiency || 0}`;
-            document.getElementById('roi').textContent = data.value_estimation?.roi || '0x';
+            // 排名动画
+            const targetRank = Math.min(99, Math.max(1, 100 - currentLevel * 15 - Math.floor(Math.random() * 10)));
+            animateRank(targetRank);
+            
+            // 价值动画
+            animateNumber('value-amount', 0, data.value_estimation?.amount || 0, 1000, '¥');
             
             // 技能
-            document.getElementById('skill-count').textContent = data.skills?.total || 0;
-            const cats = Object.keys(data.skills?.categories || {}).slice(0, 2).join(', ');
+            animateNumber('skill-total', 0, data.skills?.total || 0, 800);
+            animateNumber('skill-custom', 0, data.skills?.custom || 0, 800);
+            const cats = Object.keys(data.skills?.categories || {}).slice(0, 3).join(', ');
             document.getElementById('skill-cats').textContent = cats || '暂无分类';
             
             // 会话
             const logs = data.sessions?.total || 0;
-            document.getElementById('log-count').textContent = logs >= 1000 ? `${(logs/1000).toFixed(1)}k` : logs;
+            document.getElementById('log-total').textContent = logs >= 1000 ? `${(logs/1000).toFixed(1)}k` : logs;
             document.getElementById('active-days').textContent = data.sessions?.active_days || 1;
             
+            // 评分 - 带动画
+            const eval = data.evaluation || {};
+            animateScore('skill', eval.skill_score || 0);
+            animateScore('auto', eval.automation_score || 0);
+            animateScore('int', eval.integration_score || 0);
+            
+            // 深度分布
+            const bd = data.depth_breakdown || [];
+            if (bd[0]) document.getElementById('bd-skill').textContent = bd[0].count || 0;
+            if (bd[1]) document.getElementById('bd-custom').textContent = bd[1].count || 0;
+            if (bd[2]) document.getElementById('bd-logs').textContent = bd[2].count >= 1000 ? `${(bd[2].count/1000).toFixed(1)}k` : bd[2].count;
+            if (bd[3]) document.getElementById('bd-agent').textContent = bd[3].count || 1;
+            
+            // 日志统计
+            const logStats = data.log_stats || {};
+            document.getElementById('log-info').textContent = logStats.info_count >= 1000 ? `${(logStats.info_count/1000).toFixed(0)}k` : logStats.info_count || 0;
+            document.getElementById('log-warn').textContent = logStats.warn_count || 0;
+            document.getElementById('log-error').textContent = logStats.error_count || 0;
+            document.getElementById('log-tools').textContent = logStats.tool_calls || 0;
+            
             // 成就
-            const achievements = data.achievements || [];
-            const badgesHtml = achievements.map(a => 
-                `<div class="achievement-badge">${a.split(' ')[0]}</div>`
-            ).join('') + '<div class="achievement-badge locked">🔒</div>'.repeat(Math.max(0, 4 - achievements.length));
-            document.getElementById('achievement-badges').innerHTML = badgesHtml;
+            const achHtml = currentAchievements.map(a => `<span class="achievement-tag">${a}</span>`).join('');
+            document.getElementById('achievement-list').innerHTML = achHtml || '<span class="achievement-tag" style="opacity:0.5">暂无成就，继续努力！</span>';
             
-            document.getElementById('achievement-names').innerHTML = achievements.slice(0, 2).map(a =>
-                `<span class="achievement-name">${a.split(' ').slice(1).join(' ')}</span>`
-            ).join('');
-            
-            // 毒舌点评
+            // 调侃话术 - 完整显示
             const roasts = ROASTS[currentLevel] || ROASTS[2];
-            document.getElementById('roast-text').textContent = roasts[Math.floor(Math.random() * roasts.length)];
-            
-            // 排名
-            const rank = Math.min(99, Math.max(1, 100 - currentLevel * 15 - Math.floor(Math.random() * 10)));
-            document.getElementById('rank-badge').textContent = `🌍 击败全球 ${rank}% 用户`;
-            
-            // 下一级提示
-            const nextTips = ['还差 2 个技能', '开启心跳检测', '添加更多渠道'];
-            document.getElementById('next-level').textContent = nextTips[Math.floor(Math.random() * nextTips.length)];
+            const fullRoast = roasts[Math.floor(Math.random() * roasts.length)];
+            document.getElementById('hero-roast').textContent = `"${fullRoast.slice(0, 20)}..."`;
+            document.getElementById('roast-full').textContent = fullRoast;
         }
         
-        // ========== 主题系统 ==========
-        const THEMES = {
-            dark: { name: '深邃夜空', bg: '#0f0f1a', primary: '#667eea' },
-            light: { name: '清新明亮', bg: '#f5f7fa', primary: '#667eea' },
-            ocean: { name: '深海龙虾', bg: '#0a1628', primary: '#00d4ff' },
-            sunset: { name: '落日余晖', bg: '#1a0a1e', primary: '#ff6b6b' },
-            forest: { name: '森林秘境', bg: '#0a1a0a', primary: '#43e97b' },
-            cyber: { name: '赛博朋克', bg: '#0d0d0d', primary: '#ff00ff' }
-        };
-        
-        let currentTheme = 'dark';
-        
-        function initThemes() {
-            const grid = document.getElementById('theme-grid');
-            grid.innerHTML = Object.entries(THEMES).map(([key, t]) => `
-                <div class="theme-item ${key === currentTheme ? 'active' : ''}" 
-                     style="background: linear-gradient(135deg, ${t.bg}, ${t.primary})"
-                     onclick="setTheme('${key}')"></div>
-            `).join('');
-        }
-        
-        function setTheme(key) {
-            currentTheme = key;
-            const t = THEMES[key];
-            document.documentElement.style.setProperty('--bg', t.bg);
-            document.documentElement.style.setProperty('--primary', t.primary);
+        // ========== 动画函数 ==========
+        function animateProgressBar(id, from, to, duration) {
+            const bar = document.getElementById(id);
+            const startTime = Date.now();
             
-            if (key === 'light') {
-                document.body.classList.add('light');
-            } else {
-                document.body.classList.remove('light');
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+                const current = from + (to - from) * eased;
+                
+                bar.style.width = current + '%';
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
             }
+            update();
+        }
+        
+        function animateNumber(id, from, to, duration, prefix = '') {
+            const el = document.getElementById(id);
+            const startTime = Date.now();
             
-            document.querySelectorAll('.theme-item').forEach(el => el.classList.remove('active'));
-            event.target.classList.add('active');
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(from + (to - from) * eased);
+                
+                el.textContent = prefix + current.toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            update();
+        }
+        
+        function animateScore(prefix, targetValue) {
+            const scoreEl = document.getElementById(prefix + '-score');
+            const barEl = document.getElementById(prefix + '-bar');
             
-            showToast(`✨ 已切换到「${t.name}」主题`);
+            // 数字动画
+            animateNumber(prefix + '-score', 0, Math.round(targetValue), 800);
+            
+            // 进度条动画
+            setTimeout(() => {
+                barEl.style.transition = 'width 0.8s ease-out';
+                barEl.style.width = targetValue + '%';
+            }, 100);
         }
         
-        function toggleTheme() {
-            const panel = document.getElementById('theme-panel');
-            panel.classList.toggle('open');
+        function animateRank(targetRank) {
+            const el = document.getElementById('hero-subtitle');
+            const displayRank = 100 - targetRank;
+            el.textContent = `全球排名: Top ${displayRank}%`;
         }
         
-        // ========== 功能按钮 ==========
-        async function refreshData() {
-            showToast('🔄 刷新中...');
-            await fetchData();
-            showToast('✅ 数据已刷新！');
+        function animateValue(id, value, isEmoji = false) {
+            const el = document.getElementById(id);
+            el.style.transform = 'scale(0.8)';
+            el.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                el.textContent = value;
+                el.style.transition = 'all 0.3s ease-out';
+                el.style.transform = 'scale(1)';
+                el.style.opacity = '1';
+            }, 100);
         }
         
+        function animateText(id, text) {
+            const el = document.getElementById(id);
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-10px)';
+            
+            setTimeout(() => {
+                el.textContent = text;
+                el.style.transition = 'all 0.3s ease-out';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, 100);
+        }
+        
+        // ========== Mock 数据选择 ==========
+        function selectMockLevel(level) {
+            if (level === 'real') {
+                fetchData();
+            } else {
+                const mockData = MOCK_DATA[parseInt(level)];
+                if (mockData) {
+                    // 先显示加载动画
+                    const overlay = document.getElementById('loading-overlay');
+                    overlay.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        updateUI(mockData);
+                        currentData = mockData;
+                        overlay.classList.add('hidden');
+                        showToast(`✅ 已切换到「${LEVELS[level].title}」示例数据`);
+                    }, 500);
+                }
+            }
+        }
+        
+        // ========== 图片生成 ==========
         async function generateImage() {
             showToast('🎨 正在生成龙虾海报...');
+            
+            // 构建更丰富的提示词参数
+            const skillCats = Object.keys(currentData.skills?.categories || {}).join('、') || '通用';
+            const promptExtras = [];
+            
+            if (currentAchievements.length > 0) {
+                promptExtras.push(`成就: ${currentAchievements.map(a => a.split(' ')[1]).join('、')}`);
+            }
             
             try {
                 const res = await fetch('/api/generate-image', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ level: currentLevel })
+                    body: JSON.stringify({
+                        level: currentLevel,
+                        achievements: currentAchievements.map(a => a.split(' ')[0]),
+                        style: 'cartoon',  // 强制卡通风格
+                        custom_prompt: `卡通可爱风格, Q版角色, 圆润线条, 鲜艳色彩, 暖色调背景, 数字艺术, 插画风格, 不需要真实感, 必须是卡通龙虾形象, 可爱的大眼睛, 拟人化表情, 颜色鲜艳的红色外壳, 举着工具或科技设备`
+                    })
                 });
                 
                 const json = await res.json();
@@ -835,20 +884,21 @@
             modal.innerHTML = `
                 <div class="modal-content">
                     <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
-                    <img src="${data.image_url}" style="max-width:100%;max-height:60vh;border-radius:12px;">
+                    <img src="${data.image_url}" style="max-width:100%;max-height:70vh;border-radius:12px;">
                     <div style="margin-top:16px;display:flex;gap:10px;">
-                        <a href="${data.image_url}" download="my-lobster.png" style="
-                            flex:1;padding:12px;background:linear-gradient(135deg,#ff6b6b,#ff8e53);
-                            color:white;border-radius:10px;text-align:center;text-decoration:none;
-                        ">📥 保存图片</a>
-                        <button onclick="shareImage('${data.image_url}')" style="
-                            flex:1;padding:12px;background:rgba(102,126,234,0.2);
-                            color:#667eea;border:1px solid rgba(102,126,234,0.3);border-radius:10px;cursor:pointer;
-                        ">📤 分享</button>
+                        <a href="${data.image_url}" download="my-lobster.png" class="btn btn-primary" style="text-decoration:none;text-align:center;">📥 保存图片</a>
+                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${data.image_url}');showToast('✅ 已复制链接')">📋 复制链接</button>
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
+        }
+        
+        // ========== 功能按钮 ==========
+        async function refreshData() {
+            showToast('🔄 刷新中...');
+            await fetchData();
+            showToast('✅ 数据已刷新！');
         }
         
         async function shareResult() {
@@ -859,7 +909,7 @@ ${level.emoji} Lv.${currentLevel} ${level.title}
 💰 估值: ¥${currentData.value_estimation?.amount || 0}
 🛠️ 技能: ${currentData.skills?.total || 0} 个
 
-${ROASTS[currentLevel][0]}
+${document.getElementById('roast-full').textContent}
 
 #ClawValue #我的龙虾值 #OpenClaw`;
 
@@ -871,13 +921,13 @@ ${ROASTS[currentLevel][0]}
             }
         }
         
-        function shareImage(url) {
-            if (navigator.share) {
-                navigator.share({ title: '我的专属龙虾', url });
-            } else {
-                navigator.clipboard.writeText(url);
-                showToast('✅ 图片链接已复制！');
-            }
+        function exportData() {
+            const blob = new Blob([JSON.stringify(currentData, null, 2)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'clawvalue-report.json';
+            a.click();
+            showToast('✅ 数据已导出');
         }
         
         function showHelp() {
@@ -888,13 +938,13 @@ ${ROASTS[currentLevel][0]}
 • S - 分享结果  
 • T - 切换主题
 
-功能说明:
+主题: 15套精美主题，右上角 🎨 切换
+
+数据说明:
 • 使用深度: 基于技能、自动化、集成评估
 • 价值估算: 预估节省的时间和成本
 • 成就系统: 解锁各种趣味成就
-• 龙虾海报: AI 生成个性化图片
-
-提示: 多配置技能、开启心跳任务可提升等级！`);
+• 日志详情: INFO/WARN/ERROR/工具调用统计`);
         }
         
         // ========== Toast ==========
@@ -911,16 +961,14 @@ ${ROASTS[currentLevel][0]}
             const key = e.key.toLowerCase();
             if (key === 'r') refreshData();
             if (key === 's') shareResult();
-            if (key === 't') toggleTheme();
+            if (key === 't') toggleThemePanel();
         });
         
         // 点击外部关闭主题面板
         document.addEventListener('click', (e) => {
             const panel = document.getElementById('theme-panel');
-            if (panel.classList.contains('open') && 
-                !panel.contains(e.target) && 
-                !e.target.closest('.icon-btn')) {
-                panel.classList.remove('open');
+            if (panel.classList.contains('show') && !panel.contains(e.target) && !e.target.closest('.icon-btn')) {
+                panel.classList.remove('show');
             }
         });
     </script>

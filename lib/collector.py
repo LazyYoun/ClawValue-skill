@@ -183,14 +183,12 @@ class SkillScanner:
     """
     OpenClaw 技能扫描器
     
-    负责扫描 ~/.openclaw/workspace/skills/ 目录下的所有技能。
+    负责扫描所有 workspace 目录下的技能，支持多 agent 配置。
     
-    技能结构:
-        skills/
-        ├── skill-name/
-        │   └── SKILL.md    # 技能定义文件
-        └── another-skill/
-            └── SKILL.md
+    技能来源分类：
+    - Workspace Skills（自定义）- 来自各 agent workspace/skills 目录
+    - Built-in Skills（内置）- 来自 OpenClaw bundled
+    - Extra Skills（扩展）- 来自插件如 qqbot
     
     Example:
         >>> scanner = SkillScanner()
@@ -204,27 +202,74 @@ class SkillScanner:
         初始化技能扫描器
         
         Args:
-            workspace: 工作区路径，默认为 ~/.openclaw/workspace
+            workspace: 默认工作区路径，默认为 ~/.openclaw/workspace
         """
         if workspace is None:
             workspace = str(Path.home() / '.openclaw' / 'workspace')
-        self.workspace = workspace
-        self.skills_dir = os.path.join(workspace, SKILLS_DIR)
+        self.default_workspace = workspace
+        self.openclaw_home = str(Path.home() / '.openclaw')
+        self.config_file = os.path.join(self.openclaw_home, 'openclaw.json')
     
-    def scan_all(self) -> List[Skill]:
+    def get_agent_workspaces(self) -> List[Dict[str, str]]:
         """
-        扫描所有技能
+        从 openclaw.json 获取所有 agent 的 workspace 配置
         
+        Returns:
+            agent 配置列表，每个元素包含 id 和 workspace
+        """
+        agents = []
+        
+        # 添加默认 workspace
+        agents.append({
+            'id': 'default',
+            'workspace': self.default_workspace
+        })
+        
+        try:
+            import re
+            with open(self.config_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 移除注释（支持 JSON5）
+            content = re.sub(r'//.*$', '', content, flags=re.MULTILINE)
+            content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+            
+            config = json.loads(content)
+            
+            # 解析 agents.list
+            agents_list = config.get('agents', {}).get('list', [])
+            for agent in agents_list:
+                agent_id = agent.get('id', '')
+                agent_workspace = agent.get('workspace', '')
+                if agent_workspace and agent_workspace != self.default_workspace:
+                    agents.append({
+                        'id': agent_id,
+                        'workspace': agent_workspace
+                    })
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+        
+        return agents
+    
+    def scan_workspace_skills(self, workspace: str, source: str = 'workspace') -> List[Skill]:
+        """
+        扫描指定 workspace 的技能
+        
+        Args:
+            workspace: 工作区路径
+            source: 技能来源
+            
         Returns:
             Skill 对象列表
         """
         skills = []
+        skills_dir = os.path.join(workspace, SKILLS_DIR)
         
-        if not os.path.exists(self.skills_dir):
+        if not os.path.exists(skills_dir):
             return skills
         
-        for skill_name in os.listdir(self.skills_dir):
-            skill_path = os.path.join(self.skills_dir, skill_name)
+        for skill_name in os.listdir(skills_dir):
+            skill_path = os.path.join(skills_dir, skill_name)
             
             # 只处理目录
             if not os.path.isdir(skill_path):
@@ -233,11 +278,90 @@ class SkillScanner:
             # 查找 SKILL.md 文件
             skill_md = os.path.join(skill_path, SKILL_FILE)
             if os.path.exists(skill_md):
-                skill = Skill.from_skill_md(skill_md)
+                skill = Skill.from_skill_md(skill_md, source=source)
                 if skill:
                     skills.append(skill)
         
         return skills
+    
+    def scan_extra_skills(self) -> List[Skill]:
+        """
+        扫描扩展技能（来自插件）
+        
+        检查 OpenClaw extensions 目录
+        
+        Returns:
+            扩展技能列表
+        """
+        extra_skills = []
+        extensions_dir = os.path.join(self.openclaw_home, 'extensions')
+        
+        if not os.path.exists(extensions_dir):
+            return extra_skills
+        
+        # 扫描各插件的 skills 目录
+        for plugin_name in os.listdir(extensions_dir):
+            plugin_path = os.path.join(extensions_dir, plugin_name)
+            if not os.path.isdir(plugin_path):
+                continue
+            
+            # 检查插件的 skills 目录
+            plugin_skills_dir = os.path.join(plugin_path, 'skills')
+            if os.path.exists(plugin_skills_dir):
+                for skill_name in os.listdir(plugin_skills_dir):
+                    skill_path = os.path.join(plugin_skills_dir, skill_name)
+                    if os.path.isdir(skill_path):
+                        skill_md = os.path.join(skill_path, SKILL_FILE)
+                        if os.path.exists(skill_md):
+                            skill = Skill.from_skill_md(skill_md, source='extra')
+                            if skill:
+                                extra_skills.append(skill)
+        
+        return extra_skills
+    
+    def scan_all(self) -> List[Skill]:
+        """
+        扫描所有技能
+        
+        合并所有来源：各 agent workspace + 扩展技能
+        
+        Returns:
+            Skill 对象列表
+        """
+        all_skills = []
+        seen_names = set()
+        
+        # 1. 扫描所有 agent 的 workspace
+        agents = self.get_agent_workspaces()
+        for agent in agents:
+            workspace = agent['workspace']
+            agent_skills = self.scan_workspace_skills(workspace, source='workspace')
+            for skill in agent_skills:
+                if skill.name not in seen_names:
+                    seen_names.add(skill.name)
+                    all_skills.append(skill)
+        
+        # 2. 扫描扩展技能
+        extra_skills = self.scan_extra_skills()
+        for skill in extra_skills:
+            if skill.name not in seen_names:
+                seen_names.add(skill.name)
+                all_skills.append(skill)
+        
+        return all_skills
+    
+    def get_skills_by_source(self, skills: List[Skill], source: str) -> List[Skill]:
+        """
+        按来源过滤技能
+        
+        Args:
+            skills: 技能列表
+            source: 来源（workspace/builtin/extra）
+            
+        Returns:
+            过滤后的技能列表
+        """
+        return [s for s in skills if s.source == source]
     
     def get_by_category(self, skills: List[Skill], category: str) -> List[Skill]:
         """
@@ -245,7 +369,7 @@ class SkillScanner:
         
         Args:
             skills: 技能列表
-            category: 类别 (SkillCategory 常量)
+            category: 类别
             
         Returns:
             过滤后的技能列表

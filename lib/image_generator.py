@@ -48,6 +48,11 @@ class LobsterPromptTemplates:
     
     # 基础风格模板
     STYLES = {
+        'cartoon': {
+            'name': '卡通风',
+            'prefix': '可爱的卡通风格,Q版角色设计,圆润的线条,鲜艳明亮的色彩,',
+            'suffix': '，数字插画风格,扁平化设计,暖色调背景,童趣感,不需要真实感'
+        },
         'cyberpunk': {
             'name': '赛博朋克风',
             'prefix': '赛博朋克风格，霓虹灯光，未来科技感，',
@@ -57,11 +62,6 @@ class LobsterPromptTemplates:
             'name': '简约风',
             'prefix': '简约扁平化设计，干净背景，',
             'suffix': '，柔和渐变色，现代感'
-        },
-        'cartoon': {
-            'name': '卡通风',
-            'prefix': '可爱卡通风格，圆润线条，',
-            'suffix': '，鲜艳色彩，活泼有趣'
         },
         'realistic': {
             'name': '写实风',
@@ -75,31 +75,34 @@ class LobsterPromptTemplates:
         }
     }
     
-    # 场景模板（根据等级）
+    # 默认风格
+    DEFAULT_STYLE = 'cartoon'
+    
+    # 场景模板（根据等级）- 全部使用卡通风格
     SCENES = {
         1: {
-            'scene': '一只可爱的小龙虾，刚刚孵化，好奇地看着世界',
-            'props': '旁边放着简单的工具',
+            'scene': '一只刚孵化的小龙虾宝宝,大大的圆眼睛,可爱的小钳子,好奇地看着世界,探索周围',
+            'props': '旁边漂浮着简单的工具图标,发光的星星点缀',
             'mood': '萌新探索'
         },
         2: {
-            'scene': '一只勤奋的小龙虾，手持工具，认真工作',
-            'props': '桌上有代码屏幕和技术文档',
+            'scene': '一只可爱的卡通龙虾,手持小工具,正在认真学习,表情专注可爱',
+            'props': '桌上有迷你的代码屏幕和技术文档图标,周围有气泡提示',
             'mood': '努力学习中'
         },
         3: {
-            'scene': '一只自信的龙虾，坐在工位上，多屏操作',
-            'props': '周围有多个技能图标悬浮',
+            'scene': '一只自信的卡通龙虾,坐在工位上,多屏操作,露出满意的笑容',
+            'props': '周围有多个技能图标悬浮,数据流动的粒子效果',
             'mood': '得心应手'
         },
         4: {
-            'scene': '一只酷炫的机械龙虾，赛博装甲，掌控全局',
-            'props': '背后是数据流和自动化流程图',
+            'scene': '一只酷炫的卡通机械龙虾,戴着科技眼镜,掌控全局,表情自信',
+            'props': '背后是数据流和自动化流程图,能量光环',
             'mood': '效率大师'
         },
         5: {
-            'scene': '一只传说中的龙虾大师，发光的金色外壳，王冠加冕',
-            'props': '坐在科技宝座上，周围环绕着工具和技能光环',
+            'scene': '一只传说中的龙虾大师,金色发光的外壳,头戴皇冠,威风凛凛',
+            'props': '坐在科技宝座上,周围环绕着工具和技能光环,烟花绽放',
             'mood': '传说级存在'
         }
     }
@@ -350,16 +353,16 @@ class WanxImageGenerator:
         
         Args:
             level: 用户等级 (1-5)
-            style: 风格名称，不指定则随机
+            style: 风格名称，不指定则默认卡通风格
             achievements: 成就列表
             custom_prompt: 自定义补充
             
         Returns:
             ImageGenerationResult 生成结果
         """
-        # 选择风格
+        # 默认使用卡通风格
         if not style:
-            style = LobsterPromptTemplates.get_random_style()
+            style = self.DEFAULT_STYLE
         
         # 生成提示词
         prompt = LobsterPromptTemplates.generate_prompt(
@@ -369,8 +372,8 @@ class WanxImageGenerator:
             custom_prompt=custom_prompt
         )
         
-        # 反向提示词
-        negative_prompt = '低质量，模糊，变形，多余肢体，文字，水印，签名'
+        # 反向提示词 - 强调不要真实感
+        negative_prompt = '真实照片,写实风格,模糊,变形,多余肢体,文字,水印,签名,恐怖,暗黑,血腥,过于复杂的细节,照片级渲染'
         
         # 生成图片
         result = self.generate_image(
