@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦞 ClawValue - 龙虾能力估值</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -22,12 +23,29 @@
             --shadow: 0 4px 24px oklch(0 0 0 / 0.2);
         }
         
+        /* Neo-Brutalist 变量覆盖 */
+        [data-theme="neo-brutalist"] {
+            --bg-primary: #ffe17c;
+            --bg-secondary: #171e19;
+            --bg-card: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            --accent: #000000;
+            --accent-secondary: #b7c6c2;
+            --success: #28c840;
+            --warning: #ffbc2e;
+            --border: #000000;
+            --radius: 0.75rem;
+            --shadow: 4px 4px 0px 0px #000000;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            line-height: 1.5;
+            line-height: 1.4;
+            font-size: 14px;
         }
         
         /* ========== 加载动画 ========== */
@@ -239,11 +257,63 @@
         .score-value { font-size: 0.85rem; font-weight: 600; width: 35px; text-align: right; }
         
         /* ========== Achievements ========== */
-        .achievement-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .achievement-section { margin-top: 12px; }
+        .achievement-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 10px; 
+        }
+        .achievement-card {
+            padding: 12px; 
+            border-radius: 12px; 
+            font-size: 0.85rem;
+            background: rgba(254,202,87,0.1); 
+            border: 1px solid rgba(254,202,87,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        .achievement-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(254,202,87,0.2);
+        }
+        .achievement-card.locked {
+            opacity: 0.4;
+            filter: grayscale(0.8);
+        }
+        .achievement-icon { 
+            font-size: 1.8rem; 
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(254,202,87,0.2);
+            border-radius: 8px;
+        }
+        .achievement-info { flex: 1; }
+        .achievement-name { font-weight: 600; font-size: 0.75rem; line-height: 1.2; }
+        .achievement-desc { font-size: 0.65rem; opacity: 0.7; line-height: 1.3; margin-top: 2px; }
         .achievement-tag {
-            padding: 4px 12px; border-radius: 15px; font-size: 0.8rem;
+            padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;
             background: rgba(254,202,87,0.15); border: 1px solid rgba(254,202,87,0.3);
             color: var(--warning);
+        }
+        /* Neo-Brutalist 成就样式 */
+        [data-theme="neo-brutalist"] .achievement-card {
+            background: #fff;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0px 0px #000;
+            border-radius: 0.5rem;
+        }
+        [data-theme="neo-brutalist"] .achievement-card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #000;
+        }
+        [data-theme="neo-brutalist"] .achievement-icon {
+            background: #b7c6c2;
+            border: 2px solid #000;
         }
         
         /* ========== Depth Breakdown ========== */
@@ -447,9 +517,9 @@
             
             <!-- 成就 -->
             <div class="card span-2">
-                <div class="card-label">🏆 成就徽章</div>
-                <div class="achievement-list" id="achievement-list">
-                    <span class="achievement-tag">🏅 技能大师</span>
+                <div class="card-label">🏆 成就徽章 <span id="achievement-count" style="opacity:0.6;font-size:0.75rem"></span></div>
+                <div class="achievement-grid" id="achievement-list">
+                    <div class="achievement-tag">🏅 技能大师</div>
                 </div>
             </div>
             
@@ -836,8 +906,20 @@
             document.getElementById('log-tools').textContent = logStats.tool_calls || 0;
             
             // 成就
-            const achHtml = currentAchievements.map(a => `<span class="achievement-tag">${a}</span>`).join('');
-            document.getElementById('achievement-list').innerHTML = achHtml || '<span class="achievement-tag" style="opacity:0.5">暂无成就，继续努力！</span>';
+            const achHtml = currentAchievements.map(a => {
+                const parts = a.split('：');
+                const name = parts[0] || a;
+                const desc = parts[1] || '';
+                return `<div class="achievement-card">
+                    <div class="achievement-icon">${name.split(' ')[0] || '🏅'}</div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">${name.split(' ').slice(1).join(' ') || name}</div>
+                        ${desc ? `<div class="achievement-desc">${desc.slice(0, 20)}...</div>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+            document.getElementById('achievement-list').innerHTML = achHtml || '<div class="achievement-tag" style="opacity:0.5">暂无成就，继续努力！</div>';
+            document.getElementById('achievement-count').textContent = `(${currentAchievements.length}个)`;
             
             // 调侃话术 - 滚动显示
             const roasts = ROASTS[currentLevel] || ROASTS[2];

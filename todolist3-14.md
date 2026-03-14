@@ -7,11 +7,13 @@
 - [x] 每个等级10条趣味评价
 - [x] Neo-Brutalist主题添加
 - [x] 万象API icon生成方法
+- [x] 成就卡片布局（更大更突出）
+- [x] Neo-Brutalist成就样式
 
 ### 🔄 进行中
 期待增强：
 
-- [ ] 完整Neo-Brutalist风格页面重构（布局、组件）
+- [ ] 完整Neo-Brutalist风格页面重构（更多组件）
 - [ ] 成就icon实际生成并保存
 
 - 成就系统
