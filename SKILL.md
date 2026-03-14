@@ -113,6 +113,20 @@ clawvalue/
 - **前端**：原生 HTML/CSS/JS
 - **样式**：oklch 颜色、CSS变量、动画
 - **数据**：JSONL 日志解析、技能扫描
+- **AI图像**：阿里云万象API（可选）
+
+## 🎨 成就图标生成
+
+使用万象API批量生成成就图标：
+
+```bash
+cd /Users/lazyyoun/Documents/clawValue
+python3 scripts/generate_achievement_icons.py
+```
+
+**注意**：需要配置 `DASHSCOPE_API_KEY` 环境变量或在 TOOLS.md 中设置。
+
+**输出位置**：`web/images/achievements/`
 
 ---
 
