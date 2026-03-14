@@ -303,6 +303,12 @@
             justify-content: center;
             background: rgba(254,202,87,0.2);
             border-radius: 8px;
+            overflow: hidden;
+        }
+        .achievement-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .achievement-info { flex: 1; }
         .achievement-name { font-weight: 600; font-size: 0.75rem; line-height: 1.2; }
@@ -759,6 +765,35 @@
         };
         
         // ========== 全局变量 ==========
+        
+        // 成就图标映射
+        const ACHIEVEMENT_ICONS = {
+            'skill_master': 'skill_master.png',
+            'skill_collector': 'skill_collector.png',
+            'skill_connoisseur': 'skill_connoisseur.png',
+            'skill_legend': 'skill_legend.png',
+            'custom_creator': 'custom_creator.png',
+            'custom_master': 'custom_master.png',
+            'automation_pro': 'automation_pro.png',
+            'heartbeat_hero': 'heartbeat_hero.png',
+            'automation_god': 'automation_god.png',
+            'cron_master': 'cron_master.png',
+            'multi_channel': 'multi_channel.png',
+            'integration_expert': 'integration_expert.png',
+            'channel_master': 'channel_master.png',
+            'power_user': 'power_user.png',
+            'token_millionaire': 'token_millionaire.png',
+            'token_billionaire': 'token_billionaire.png',
+            'daily_active': 'daily_active.png',
+            'weekly_warrior': 'weekly_warrior.png',
+            'monthly_master': 'monthly_master.png',
+            'veteran_user': 'veteran_user.png',
+            'early_adopter': 'early_adopter.png',
+            'night_owl': 'night_owl.png',
+            'secret_lobster': 'secret_lobster.png',
+            'perfectionist': 'perfectionist.png',
+        };
+        
         let currentData = {};
         let currentLevel = 1;
         let currentAchievements = [];
@@ -937,11 +972,26 @@
             
             // 成就
             const achHtml = currentAchievements.map(a => {
+                // 解析成就名称，获取key
+                let key = '';
+                for (const [k, v] of Object.entries(ACHIEVEMENTS_INFO)) {
+                    if (a.includes(v.name) || a.includes(v.name.split('')[0])) {
+                        key = k;
+                        break;
+                    }
+                }
+                
+                const iconFile = ACHIEVEMENT_ICONS[key] || '';
+                const iconHtml = iconFile 
+                    ? `<img src="/images/achievements/${iconFile}" alt="${a}" onerror="this.parentElement.textContent='🏅'">`
+                    : '🏅';
+                
                 const parts = a.split('：');
                 const name = parts[0] || a;
                 const desc = parts[1] || '';
+                
                 return `<div class="achievement-card">
-                    <div class="achievement-icon">${name.split(' ')[0] || '🏅'}</div>
+                    <div class="achievement-icon">${iconHtml}</div>
                     <div class="achievement-info">
                         <div class="achievement-name">${name.split(' ').slice(1).join(' ') || name}</div>
                         ${desc ? `<div class="achievement-desc">${desc.slice(0, 20)}...</div>` : ''}
