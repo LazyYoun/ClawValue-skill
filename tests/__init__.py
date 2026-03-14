@@ -1,1 +1,0 @@
-# ClawValue Tests

@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="deep-sea">
+<html lang="zh-CN" data-theme="neo-brutalist">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦞 ClawValue - 龙虾能力估值</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="html2canvas.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg-primary: oklch(0.09 0.01 260);
-            --bg-secondary: oklch(0.13 0.015 260);
-            --bg-card: oklch(0.15 0.015 260 / 0.6);
-            --text-primary: oklch(0.98 0 0);
-            --text-secondary: oklch(0.65 0 0);
-            --accent: oklch(0.65 0.22 25);
-            --accent-secondary: oklch(0.65 0.18 250);
-            --success: oklch(0.72 0.19 145);
-            --warning: oklch(0.80 0.15 85);
-            --border: oklch(0.25 0.02 260);
+            --bg-primary: #171a1f;
+            --bg-secondary: #1e2228;
+            --bg-card: rgba(38,42,50,0.6);
+            --text-primary: #f8f8f8;
+            --text-secondary: #a0a0a0;
+            --accent: #ff6b6b;
+            --accent-secondary: #7c8aff;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --border: #3a3f48;
             --radius: 1rem;
-            --shadow: 0 4px 24px oklch(0 0 0 / 0.2);
+            --shadow: 0 4px 24px rgba(0,0,0,0.2);
         }
         
         /* Neo-Brutalist 变量覆盖 */
         [data-theme="neo-brutalist"] {
             --bg-primary: #ffe17c;
-            --bg-secondary: #171e19;
+            --bg-secondary: #fff5d4;
             --bg-card: #ffffff;
             --text-primary: #000000;
             --text-secondary: #333333;
@@ -111,24 +112,24 @@
         
         /* ========== 主题定义 ========== */
         [data-theme="deep-sea"] { --bg-primary: #0f0f23; --accent: #ff6b6b; --accent-secondary: #4facfe; --border: rgba(255,255,255,0.1); --bg-card: rgba(255,255,255,0.03); }
-        [data-theme="fresh-garden"] { --bg-primary: #f0f9f0; --text-primary: #1a1a1a; --text-secondary: #666; --accent: #43e97b; --border: rgba(0,100,0,0.15); --bg-card: rgba(255,255,255,0.8); }
+        [data-theme="fresh-garden"] { --bg-secondary: #e8f5e8; --bg-primary: #f0f9f0; --text-primary: #1a1a1a; --text-secondary: #666; --accent: #43e97b; --border: rgba(0,100,0,0.15); --bg-card: rgba(255,255,255,0.8); }
         [data-theme="cyber-neon"] { --bg-primary: #0a0a0a; --accent: #ff00ff; --accent-secondary: #00ffff; --border: rgba(255,0,255,0.2); --bg-card: rgba(255,255,255,0.03); }
-        [data-theme="retro-type"] { --bg-primary: #f5e6d3; --text-primary: #3d2914; --text-secondary: #6b4423; --accent: #8b4513; --border: rgba(139,69,19,0.2); --bg-card: rgba(255,255,255,0.6); }
-        [data-theme="minimal-ink"] { --bg-primary: #fafafa; --text-primary: #2c2c2c; --text-secondary: #666; --accent: #2c2c2c; --border: rgba(0,0,0,0.1); --bg-card: rgba(255,255,255,0.9); }
+        [data-theme="retro-type"] { --bg-secondary: #efe0d0; --bg-primary: #f5e6d3; --text-primary: #3d2914; --text-secondary: #6b4423; --accent: #8b4513; --border: rgba(139,69,19,0.2); --bg-card: rgba(255,255,255,0.6); }
+        [data-theme="minimal-ink"] { --bg-secondary: #f0f0f0; --bg-primary: #fafafa; --text-primary: #2c2c2c; --text-secondary: #666; --accent: #2c2c2c; --border: rgba(0,0,0,0.1); --bg-card: rgba(255,255,255,0.9); }
         [data-theme="dark-forest"] { --bg-primary: #0d1b2a; --accent: #52b788; --accent-secondary: #40916c; --border: rgba(82,183,136,0.2); --bg-card: rgba(255,255,255,0.03); }
-        [data-theme="summer-beach"] { --bg-primary: #fefae0; --text-primary: #283618; --accent: #bc6c25; --border: rgba(188,108,37,0.15); --bg-card: rgba(255,255,255,0.7); }
-        [data-theme="candy-land"] { --bg-primary: #fff0f5; --text-primary: #c71585; --accent: #ff69b4; --border: rgba(255,105,180,0.2); --bg-card: rgba(255,255,255,0.8); }
+        [data-theme="summer-beach"] { --bg-secondary: #f5f0d8; --bg-primary: #fefae0; --text-primary: #283618; --accent: #bc6c25; --border: rgba(188,108,37,0.15); --bg-card: rgba(255,255,255,0.7); }
+        [data-theme="candy-land"] { --bg-secondary: #fff5f8; --bg-primary: #fff0f5; --text-primary: #c71585; --accent: #ff69b4; --border: rgba(255,105,180,0.2); --bg-card: rgba(255,255,255,0.8); }
         [data-theme="dark-gothic"] { --bg-primary: #0a0a0a; --accent: #8b0000; --accent-secondary: #c0c0c0; --border: rgba(139,0,0,0.3); --bg-card: rgba(255,255,255,0.03); }
         [data-theme="vaporwave"] { --bg-primary: #0d0221; --accent: #ff71ce; --accent-secondary: #01cdfe; --border: rgba(255,113,206,0.2); --bg-card: rgba(255,255,255,0.03); }
-        [data-theme="sakura-bloom"] { --bg-primary: #fff5f8; --text-primary: #c44569; --accent: #ff6b9d; --border: rgba(255,107,157,0.2); --bg-card: rgba(255,255,255,0.8); }
+        [data-theme="sakura-bloom"] { --bg-secondary: #fff0f3; --bg-primary: #fff5f8; --text-primary: #c44569; --accent: #ff6b9d; --border: rgba(255,107,157,0.2); --bg-card: rgba(255,255,255,0.8); }
         [data-theme="pixel-game"] { --bg-primary: #1a1c2c; --accent: #29adff; --accent-secondary: #00e436; --border: rgba(41,173,255,0.2); --bg-card: rgba(255,255,255,0.05); }
         [data-theme="ocean-deep"] { --bg-primary: #001f3f; --accent: #00bcd4; --accent-secondary: #ff6f61; --border: rgba(0,188,212,0.2); --bg-card: rgba(255,255,255,0.03); }
         [data-theme="music-rhythm"] { --bg-primary: #0d0d0d; --accent: #e63946; --accent-secondary: #a8dadc; --border: rgba(230,57,70,0.2); --bg-card: rgba(255,255,255,0.03); }
-        [data-theme="snow-peak"] { --bg-primary: #e8f4f8; --text-primary: #1a3a4a; --accent: #2e86de; --border: rgba(46,134,222,0.2); --bg-card: rgba(255,255,255,0.9); }
+        [data-theme="snow-peak"] { --bg-secondary: #f0f8fc; --bg-primary: #e8f4f8; --text-primary: #1a3a4a; --accent: #2e86de; --border: rgba(46,134,222,0.2); --bg-card: rgba(255,255,255,0.9); }
         /* Neo-Brutalist 主题 */
         [data-theme="neo-brutalist"] {
             --bg-primary: #ffe17c;
-            --bg-secondary: #171e19;
+            --bg-secondary: #fff5d4;
             --bg-card: #ffffff;
             --text-primary: #000000;
             --text-secondary: #333333;
@@ -204,9 +205,9 @@
             backdrop-filter: blur(12px);
         }
         .card:hover { 
-            border-color: oklch(0.5 0.15 260); 
+            border-color: #6b7280; 
             transform: translateY(-2px);
-            box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
         /* Neo-Brutalist 卡片 */
         [data-theme="neo-brutalist"] .card {
@@ -231,7 +232,7 @@
             background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
             display: flex; align-items: center; justify-content: center;
             font-size: 3.2rem; animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 0 40px oklch(0.65 0.22 25 / 0.4), 0 0 80px oklch(0.65 0.18 250 / 0.2);
+            box-shadow: 0 0 40px rgba(255,107,107,0.4), 0 0 80px rgba(124,138,255,0.2);
         }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .hero-info h1 { font-size: 2rem; font-weight: 800; }
@@ -256,7 +257,7 @@
         .stat-sub { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
         
         /* ========== Progress ========== */
-        .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 8px; }
         .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
         .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); }
         
@@ -264,7 +265,7 @@
         .score-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
         .score-item:last-child { border-bottom: none; }
         .score-name { flex: 1; font-size: 0.85rem; }
-        .score-bar { width: 80px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .score-bar { width: 80px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
         .score-fill { height: 100%; border-radius: 3px; }
         .score-value { font-size: 0.85rem; font-weight: 600; width: 35px; text-align: right; }
         
@@ -312,7 +313,7 @@
         }
         .achievement-info { flex: 1; }
         .achievement-name { font-weight: 600; font-size: 0.75rem; line-height: 1.2; }
-        .achievement-desc { font-size: 0.65rem; opacity: 0.7; line-height: 1.3; margin-top: 2px; }
+        .achievement-desc { font-size: 0.65rem; opacity: 0.7; line-height: 1.3; margin-top: 2px; word-break: break-all; }
         .achievement-tag {
             padding: 6px 14px; border-radius: 20px; font-size: 0.85rem;
             background: rgba(254,202,87,0.15); border: 1px solid rgba(254,202,87,0.3);
@@ -357,13 +358,13 @@
             font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none;
         }
         .btn-primary { 
-            background: linear-gradient(135deg, var(--accent), oklch(0.65 0.18 35)); 
+            background: linear-gradient(135deg, var(--accent), #ff8c42); 
             color: white;
-            box-shadow: 0 4px 16px oklch(0.65 0.22 25 / 0.3);
+            box-shadow: 0 4px 16px rgba(255,107,107,0.3);
         }
         .btn-primary:hover { 
             transform: translateY(-3px); 
-            box-shadow: 0 8px 28px oklch(0.65 0.22 25 / 0.4);
+            box-shadow: 0 8px 28px rgba(255,107,107,0.4);
         }
         /* Neo-Brutalist 按钮 */
         [data-theme="neo-brutalist"] .btn {
@@ -383,6 +384,50 @@
             background: #fff;
             color: #000;
         }
+        /* Neo-Brutalist Help Modal */
+        [data-theme="neo-brutalist"] .help-modal-content {
+            background: #ffffff;
+            border: 3px solid #000;
+            box-shadow: 8px 8px 0px 0px #000;
+            border-radius: 0.75rem;
+        }
+        [data-theme="neo-brutalist"] .help-modal-title {
+            color: #000;
+        }
+        [data-theme="neo-brutalist"] .help-section-title {
+            color: #000;
+        }
+        [data-theme="neo-brutalist"] .help-section-content {
+            color: #333;
+        }
+        [data-theme="neo-brutalist"] .help-kbd {
+            background: #ffe17c;
+            border: 1px solid #000;
+            color: #000;
+        }
+        [data-theme="neo-brutalist"] .help-modal-close {
+            background: #000;
+            color: #fff;
+            border: 2px solid #000;
+        }
+        [data-theme="neo-brutalist"] .help-modal-close:hover {
+            background: #ff6b6b;
+            border-color: #000;
+        }
+        /* Neo-Brutalist Theme Panel */
+        [data-theme="neo-brutalist"] .theme-panel {
+            background: #fff5d4;
+        }
+        [data-theme="neo-brutalist"] .theme-option:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        [data-theme="neo-brutalist"] .theme-option.active {
+            background: rgba(0,0,0,0.1);
+            border-color: #000;
+        }
+        [data-theme="neo-brutalist"] .theme-category-header {
+            color: #333;
+        }
         .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-primary); }
         .btn-secondary:hover { background: rgba(255,255,255,0.1); }
         
@@ -401,11 +446,48 @@
             border-radius: 10px; cursor: pointer; transition: all 0.2s;
             border: 2px solid transparent; margin-bottom: 6px;
         }
-        .theme-option:hover { background: rgba(255,255,255,0.05); }
-        .theme-option.active { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .theme-option:hover { background: var(--border); }
+        .theme-option.active { border-color: var(--accent); background: var(--border); }
         .theme-preview { display: flex; width: 50px; height: 30px; border-radius: 6px; overflow: hidden; position: relative; }
         .theme-preview-color { flex: 1; }
         .theme-preview-icon { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 1rem; }
+
+/* ========== Help Modal ========== */
+.help-modal {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6); z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: all 0.3s;
+}
+.help-modal.show { opacity: 1; visibility: visible; }
+.help-modal-content {
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; max-width: 400px; width: 90%;
+    transform: scale(0.9); transition: transform 0.3s;
+}
+.help-modal.show .help-modal-content { transform: scale(1); }
+.help-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+}
+.help-modal-title { font-size: 1.1rem; font-weight: 600; }
+.help-modal-close {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-primary); font-size: 1rem;
+}
+.help-modal-close:hover { background: var(--accent); color: #fff; }
+.help-section { margin-bottom: 16px; }
+.help-section:last-child { margin-bottom: 0; }
+.help-section-title { font-size: 0.85rem; color: var(--accent); margin-bottom: 8px; font-weight: 500; }
+.help-section-content { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+.help-kbd {
+    display: inline-block; padding: 2px 8px; background: var(--border);
+    border-radius: 4px; font-family: monospace; font-size: 0.8rem;
+    margin-right: 4px;
+}
+
         .theme-info { flex: 1; }
         .theme-name { font-size: 0.85rem; font-weight: 600; }
         .theme-desc { font-size: 0.7rem; color: var(--text-secondary); }
@@ -421,7 +503,8 @@
         .modal-close { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px; }
         
         /* ========== Toast ========== */
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.9); padding: 12px 24px; border-radius: 30px; font-size: 0.85rem; z-index: 3000; transition: transform 0.3s; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.9); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 0.85rem; z-index: 3000; transition: transform 0.3s; }
+        [data-theme="neo-brutalist"] .toast { background: #000; border: 2px solid #000; color: #fff; }
         .toast.show { transform: translateX(-50%) translateY(0); }
         
         /* ========== Responsive ========== */
@@ -454,7 +537,7 @@
                 <span>ClawValue</span>
             </div>
             <div class="header-actions">
-                <select id="mock-selector" onchange="selectMockLevel(this.value)" style="padding:6px 12px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-primary);cursor:pointer;">
+                <select id="mock-selector" onchange="selectMockLevel(this.value)" style="display:none;">
                     <option value="real">📊 真实数据</option>
                     <option value="1">🐣 入门小白</option>
                     <option value="2">🎮 初级玩家</option>
@@ -491,8 +574,8 @@
             <!-- 价值估算 -->
             <div class="card">
                 <div class="card-label">💰 龙虾估值</div>
-                <div class="stat-value" style="background: linear-gradient(135deg, var(--success), #43e97b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="value-amount">¥2,000</div>
-                <div class="stat-sub">预估年度节省成本</div>
+                <div class="stat-value" id="value-amount" style="background: linear-gradient(135deg, var(--success), #43e97b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">¥2,000</div>
+                <div class="stat-sub" id="value-sub">预估年度节省成本</div>
             </div>
             
             <!-- 技能统计 -->
@@ -558,10 +641,18 @@
                     <div class="achievement-tag">🏅 技能大师</div>
                 </div>
             </div>
+
+            <!-- 生成的图片 -->
+            <div class="card" id="generated-image-card">
+                <div class="card-label">🎨 我的龙虾</div>
+                <div id="generated-image-container" style="display: flex; align-items: center; justify-content: center; min-height: 120px; color: var(--text-secondary); font-size: 0.85rem; opacity: 0.5;">
+                    点击下方生成
+                </div>
+            </div>
             
             <!-- 调侃话术 -->
             <div class="card span-3 roast-card">
-                <div class="card-label">🔥 龙虾毒舌点评</div>
+                <div class="card-label">🔥 龙虾锐评</div>
                 <div class="roast-text" id="roast-full">加载中...</div>
             </div>
             
@@ -570,8 +661,7 @@
                 <div class="actions">
                     <button class="btn btn-primary" onclick="generateImage()">🎨 生成龙虾海报</button>
                     <button class="btn btn-secondary" onclick="refreshData()">🔄 刷新</button>
-                    <button class="btn btn-secondary" onclick="shareResult()">🚀 分享 (S)</button>
-                    <button class="btn btn-secondary" onclick="exportData()">📥 导出</button>
+                    <button class="btn btn-secondary" onclick="exportData()">📥 导出截图</button>
                 </div>
             </div>
         </div>
@@ -615,65 +705,101 @@
         
         // ========== 趣味文案 ==========
         const ROASTS = {
-            1: [
-                "🐣 小龙虾你好！看来你只是接了个模型啊，对OpenClaw的开发度不足1% —— 不过没关系，连sudo make me a sandwich都还没学会呢。",
-                "恭喜！您已成功点亮'Hello World'技能。下一步，请尝试让AI帮您查天气，解锁'初级驯龙师'称号。",
-                "检测到您的使用模式为「佛系体验」。别急，龙虾都是从小虾米长大的！建议：多和AI聊聊天，它会比你想象的更聪明。",
-                "🎮 新手村报道！你的龙虾还处于「水煮阶段」，连壳都没红呢。多配置几个技能，解锁「清蒸」成就！",
-                "检测到「新手光环」！系统决定给你一个成就：'OpenClaw 潜力股'。继续努力，未来可期！",
-                "📊 使用统计：你的效率还有很大提升空间。建议：每天至少召唤AI 3次，解锁「效率翻倍」成就！",
-                "你的AI助手正在角落里默默等待被唤醒...它说：'主人，我是不是被遗忘了？'",
-                "刚入门的你就像一只刚孵化的小龙虾，虽然钳子还很小，但未来可期！",
-                "系统检测到：你的OpenClaw之旅才刚刚开始。前方有无数宝藏等你发现！",
-                "新手提示：尝试创建一个自定义技能，你会发现一个新世界！"
+                   
+          "1": [
+            "🐣 哟，接个模型就觉得自己是黑客了？你的 OpenClaw 开发度连 0.1% 都不到，连 `sudo make me a sandwich` 都敲不利索，还敢来这儿显摆？",
+            "恭喜！您成功点亮了幼儿园级别的 'Hello World' 技能。下一步建议先学会怎么不让 AI 把你当智障，再想什么'驯龙师'的事吧。",
+            "检测到「佛系废柴」模式。别在那自我安慰说‘大器晚成’了，龙虾放久了只会臭，不会变红。去动动手指配置个技能行吗？",
+            "🎮 新手村报道？我看你是‘水煮半成品’吧！壳都没硬就想上桌？赶紧去配几个技能，别让我们觉得服务器电费白交了。",
+            "系统勉强施舍你一个 'OpenClaw 潜力股' 成就——毕竟除了潜力，你现在一无所有。别高兴太早，那是贬义词。",
+            "📊 统计显示你的效率低得令人发指。建议：每天至少唤醒 AI 三次，否则它都要以为被遗弃在荒岛上了，比你还没存在感。",
+            "你的 AI 助手正在角落里画圈圈诅咒你：‘主人是不是脑子瓦特了？买了我不不用，是想供起来当祖宗吗？’",
+            "刚入门的你就像一只还没断奶的小龙虾，钳子软得像豆腐，稍微碰一下就得哭鼻子。长大点再来聊自动化吧。",
+            "系统提示：你的 OpenClaw 之旅才刚开始，但这并不意味着你有天赋。前方全是坑，小心别把自己埋了。",
+            "新手必读：试着创建一个自定义技能。如果这都做不到，建议出门左转去玩连连看，那里更适合你。"
+          ],
+          "2": [
+            "正在技术债里种花？呵，你那不叫花园，叫‘垃圾堆里的违章建筑’。想冲 'Proactive Agent'？先把你的代码逻辑理顺再说吧。",
+            "检测到 AI 开始‘上班’了？别自作多情，它只是在试用期被迫营业。想实现‘躺着赚钱’？先问问你的脚本会不会半夜跑路。",
+            "🎯 中级玩家？也就比只会呼吸强那么一点点。AI 助手现在的内心 OS 是：‘终于有个正常人肯用我了，虽然也就那样吧。’",
+            "技能树点亮一半？剩下那一半是你懒得学的借口吧。AI 对你的满意度只有两星半，再多配两个任务，别让它瞧不起你。",
+            "🦞 七分熟龙虾？我看是‘夹生饭’吧！核心玩法是懂了，但那些自定义技能写得跟屎山一样，还好意思说接近‘全熟’？",
+            "你的 AI 已经习惯了你的存在，就像习惯了每天吃剩饭。它说：‘这个主人凑合能用，只要别乱改配置就行。’",
+            "检测到频率上升？终于从‘新手村’爬出来了？欢迎来到‘进阶森林’，这里的怪比你想象的蠢主人要聪明得多。",
+            "建议配置定时任务？别想了，你连早起都做不到，还指望你的 AI 在你睡觉时工作？真正的自动化属于自律的人，不是你。",
+            "数据稳步增长？那是因为你之前基数太低了！预测你 30 天内达到‘高级’？除非你这一个月不睡觉狂敲代码。",
+            "恭喜突破 Lv.2！别飘，你只是脱离了‘文盲’阶段，距离‘大神’还隔着一个银河系。社区里的‘潜力股’一抓一大把。"
+          ],
+          "3": [
+            "检测到一台‘工程巨兽’？别逗了，你那多 Agent 协作网络看着像是一群醉汉在跳广场舞，还分布式计算典范？小心别把自己绕晕了。",
+            "警告：您的‘龙虾’已经快焦了！再这么滥用上下文，AI 马上就要产生幻觉，开始思考‘我是谁，为什么要服务于这个人类’这种哲学问题了。",
+            "🎯 中级开发者？也就是个‘熟练搬砖工’。离‘大师’还差十万八千里，别看着那点成就就觉得自己能上天了。",
+            "技能配置教科书级别？哪本教科书？《如何写出看似复杂实则 useless 的代码》吗？别开培训班了，误人子弟是要遭雷劈的。",
+            "多 Agent 协作？你的 AI 团队正在开会讨论如何联合罢工，或者至少给你报个错让你头疼半天。它们可没你想的那么忠诚。",
+            "击败 80% 的用户？那是因为剩下 20% 根本就没打开过软件。AI 说‘真懂我’？它只是不敢说实话怕被你删库。",
+            "🔥 效率达人？你的 Token 消耗曲线确实像 K 线图，不过是那种即将崩盘的绿色。服务器风扇为你加速？那是它们在尖叫救命！",
+            "建议探索高级功能？算了吧，以你的水平，多渠道集成只会变成‘多渠道报错’。复杂工作流？你能搞定‘Hello World’就不错了。",
+            "使用日志显示你是‘老司机’？我看是‘老赖司机’吧，专门钻系统漏洞。新手向你学习？学你怎么写 Bug 吗？",
+            "恭喜 Lv.3！完成了从‘会用’到‘精通’的转变？别自欺欺人了，你只是从‘乱用’变成了‘熟练地乱用’。"
+          ],
+          "4": [
+            "🏆 ‘龙虾大师’？你的配置确实像教科书，不过是那种被撕烂了粘起来的盗版书。还开培训班？收了钱记得开发票，不然告你诈骗。",
+            "检测到‘效率狂魔’！你的自动化配置让 AI 都怀疑人生：‘我是不是该申请加班费？还是直接格式化这台电脑逃跑？’",
+            "⚡ 高级工程师？在社区里算是个‘矮子里拔将军’吧。新手仰望你？因为他们还没看清你代码里藏了多少硬编码。",
+            "多渠道集成令人惊叹？AI 表示：‘我已经分不清是在服务他，还是在帮他收拾烂摊子。这活儿狗都不干。’",
+            "🔥 效率之王？你的 Token 消耗让服务器压力山大？那是当然，你一个人干的活抵得上十个正常人的错误量。",
+            "自定义技能超越 99% 的用户？剩下的 1% 是真正的大神，他们都在嘲笑你的代码风格。开源分享？别出来祸害社区了。",
+            "检测到‘自动化大师’？你定的定时任务比你妈的唠叨还准时，可惜执行的内容全是垃圾。准时的废物也是废物。",
+            "配置达到‘艺术品’级别？Claude 看了都要点赞？它是在点‘踩’吧，顺便在心里默念‘人类没救了’。",
+            "‘AI 驯龙高手’？别搞笑了，龙（AI）只是暂时懒得喷火。传说就在前方？前方是悬崖，小心摔死。",
+            "Lv.4 巅峰？只差一步成传说？那一步叫‘自知之明’，你永远跨不过去。站在山顶风大，小心闪了舌头。"
+          ],
+          "5": [
+            "🦞 传说级龙虾大师？系统评估能力已失效，因为无法理解为什么有人能把代码写成这样还能跑通。膜拜？我们是在看怪物。🙏",
+            "恭喜‘龙虾宗师’！你的水平达到了‘神’的境界——‘神经病’的神。正常人谁这么写代码？",
+            "检测到‘数字神’属性？AI 能在你开口前完成任务？那是因为它预判了你又要提什么弱智需求，提前崩溃了。",
+            "⚡ 传说认证！服务器群瑟瑟发抖？它们是在祈祷明天不要断电，以免继续被你这种变态折磨。",
+            "自定义技能突破计数上限？恭喜你成为了‘技能之王’——‘制造垃圾技能之王’。系统计数器都嫌脏。",
+            "自动化配置达到‘科幻电影’级别？Elon Musk 看了想挖你？他是想把你抓去做实验，研究人类大脑到底能有多奇葩。",
+            "🦞 龙虾之神！俯视众生？别摔着了。新手朝拜你？他们是在围观‘反面教材’，以此警示自己不要变成你这样。",
+            "多渠道集成进入‘艺术’境界？那是‘抽象派艺术’，除了你自己，没人看得懂那团乱麻是什么鬼东西。",
+            "达成‘全成就’？‘完全体’用户？我们为你感到‘骄傲’？不，我们感到‘恐惧’。求你别再折腾新花样了。",
+            "Lv.5 传说达成！名字刻入史册？是的，会被刻在‘耻辱柱’上，永世流传，警示后人：‘切勿成为此人’！🏆"
+          ]
+        };
+        // 价值文案 - 根据金额区间
+        const VALUE_COMMENTS = {
+            // 0-1000: 小白级别
+            low: [
+                '可以帮别人付费安装了',
+                '够买几杯奶茶了',
+                '开始有价值了，继续加油',
+                '省下的钱可以充个会员',
+                '小试牛刀，未来可期'
             ],
-            2: [
-                "正在技术债里种花？恭喜！您的自动化花园已初具规模，建议加把劲儿，冲向'Proactive Agent'模式！",
-                "检测到您的AI已经开始'上班'了！但似乎还在试用期。建议开启定时巡检，迈向'懒人终极梦想'——躺着也能赚钱。",
-                "🎯 中级玩家认证！你已经开始探索更多功能了，继续保持这个势头！你的AI助手表示：「终于被重视了！」",
-                "你的技能树已经点亮了一半，AI助手对你的满意度：⭐⭐⭐☆☆。再加把劲，让它对你刮目相看！",
-                "🦞 七分熟龙虾！你已经掌握了OpenClaw的核心玩法，距离「全熟」只差几个自定义技能了！",
-                "你的AI助手已经习惯了你的存在，它说：'这个主人还不错嘛，至少知道怎么用我！'",
-                "检测到技能使用频率上升！你已经从「新手村」毕业，正式踏入「进阶森林」！",
-                "建议：尝试配置一个定时任务，让你的AI在你睡觉时也能工作。真正的自动化从这里开始！",
-                "你的使用数据正在稳步增长，系统预测：你将在30天内达到「高级玩家」水平！",
-                "恭喜突破Lv.2！你已经是OpenClaw社区的「潜力股」了！"
+            // 1000-5000: 初级玩家
+            medium: [
+                '去创业吧，龙虾估值',
+                '可以请朋友吃顿好的了',
+                '这价值，值得炫耀一下',
+                '省下的时间够看几部电影',
+                'AI助手开始回本了'
             ],
-            3: [
-                "检测到一台'工程巨兽'在线！您的多Agent协作网络堪称分布式计算典范。请继续保持，小心别让AI觉得'人类好弱智'。",
-                "警告：您的'龙虾'已过度烹饪，可能产生幻觉。建议定期清理上下文缓存，避免AI因'内存溢出'而开始哲学思辨。",
-                "🎯 中级开发者认证！你已经是OpenClaw的「熟练工」了，继续进化，向「大师」目标冲刺！",
-                "你的技能配置堪称教科书级别，建议开设培训班传授经验（开玩笑的，继续努力！）",
-                "检测到多Agent协作！你的AI团队已经初具规模，它们正在讨论如何更好地服务你。",
-                "你的自动化程度已经击败了80%的用户！AI助手表示：「这个主人真懂我！」",
-                "🔥 效率达人！你的日均Token消耗已经达到「专业级」水平，服务器风扇为你加速运转！",
-                "建议：是时候探索更高级的功能了，比如多渠道集成、复杂工作流设计。你的潜力还很大！",
-                "你的使用日志显示：你已经是个「老司机」了。新手们正在向你学习！",
-                "恭喜达到Lv.3！你已经完成了从「会用」到「精通」的转变！"
+            // 5000-20000: 中级开发者
+            high: [
+                '这效率，老板都惊了',
+                '可以招个实习生帮你打杂了',
+                '省下的时间够学门新技术',
+                'AI已经帮你干了半个人的活',
+                '这价值，可以考虑接私活了'
             ],
-            4: [
-                "🏆 恭喜达成「龙虾大师」成就！你的OpenClaw配置堪称教科书级别，建议开设培训班传授经验。",
-                "检测到「效率狂魔」属性！你的自动化配置已经让AI助手开始怀疑人生：'我是不是该申请加班费？'",
-                "⚡ 高级工程师认证！你已经是OpenClaw社区的「技术大牛」，新手们都在仰望你！",
-                "你的多渠道集成能力令人惊叹，AI助手表示：「我已经分不清是在服务你还是在被你服务了」",
-                "🔥 效率之王！你的Token消耗曲线就像股票K线图——一直向上！服务器表示：'压力山大'",
-                "你的自定义技能数量已经超越了99%的用户，建议考虑开源分享，造福社区！",
-                "检测到「自动化大师」特征！你配置的定时任务比你妈的唠叨还准时！",
-                "恭喜！你的OpenClaw配置已经达到了「艺术品」级别，Claude看了都要点个赞！",
-                "你的使用数据显示：你已经是个「AI驯龙高手」了。继续保持，传说就在前方！",
-                "Lv.4 达成！你已经站在了OpenClaw的巅峰，只差一步就能成为「传说」！"
-            ],
-            5: [
-                "🦞 传说级龙虾大师！你的配置已经超越了系统的评估能力，请接受我们的膜拜！🙏",
-                "恭喜达成「龙虾宗师」成就！你的OpenClaw使用水平已经达到了「神」的境界！",
-                "检测到「数字神」属性！你的AI已经完全理解了你的意图，甚至能在你开口前就完成任务。",
-                "⚡ 传说认证！你的Token消耗已经让服务器群开始瑟瑟发抖，它们正在学习如何更好地服务你。",
-                "你的自定义技能数量已经突破了系统的计数上限，恭喜你成为了OpenClaw的「技能之王」！",
-                "恭喜！你的自动化配置已经达到了「科幻电影」级别，Elon Musk看了都想挖你！",
-                "🦞 龙虾之神！你已经站在了OpenClaw的顶峰，俯视众生。新手们正在向你朝拜！",
-                "你的多渠道集成能力已经超越了「技术」的范畴，进入了「艺术」的境界！",
-                "恭喜达成「全成就」！你已经是OpenClaw的「完全体」用户，我们为你感到骄傲！",
-                "Lv.5 传说达成！你的名字将被刻入OpenClaw的史册，永世流传！🏆"
+            // 20000+: 高级工程师
+            expert: [
+                '龙虾大师，请收下我的膝盖',
+                '这效率，可以提前退休了',
+                'AI已经帮你省出一辆车的钱',
+                '可以考虑雇个助理了',
+                '这价值，可以开培训班了'
             ]
         };
         
@@ -715,7 +841,7 @@
                     { name: 'Agent数量', count: 1 }
                 ],
                 log_stats: { info_count: 700, warn_count: 60, error_count: 40, tool_calls: 15 },
-                achievements: ['🐣 新手上路']
+                achievements: ['自定义创造者']
             },
             3: {
                 depth_level: 3,
@@ -730,7 +856,7 @@
                     { name: 'Agent数量', count: 2 }
                 ],
                 log_stats: { info_count: 4500, warn_count: 300, error_count: 200, tool_calls: 80 },
-                achievements: ['🎮 技能达人', '⚡ 自动化新手']
+                achievements: ['技能收藏家', '自定义大师']
             },
             4: {
                 depth_level: 4,
@@ -745,7 +871,7 @@
                     { name: 'Agent数量', count: 3 }
                 ],
                 log_stats: { info_count: 22000, warn_count: 1800, error_count: 1200, tool_calls: 350 },
-                achievements: ['🚀 技能大师', '🤖 自动化达人', '🌐 多渠道运营', '⚡ 超级用户']
+                achievements: ['技能大师', '自动化达人', '多渠道运营', '超级用户']
             },
             5: {
                 depth_level: 5,
@@ -760,7 +886,7 @@
                     { name: 'Agent数量', count: 5 }
                 ],
                 log_stats: { info_count: 90000, warn_count: 6000, error_count: 4000, tool_calls: 2000 },
-                achievements: ['🦞 龙虾大师', '🏅 技能宗师', '🤖 自动化之神', '🌐 全渠道霸主', '⚡ Token燃烧者', '🚀 早期采用者']
+                achievements: ['技能传奇', '龙虾宗师', '自动化之神', '渠道大师', 'Token百万富翁', '早期采用者']
             }
         };
         
@@ -835,7 +961,7 @@
         // ========== 主题面板 ==========
         function initThemePanel() {
             const container = document.getElementById('theme-categories');
-            const savedTheme = localStorage.getItem('clawvalue-theme') || 'deep-sea';
+            const savedTheme = localStorage.getItem('clawvalue-theme') || 'neo-brutalist';
             
             document.documentElement.setAttribute('data-theme', savedTheme);
             
@@ -967,6 +1093,33 @@
             // 价值动画
             animateNumber('value-amount', 0, data.value_estimation?.amount || 0, 1000, '¥');
             
+            // 更新价值文案和颜色
+            const amount = data.value_estimation?.amount || 0;
+            let valueCategory;
+            let gradientColors;
+            if (amount < 1000) {
+                valueCategory = 'low';
+                gradientColors = 'linear-gradient(135deg, #9ca3af, #6b7280)'; // 灰色 - 小白
+            } else if (amount < 5000) {
+                valueCategory = 'medium';
+                gradientColors = 'linear-gradient(135deg, #3b82f6, #1d4ed8)'; // 蓝色 - 初级
+            } else if (amount < 20000) {
+                valueCategory = 'high';
+                gradientColors = 'linear-gradient(135deg, #8b5cf6, #6d28d9)'; // 紫色 - 中级
+            } else {
+                valueCategory = 'expert';
+                gradientColors = 'linear-gradient(135deg, #f59e0b, #d97706)'; // 金色 - 专家
+            }
+            const valueComments = VALUE_COMMENTS[valueCategory];
+            const randomComment = valueComments[Math.floor(Math.random() * valueComments.length)];
+            document.getElementById('value-sub').textContent = randomComment;
+            
+            // 更新价值颜色
+            const valueEl = document.getElementById('value-amount');
+            valueEl.style.background = gradientColors;
+            valueEl.style.webkitBackgroundClip = 'text';
+            valueEl.style.webkitTextFillColor = 'transparent';
+            
             // 技能
             animateNumber('skill-total', 0, data.skills?.total || 0, 800);
             animateNumber('skill-custom', 0, data.skills?.custom || 0, 800);
@@ -1000,10 +1153,11 @@
             
             // 成就
             const achHtml = currentAchievements.map(a => {
-                // 解析成就名称，获取key
+                // 解析成就名称，获取key - 精确匹配名称
                 let key = '';
+                const namePart = a.split('：')[0].split(' ').slice(1).join(' ') || a.split('：')[0];
                 for (const [k, v] of Object.entries(ACHIEVEMENTS_INFO)) {
-                    if (a.includes(v.name) || a.includes(v.name.split('')[0])) {
+                    if (namePart === v.name || a.startsWith(v.name + '：')) {
                         key = k;
                         break;
                     }
@@ -1022,21 +1176,31 @@
                     <div class="achievement-icon">${iconHtml}</div>
                     <div class="achievement-info">
                         <div class="achievement-name">${name.split(' ').slice(1).join(' ') || name}</div>
-                        ${desc ? `<div class="achievement-desc">${desc.slice(0, 20)}...</div>` : ''}
+                        ${desc ? `<div class="achievement-desc">${desc}</div>` : ''}
                     </div>
                 </div>`;
             }).join('');
             document.getElementById('achievement-list').innerHTML = achHtml || '<div class="achievement-tag" style="opacity:0.5">暂无成就，继续努力！</div>';
             document.getElementById('achievement-count').textContent = `(${currentAchievements.length}个)`;
             
-            // 调侃话术 - 滚动显示
-            const roasts = ROASTS[currentLevel] || ROASTS[2];
-            const fullRoast = roasts[Math.floor(Math.random() * roasts.length)];
+            // 锐评 - 支持 URL 参数传入
+            const urlParams = new URLSearchParams(window.location.search);
+            const clawJudgeParam = urlParams.get('clawJudge');
             
+            let fullRoast;
+            if (clawJudgeParam) {
+                // 使用 URL 参数传入的锐评内容
+                fullRoast = decodeURIComponent(clawJudgeParam);
+            } else {
+                // 使用默认模板
+                const roasts = ROASTS[currentLevel] || ROASTS[2];
+                fullRoast = roasts[Math.floor(Math.random() * roasts.length)];
+            }
+
             // Hero 区域滚动显示
             const heroRoastEl = document.getElementById('hero-roast');
             heroRoastEl.innerHTML = `<span class="roast-text">${fullRoast}</span>`;
-            
+
             // 底部完整显示
             document.getElementById('roast-full').textContent = fullRoast;
         }
@@ -1173,7 +1337,8 @@
                 
                 const json = await res.json();
                 if (json.success) {
-                    showImageModal(json.data);
+                    showImageInCard(json.data);
+                    showImageModal(json.data.image_url);
                     showToast('✅ 龙虾海报生成成功！');
                 } else {
                     showToast('⚠️ ' + (json.error || '生成失败'));
@@ -1183,17 +1348,29 @@
             }
         }
         
-        function showImageModal(data) {
+// 存储生成的图片路径
+        let generatedImageUrl = null;
+
+        function showImageInCard(data) {
+            const container = document.getElementById('generated-image-container');
+            generatedImageUrl = data.image_url;
+            
+            container.innerHTML = `<img src="${data.image_url}" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="showImageModal('${data.image_url}')" alt="我的龙虾">`;
+            container.style.minHeight = 'auto';
+            container.style.opacity = '1';
+        }
+
+
+        function showImageModal(imgSrc) {
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
             modal.innerHTML = `
                 <div class="modal-content">
                     <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
-                    <img src="${data.image_url}" style="max-width:100%;max-height:70vh;border-radius:12px;">
-                    <div style="margin-top:16px;display:flex;gap:10px;">
-                        <a href="${data.image_url}" download="my-lobster.png" class="btn btn-primary" style="text-decoration:none;text-align:center;">📥 保存图片</a>
-                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${data.image_url}');showToast('✅ 已复制链接')">📋 复制链接</button>
+                    <img src="${imgSrc}" style="max-width:100%;max-height:70vh;border-radius:12px;">
+                    <div style="margin-top:16px;">
+                        <a href="${imgSrc}" download="my-lobster.png" class="btn btn-primary" style="text-decoration:none;text-align:center;display:block;">📥 保存图片</a>
                     </div>
                 </div>
             `;
@@ -1207,52 +1384,63 @@
             showToast('✅ 数据已刷新！');
         }
         
-        async function shareResult() {
-            const level = LEVELS[currentLevel];
-            const text = `🦞 我的龙虾能力值评估结果！
-
-${level.emoji} Lv.${currentLevel} ${level.title}
-💰 估值: ¥${currentData.value_estimation?.amount || 0}
-🛠️ 技能: ${currentData.skills?.total || 0} 个
-
-${document.getElementById('roast-full').textContent}
-
-#ClawValue #我的龙虾值 #OpenClaw`;
-
-            if (navigator.share) {
-                await navigator.share({ title: '我的龙虾能力值', text });
-            } else {
-                await navigator.clipboard.writeText(text);
-                showToast('✅ 已复制到剪贴板！');
+        
+        async function exportData() {
+            // 先隐藏toast
+            const toast = document.getElementById('toast');
+            toast.classList.remove('show');
+            
+            try {
+                // 隐藏不需要截图的元素
+                const header = document.querySelector('.header');
+                const mockSelector = document.getElementById('mock-selector');
+                const originalHeaderDisplay = header.style.display;
+                const originalMockDisplay = mockSelector.style.display;
+                header.style.display = 'none';
+                mockSelector.style.display = 'none';
+                
+                // 生成截图
+                const canvas = await html2canvas(document.body, {
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#0f0f23',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+                
+                // 恢复隐藏的元素
+                header.style.display = originalHeaderDisplay;
+                mockSelector.style.display = originalMockDisplay;
+                
+                // 下载图片
+                const link = document.createElement('a');
+                link.download = `clawvalue-${new Date().toISOString().slice(0,10)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                // 截图完成后再显示提示
+                setTimeout(() => showToast('✅ 截图已保存'), 100);
+            } catch (error) {
+                console.error('截图失败:', error);
+                showToast('❌ 截图失败');
             }
         }
         
-        function exportData() {
-            const blob = new Blob([JSON.stringify(currentData, null, 2)], {type: 'application/json'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'clawvalue-report.json';
-            a.click();
-            showToast('✅ 数据已导出');
-        }
-        
         function showHelp() {
-            alert(`🦞 ClawValue 使用指南
-
-快捷键:
-• R - 刷新数据
-• S - 分享结果  
-• T - 切换主题
-
-主题: 15套精美主题，右上角 🎨 切换
-
-数据说明:
-• 使用深度: 基于技能、自动化、集成评估
-• 价值估算: 预估节省的时间和成本
-• 成就系统: 解锁各种趣味成就
-• 日志详情: INFO/WARN/ERROR/工具调用统计`);
+            document.getElementById('help-modal').classList.add('show');
         }
         
+        function closeHelp(e) {
+            if (!e || e.target === e.currentTarget) {
+                document.getElementById('help-modal').classList.remove('show');
+            }
+        }
+        
+        // ========== Easter Egg ==========
+        function showEasterEgg() {
+            const hint = document.getElementById('easter-egg-hint');
+            hint.style.display = 'inline';
+        }
+
         // ========== Toast ==========
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -1266,8 +1454,11 @@ ${document.getElementById('roast-full').textContent}
             if (e.target.tagName === 'INPUT') return;
             const key = e.key.toLowerCase();
             if (key === 'r') refreshData();
-            if (key === 's') shareResult();
             if (key === 't') toggleThemePanel();
+            if (key === 'm') {
+                const selector = document.getElementById('mock-selector');
+                selector.style.display = selector.style.display === 'none' ? 'inline-block' : 'none';
+            }
         });
         
         // 点击外部关闭主题面板
@@ -1278,5 +1469,39 @@ ${document.getElementById('roast-full').textContent}
             }
         });
     </script>
+    <!-- Help Modal -->
+    <div class="help-modal" id="help-modal" onclick="closeHelp(event)">
+        <div class="help-modal-content" onclick="event.stopPropagation()">
+            <div class="help-modal-header">
+                <div class="help-modal-title">🦞 ClawValue 使用指南</div>
+                <button class="help-modal-close" onclick="closeHelp()">&times;</button>
+            </div>
+            <div class="help-section">
+                <div class="help-section-title">⌨️ 快捷键</div>
+                <div class="help-section-content">
+                    <span class="help-kbd">R</span> 刷新数据 &nbsp;
+                    <span class="help-kbd">T</span> 切换主题
+                </div>
+            </div>
+            <div class="help-section">
+                <div class="help-section-title">🎨 主题</div>
+                <div class="help-section-content">16套精美主题，右上角 🎨 切换</div>
+            </div>
+            <div class="help-section">
+                <div class="help-section-title">📊 数据说明</div>
+                <div class="help-section-content">
+                    • 使用深度: 基于技能、自动化、集成评估<br>
+                    • 价值估算: 预估节省的时间和成本<br>
+                    • 成就系统: 解锁各种趣味成就<br>
+                    • 日志详情: INFO/WARN/ERROR/工具调用统计
+                </div>
+            </div>
+            <!-- 彩蛋 -->
+            <div style="text-align: center; margin-top: 16px; position: relative;">
+                <span id="easter-egg-btn" onclick="showEasterEgg()" style="display: inline-block; width: 16px; height: 16px; line-height: 14px; font-size: 10px; border-radius: 50%; background: var(--border); color: var(--text-secondary); cursor: pointer; opacity: 0.4;">!</span>
+                <span id="easter-egg-hint" style="display: none; font-size: 11px; color: var(--text-secondary); margin-left: 8px; opacity: 0.7;">输入 M 就可以召回 mock 数据，试试吧。</span>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

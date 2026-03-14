@@ -109,6 +109,12 @@ def serve_image(filename):
     return send_from_directory(os.path.join(app.static_folder, 'images'), filename)
 
 
+@app.route('/html2canvas.min.js')
+def serve_html2canvas():
+    """提供 html2canvas.min.js"""
+    return send_from_directory(app.static_folder, 'html2canvas.min.js')
+
+
 @app.route('/api/stats', methods=['GET'])
 @cached()
 def get_stats():
@@ -572,17 +578,17 @@ def health_check():
 def generate_image():
     """
     生成龙虾主题图片
-    
-    使用阿里云万象 API 生成个性化图片。
-    
+
+    使用阿里云万象 API 生成个性化图片，保存到本地。
+
     Request Body:
         - level: 用户等级 (1-5)
         - style: 风格名称 (可选): cyberpunk, minimalist, cartoon, realistic, fantasy
         - achievements: 成就列表 (可选)
-    
+
     Returns:
         - success: 是否成功
-        - image_url: 图片 URL
+        - image_url: 本地图片路径
         - style: 使用的风格
         - prompt: 使用的提示词
     """
@@ -590,13 +596,14 @@ def generate_image():
         # 导入图片生成模块
         sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib'))
         from image_generator import WanxImageGenerator, LobsterPromptTemplates
-        
+        import requests as http_requests
+
         # 解析请求
         data = request.get_json() or {}
         level = data.get('level', 1)
         style = data.get('style')
         achievements = data.get('achievements', [])
-        
+
         # 生成图片
         generator = WanxImageGenerator()
         result = generator.generate_lobster(
@@ -604,23 +611,41 @@ def generate_image():
             style=style,
             achievements=achievements
         )
-        
+
         if result.success:
-            return jsonify({
-                'success': True,
-                'data': {
-                    'image_url': result.image_url,
-                    'style': result.style,
-                    'prompt': result.prompt,
-                    'request_id': result.request_id
-                }
-            })
+            # 下载图片并保存到本地
+            response = http_requests.get(result.image_url, timeout=30)
+            if response.status_code == 200:
+                # 生成文件名
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f'lobster_{level}_{timestamp}.png'
+                save_path = os.path.join(app.static_folder, 'images', 'generated', filename)
+                
+                with open(save_path, 'wb') as f:
+                    f.write(response.content)
+                
+                # 返回本地路径
+                local_url = f'/images/generated/{filename}'
+                return jsonify({
+                    'success': True,
+                    'data': {
+                        'image_url': local_url,
+                        'style': result.style,
+                        'prompt': result.prompt,
+                        'request_id': result.request_id
+                    }
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': f'下载图片失败: {response.status_code}'
+                }), 500
         else:
             return jsonify({
                 'success': False,
                 'error': result.error
             }), 500
-            
+
     except Exception as e:
         import traceback
         return jsonify({
