@@ -9,11 +9,13 @@
 - [x] 万象API icon生成方法
 - [x] 成就卡片布局（更大更突出）
 - [x] Neo-Brutalist成就样式
+- [x] Neo-Brutalist按钮样式（按压效果）
+- [x] Neo-Brutalist卡片样式
+- [x] 页面紧凑度优化
 
 ### 🔄 进行中
 期待增强：
 
-- [ ] 完整Neo-Brutalist风格页面重构（更多组件）
 - [ ] 成就icon实际生成并保存
 
 - 成就系统

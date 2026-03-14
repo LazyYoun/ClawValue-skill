@@ -165,7 +165,7 @@
         }
         
         /* ========== 布局 ========== */
-        .container { max-width: 900px; margin: 0 auto; padding: 15px; }
+        .container { max-width: 900px; margin: 0 auto; padding: 12px; }
         
         .header {
             display: flex;
@@ -193,12 +193,12 @@
         .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
         
         /* ========== 网格布局 ========== */
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 18px;
+            padding: 14px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: var(--shadow);
             backdrop-filter: blur(12px);
@@ -207,6 +207,18 @@
             border-color: oklch(0.5 0.15 260); 
             transform: translateY(-2px);
             box-shadow: 0 8px 32px oklch(0 0 0 / 0.3);
+        }
+        /* Neo-Brutalist 卡片 */
+        [data-theme="neo-brutalist"] .card {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 0.5rem;
+            box-shadow: 4px 4px 0px 0px #000;
+            backdrop-filter: none;
+        }
+        [data-theme="neo-brutalist"] .card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #000;
         }
         .card.span-2 { grid-column: span 2; }
         .card.span-3 { grid-column: span 3; }
@@ -335,8 +347,8 @@
         /* ========== Actions ========== */
         .actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn {
-            padding: 14px 28px; border-radius: 0.75rem; font-size: 0.9rem;
-            font-weight: 600; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); border: none;
+            padding: 12px 20px; border-radius: 0.75rem; font-size: 0.85rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none;
         }
         .btn-primary { 
             background: linear-gradient(135deg, var(--accent), oklch(0.65 0.18 35)); 
@@ -346,6 +358,24 @@
         .btn-primary:hover { 
             transform: translateY(-3px); 
             box-shadow: 0 8px 28px oklch(0.65 0.22 25 / 0.4);
+        }
+        /* Neo-Brutalist 按钮 */
+        [data-theme="neo-brutalist"] .btn {
+            border: 2px solid #000;
+            border-radius: 0.5rem;
+            box-shadow: 4px 4px 0px 0px #000;
+        }
+        [data-theme="neo-brutalist"] .btn:hover {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+        [data-theme="neo-brutalist"] .btn-primary {
+            background: #000;
+            color: #fff;
+        }
+        [data-theme="neo-brutalist"] .btn-secondary {
+            background: #fff;
+            color: #000;
         }
         .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-primary); }
         .btn-secondary:hover { background: rgba(255,255,255,0.1); }
