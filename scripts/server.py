@@ -103,6 +103,12 @@ def index():
     return send_from_directory(app.static_folder, 'index.html')
 
 
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    """提供图片文件"""
+    return send_from_directory(os.path.join(app.static_folder, 'images'), filename)
+
+
 @app.route('/api/stats', methods=['GET'])
 @cached()
 def get_stats():
