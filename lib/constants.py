@@ -293,17 +293,19 @@ class SkillCategory:
     MEDIA = '媒体内容'
     OTHER = '其他'
     
-    # 关键词映射（中文优先）
+    # 关键词映射（中文优先，按优先级排序）
     KEYWORDS = {
-        '搜索研究': ['搜索', 'search', '查询', 'web', '研究', 'research', '搜索引擎', '百科', '知识库', '资讯', '新闻'],
-        '开发运维': ['devops', '部署', 'ci/cd', 'docker', 'k8s', 'cloud', 'kubernetes', '容器', '运维', '发布', 'github', 'git', '代码'],
-        '工具效率': ['mcp', '工具', 'tool', 'utility', 'util', '效率', '辅助', 'cli', '命令行', '脚本', '自动化工具'],
-        '沟通协作': ['消息', 'message', '通知', 'notify', '聊天', 'im', '通讯', '协作', '机器人', 'bot', '群聊'],
+        # 社交媒体优先（避免被搜索研究匹配）
+        '社交媒体': ['微信', 'wechat', '微博', 'weibo', '小红书', 'xiaohongshu', 'rednote', '抖音', 'tiktok', 'twitter', 'x平台', '社交', '公众号', 'mp', 'publish to', 'social media'],
+        # 自动化优先（定时任务相关）
+        '自动化': ['自动化', 'automation', '定时', 'cron', '任务', '调度', 'heartbeat', '心跳', '监控', '提醒', '日程', '三省', 'edict', '看板'],
+        '搜索研究': ['搜索', 'search', '查询', 'web', '研究', 'research', '搜索引擎', '百科', '知识库', '资讯', '新闻', '百炼', 'digest', '摘要'],
+        '开发运维': ['devops', '部署', 'ci/cd', 'docker', 'k8s', 'cloud', 'kubernetes', '容器', '运维', '发布', 'github', 'git', '代码', 'repository', 'repo'],
+        '工具效率': ['mcp', '工具', 'tool', 'utility', 'util', '效率', '辅助', 'cli', '命令行', '脚本', '自动化工具', 'oss', '存储', '上传', '下载'],
+        '沟通协作': ['消息', 'message', '通知', 'notify', '聊天', 'im', '通讯', '协作', '机器人', 'bot', '群聊', 'qq', 'qqbot'],
         '数据存储': ['数据库', 'database', 'sql', '存储', 'storage', 'db', 'redis', 'mysql', 'postgres', 'mongodb', '缓存'],
-        '媒体内容': ['媒体', 'media', '图片', 'image', '视频', 'video', '音频', 'audio', '音乐', '封面', '海报', '截图'],
-        '自动化': ['自动化', 'automation', '定时', 'cron', '任务', '调度', 'heartbeat', '心跳', '监控', '提醒', '日程'],
+        '媒体内容': ['媒体', 'media', '图片', 'image', '视频', 'video', '音频', 'audio', '音乐', '封面', '海报', '截图', 'frontend', 'design', 'ui', '博客', 'blog', 'vanblog', '文章'],
         '安全认证': ['安全', 'security', '认证', 'auth', '密码', 'password', '加密', 'ssl', 'token', 'oauth', '登录'],
-        '社交媒体': ['微信', 'wechat', '微博', 'weibo', '小红书', 'xiaohongshu', '抖音', 'tiktok', 'twitter', 'x平台', '社交']
     }
 
 

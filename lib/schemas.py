@@ -286,12 +286,14 @@ class Skill:
             # 解析 YAML frontmatter
             metadata = cls._parse_frontmatter(content)
             
-            # 猜测类别
+            # 获取名称和描述
+            name = metadata.get('name', os.path.basename(os.path.dirname(filepath)))
             description = metadata.get('description', '')
-            category = cls._guess_category(description)
+            
+            # 综合名称和描述判断类别
+            category = cls._guess_category(f"{name} {description}")
             
             # 检测高风险技能
-            name = metadata.get('name', os.path.basename(os.path.dirname(filepath)))
             is_high_risk = 'voice-call' in name or '1password' in name
             
             return cls(
@@ -310,19 +312,52 @@ class Skill:
     
     @staticmethod
     def _parse_frontmatter(content: str) -> Dict[str, str]:
-        """解析 YAML frontmatter"""
+        """
+        解析 YAML frontmatter
+        
+        支持标准 YAML 格式，包括多行字符串
+        """
         metadata = {}
         
-        if content.startswith('---'):
-            parts = content.split('---', 2)
-            if len(parts) >= 3:
-                yaml_content = parts[1].strip()
-                for line in yaml_content.split('\n'):
-                    if ':' in line:
-                        key, value = line.split(':', 1)
-                        key = key.strip()
-                        value = value.strip().strip('"').strip("'")
-                        metadata[key] = value
+        if not content.startswith('---'):
+            return metadata
+            
+        parts = content.split('---', 2)
+        if len(parts) < 3:
+            return metadata
+            
+        yaml_content = parts[1].strip()
+        lines = yaml_content.split('\n')
+        
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            
+            if ':' in line:
+                key, value = line.split(':', 1)
+                key = key.strip()
+                value = value.strip()
+                
+                # 处理多行字符串标记
+                if value in ('>', '|'):
+                    # 收集缩进的多行内容
+                    multiline_value = []
+                    i += 1
+                    while i < len(lines):
+                        next_line = lines[i]
+                        # 如果是新的键值对（以非空格开头），停止
+                        if next_line and not next_line[0].isspace() and ':' in next_line:
+                            break
+                        if next_line.strip():
+                            multiline_value.append(next_line.strip())
+                        i += 1
+                    metadata[key] = ' '.join(multiline_value)
+                    continue
+                elif value:
+                    # 单行值
+                    metadata[key] = value.strip('"').strip("'")
+            
+            i += 1
         
         return metadata
     
@@ -344,6 +379,25 @@ class Skill:
         # 按优先级匹配分类
         for category, keywords in SkillCategory.KEYWORDS.items():
             if any(kw in desc_lower for kw in keywords):
+                return category
+        
+        return SkillCategory.其他
+    
+    def get_category_from_name_and_desc(self, name: str, description: str) -> str:
+        """
+        根据名称和描述综合判断技能类别
+        
+        Args:
+            name: 技能名称
+            description: 技能描述
+            
+        Returns:
+            分类名称（中文）
+        """
+        combined = f"{name} {description}".lower()
+        
+        for category, keywords in SkillCategory.KEYWORDS.items():
+            if any(kw in combined for kw in keywords):
                 return category
         
         return SkillCategory.其他
