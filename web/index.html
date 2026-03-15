@@ -57,65 +57,457 @@
             -webkit-user-select: text;
         }
 
-        /* ========== 加载动画 ========== */
+        /* ========== 炫酷加载动画 ========== */
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a15 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.5s, visibility 0.5s;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+            overflow: hidden;
         }
         .loading-overlay.hidden {
             opacity: 0;
             visibility: hidden;
         }
+
+        /* 背景粒子效果 */
+        .loading-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 107, 107, 0.6);
+            border-radius: 50%;
+            animation: particleFloat 8s infinite linear;
+        }
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* 主内容区 */
         .loading-content {
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
+
+        /* 龙虾图标 */
         .loading-lobster {
-            font-size: 5rem;
-            animation: lobsterBounce 1s ease-in-out infinite;
+            font-size: 6rem;
+            animation: lobsterPulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 107, 107, 0.5));
         }
-        @keyframes lobsterBounce {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
+        @keyframes lobsterPulse {
+            0%, 100% { transform: scale(1) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
         }
-        .loading-banner {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 20px 0;
-            background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--success));
+
+        /* 数据滚动容器 */
+        .data-carousel {
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 30px 0;
+        }
+
+        /* 单个数据项 */
+        .data-item {
+            position: absolute;
+            opacity: 0;
+            transform: translateY(50px) scale(0.8);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .data-item.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .data-item.exit {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.8);
+        }
+
+        .data-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: iconBounce 0.6s ease-out;
+        }
+        @keyframes iconBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .data-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: textShimmer 2s linear infinite;
+            animation: gradientShift 2s linear infinite;
+            text-shadow: 0 0 40px rgba(255, 107, 107, 0.3);
         }
-        @keyframes textShimmer {
+        @keyframes gradientShift {
             0% { background-position: 0% center; }
             100% { background-position: 200% center; }
         }
-        .loading-progress {
-            width: 300px;
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
+
+        .data-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* 进度指示器 */
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+        .progress-dot.active {
+            background: #ff6b6b;
+            box-shadow: 0 0 10px #ff6b6b;
+            transform: scale(1.3);
+        }
+        .progress-dot.done {
+            background: #4ade80;
+            box-shadow: 0 0 10px #4ade80;
+        }
+
+        /* 闪电揭示动画 */
+        .lightning-reveal {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .lightning-reveal.active {
+            opacity: 1;
+            pointer-events: auto;
+            animation: lightningFlash 0.8s ease-out;
+        }
+
+        @keyframes lightningFlash {
+            0% { background: rgba(10, 10, 20, 1); }
+            20% { background: rgba(255, 255, 255, 0.95); }
+            40% { background: rgba(255, 220, 180, 0.8); }
+            60% { background: rgba(255, 200, 150, 0.5); }
+            80% { background: rgba(255, 180, 120, 0.2); }
+            100% { background: rgba(10, 10, 20, 0.95); }
+        }
+
+        /* 灵光一闪效果 */
+        .lightning-container {
+            position: absolute;
+            inset: 0;
             overflow: hidden;
-            margin: 20px auto;
+            pointer-events: none;
         }
-        .loading-progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
-            border-radius: 3px;
-            transition: width 0.3s ease-out;
+
+        /* 中心光球 */
+        .flash-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 0%, rgba(255, 220, 180, 0.8) 30%, rgba(255, 180, 120, 0.4) 60%, transparent 70%);
+            opacity: 0;
         }
-        .loading-percent {
+
+        .flash-orb.animate {
+            animation: orbFlash 1.2s ease-out forwards;
+        }
+
+        @keyframes orbFlash {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+            20% {
+                width: 100px;
+                height: 100px;
+                opacity: 1;
+            }
+            50% {
+                width: 300px;
+                height: 300px;
+                opacity: 1;
+            }
+            100% {
+                width: 800px;
+                height: 800px;
+                opacity: 0;
+            }
+        }
+
+        /* 光芒射线 */
+        .light-ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transform-origin: bottom center;
+            opacity: 0;
+        }
+
+        .light-ray.animate {
+            animation: rayShoot 0.8s ease-out forwards;
+        }
+
+        @keyframes rayShoot {
+            0% {
+                height: 0;
+                opacity: 0;
+            }
+            30% {
+                height: 200px;
+                opacity: 1;
+            }
+            100% {
+                height: 400px;
+                opacity: 0;
+            }
+        }
+
+        /* 光环扩散 */
+        .light-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .light-ring.animate {
+            animation: ringExpand 1s ease-out forwards;
+        }
+
+        @keyframes ringExpand {
+            0% {
+                width: 50px;
+                height: 50px;
+                opacity: 1;
+                border-width: 3px;
+            }
+            100% {
+                width: 600px;
+                height: 600px;
+                opacity: 0;
+                border-width: 1px;
+            }
+        }
+
+        /* 星星闪烁 */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 10px #fff, 0 0 20px rgba(255, 200, 150, 0.8);
+        }
+
+        .sparkle.animate {
+            animation: sparkleBlink 0.6s ease-out forwards;
+        }
+
+        @keyframes sparkleBlink {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* 最终结果展示 */
+        .final-reveal {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 10;
+        }
+        .final-reveal.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .final-level {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b, #ff4757);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: levelGlow 1s ease-out, gradientShift 3s linear infinite;
+            text-shadow: 0 0 60px rgba(255, 215, 0, 0.5);
+        }
+        @keyframes levelGlow {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .final-title {
             font-size: 2rem;
+            color: #fff;
+            margin: 10px 0;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .final-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #4ade80;
+            text-shadow: 0 0 30px rgba(74, 222, 128, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .final-roast {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .final-lobster {
+            font-size: 8rem;
+            animation: finalLobster 1s ease-out 0.3s both;
+        }
+        @keyframes finalLobster {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* 进入按钮 */
+        .enter-btn {
+            margin-top: 30px;
+            padding: 16px 48px;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: var(--accent-secondary);
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+        .enter-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(255, 107, 107, 0.6);
+        }
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4); }
+            50% { box-shadow: 0 4px 30px rgba(255, 107, 107, 0.7); }
+        }
+
+        /* 关闭按钮 */
+        .close-reveal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+        .close-reveal-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: #ff6b6b;
+            transform: rotate(90deg);
+        }
+
+        /* 扫描线效果 */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+            animation: scanMove 2s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes scanMove {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* 能量环 */
+        .energy-ring {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: ringPulse 2s ease-out infinite;
+        }
+        .energy-ring:nth-child(1) { border-color: rgba(255, 107, 107, 0.3); animation-delay: 0s; }
+        .energy-ring:nth-child(2) { border-color: rgba(124, 138, 255, 0.3); animation-delay: 0.5s; width: 350px; height: 350px; }
+        .energy-ring:nth-child(3) { border-color: rgba(74, 222, 128, 0.3); animation-delay: 1s; width: 400px; height: 400px; }
+        @keyframes ringPulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
         }
 
         /* ========== 主题定义 ========== */
@@ -525,15 +917,53 @@
     </style>
 </head>
 <body>
-    <!-- 加载进度遮罩 -->
+    <!-- 炫酷加载动画 -->
     <div class="loading-overlay" id="loading-overlay">
+        <!-- 背景粒子 -->
+        <div class="loading-particles" id="loading-particles"></div>
+
+        <!-- 能量环 -->
+        <div class="energy-ring"></div>
+        <div class="energy-ring"></div>
+        <div class="energy-ring"></div>
+
+        <!-- 扫描线 -->
+        <div class="scan-line"></div>
+
+        <!-- 主内容 -->
         <div class="loading-content">
             <div class="loading-lobster">🦞</div>
-            <div class="loading-banner" id="loading-banner">数据收集中...</div>
-            <div class="loading-progress">
-                <div class="loading-progress-bar" id="loading-progress-bar"></div>
+
+            <!-- 数据轮播 -->
+            <div class="data-carousel" id="data-carousel">
+                <!-- 动态生成数据项 -->
             </div>
-            <div class="loading-percent" id="loading-percent">0%</div>
+
+            <!-- 进度指示器 -->
+            <div class="progress-dots" id="progress-dots">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 闪电揭示层 -->
+    <div class="lightning-reveal" id="lightning-reveal">
+        <!-- 关闭按钮 -->
+        <button class="close-reveal-btn" onclick="closeLightningReveal()">✕</button>
+
+        <!-- 闪电折线容器 -->
+        <div class="lightning-container" id="lightning-container">
+            <!-- 动态生成 SVG 闪电 -->
+        </div>
+
+        <!-- 最终结果 -->
+        <div class="final-reveal" id="final-reveal">
+            <div class="final-lobster">🦞</div>
+            <div class="final-level" id="final-level">Lv.3</div>
+            <div class="final-title" id="final-title">中级开发者</div>
+            <div class="final-value" id="final-value">¥8,000</div>
+            <div class="final-roast" id="final-roast">锐评文字...</div>
+            <button class="enter-btn" onclick="closeLightningReveal()">进入详情 →</button>
         </div>
     </div>
 
@@ -1071,71 +1501,227 @@
         }
 
         // ========== 数据获取 ==========
-        async function fetchData() {
-            const banner = document.getElementById('loading-banner');
-            const progressBar = document.getElementById('loading-progress-bar');
-            const percentEl = document.getElementById('loading-percent');
+        let loadingData = {
+            skills: 0,
+            tokens: 0,
+            logs: 0,
+            sessions: 0,
+            days: 0,
+            cost: 0
+        };
 
-            // 阶段1：数据收集中
-            banner.textContent = '数据收集中...';
-            await animateProgress(0, 30, 800);
+        // 创建背景粒子
+        function createParticles() {
+            const container = document.getElementById('loading-particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                const colors = ['rgba(255, 107, 107, 0.6)', 'rgba(124, 138, 255, 0.6)', 'rgba(74, 222, 128, 0.6)', 'rgba(254, 202, 87, 0.6)'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                container.appendChild(particle);
+            }
+        }
+
+        // 格式化数字
+        function formatNum(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(0) + 'k';
+            return n.toString();
+        }
+
+        // 数据轮播动画
+        async function runDataCarousel(data) {
+            const carousel = document.getElementById('data-carousel');
+            const dotsContainer = document.getElementById('progress-dots');
+
+            // 数据项配置
+            const dataItems = [
+                { icon: '🛠️', value: data.skills?.total || 0, label: '技能数量', format: true },
+                { icon: '💰', value: data.token_usage?.total_tokens || 0, label: 'Token 用量', format: true },
+                { icon: '📝', value: data.log_stats?.total_entries || 0, label: '日志条目', format: true },
+                { icon: '💬', value: data.sessions?.total || 0, label: '会话数量', format: true },
+                { icon: '📅', value: data.sessions?.active_days || 1, label: '活跃天数', format: false },
+                { icon: '💵', value: data.token_usage?.total_cost || 0, label: '累计成本 (¥)', format: false, prefix: '¥' }
+            ];
+
+            // 创建进度点
+            dotsContainer.innerHTML = dataItems.map((_, i) => `<div class="progress-dot" data-index="${i}"></div>`).join('');
+            const dots = dotsContainer.querySelectorAll('.progress-dot');
+
+            // 创建数据项 HTML
+            carousel.innerHTML = dataItems.map((item, i) => `
+                <div class="data-item" data-index="${i}">
+                    <div class="data-icon">${item.icon}</div>
+                    <div class="data-value">${item.prefix || ''}${item.format ? formatNum(item.value) : item.value}</div>
+                    <div class="data-label">${item.label}</div>
+                </div>
+            `).join('');
+
+            const items = carousel.querySelectorAll('.data-item');
+
+            // 依次展示每个数据项
+            for (let i = 0; i < dataItems.length; i++) {
+                // 激活当前项
+                items.forEach((item, idx) => {
+                    item.classList.remove('active', 'exit');
+                    if (idx < i) item.classList.add('exit');
+                    if (idx === i) item.classList.add('active');
+                });
+
+                // 更新进度点
+                dots.forEach((dot, idx) => {
+                    dot.classList.remove('active', 'done');
+                    if (idx < i) dot.classList.add('done');
+                    if (idx === i) dot.classList.add('active');
+                });
+
+                // 等待
+                await new Promise(r => setTimeout(r, 800));
+            }
+
+            // 最后一个完成后标记所有完成
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+                dot.classList.add('done');
+            });
+        }
+
+        // 闪电揭示动画
+        async function showLightningReveal(data) {
+            const lightning = document.getElementById('lightning-reveal');
+            const lightningContainer = document.getElementById('lightning-container');
+            const finalReveal = document.getElementById('final-reveal');
+            const level = LEVELS[data.depth_level] || LEVELS[1];
+
+            // 设置最终数据
+            document.getElementById('final-level').textContent = `Lv.${data.depth_level}`;
+            document.getElementById('final-title').textContent = level.title;
+            document.getElementById('final-value').textContent = '¥' + (data.value_estimation?.amount || 0).toLocaleString();
+
+            // 设置锐评
+            const roasts = ROASTS[data.depth_level] || ROASTS[2];
+            const roast = roasts[Math.floor(Math.random() * roasts.length)];
+            document.getElementById('final-roast').textContent = roast;
+
+            // 触发闪电动画
+            lightning.classList.add('active');
+
+            // 创建灵光一闪效果
+            createFlashEffect(lightningContainer);
+
+            await new Promise(r => setTimeout(r, 1000));
+
+            // 显示最终结果
+            finalReveal.classList.add('show');
+
+            // 不自动关闭，等待用户点击
+        }
+
+        // 创建灵光一闪效果
+        function createFlashEffect(container) {
+            container.innerHTML = '';
+
+            // 1. 中心光球
+            const orb = document.createElement('div');
+            orb.className = 'flash-orb';
+            container.appendChild(orb);
+            setTimeout(() => orb.classList.add('animate'), 50);
+
+            // 2. 光芒射线（8条）
+            for (let i = 0; i < 8; i++) {
+                const ray = document.createElement('div');
+                ray.className = 'light-ray';
+                const angle = i * 45;
+                ray.style.transform = `rotate(${angle}deg) translateY(-100px)`;
+                container.appendChild(ray);
+                setTimeout(() => ray.classList.add('animate'), 100 + i * 30);
+            }
+
+            // 3. 光环扩散（3层）
+            for (let i = 0; i < 3; i++) {
+                const ring = document.createElement('div');
+                ring.className = 'light-ring';
+                container.appendChild(ring);
+                setTimeout(() => ring.classList.add('animate'), 200 + i * 150);
+            }
+
+            // 4. 星星闪烁（随机位置）
+            for (let i = 0; i < 12; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                // 随机位置（在中心周围）
+                const angle = Math.random() * 360;
+                const distance = 100 + Math.random() * 200;
+                const x = 50 + Math.cos(angle * Math.PI / 180) * distance / 4;
+                const y = 50 + Math.sin(angle * Math.PI / 180) * distance / 4;
+                sparkle.style.left = x + '%';
+                sparkle.style.top = y + '%';
+                container.appendChild(sparkle);
+                setTimeout(() => sparkle.classList.add('animate'), 150 + Math.random() * 400);
+            }
+        }
+
+        // 关闭闪电揭示层
+        function closeLightningReveal() {
+            const lightning = document.getElementById('lightning-reveal');
+            const finalReveal = document.getElementById('final-reveal');
+            const loadingOverlay = document.getElementById('loading-overlay');
+
+            // 淡出动画
+            lightning.style.transition = 'opacity 0.5s ease-out';
+            lightning.style.opacity = '0';
+
+            setTimeout(() => {
+                lightning.classList.remove('active');
+                finalReveal.classList.remove('show');
+                lightning.style.opacity = '';
+                lightning.style.transition = '';
+
+                // 同时隐藏加载层
+                loadingOverlay.classList.add('hidden');
+
+                // 显示欢迎消息
+                showToast('🦞 欢迎来到 ClawValue！');
+            }, 500);
+        }
+
+        async function fetchData() {
+            // 创建粒子
+            createParticles();
 
             try {
                 const res = await fetch('/api/');
                 const json = await res.json();
 
-                // 阶段2：快好了
-                banner.textContent = '快好了...';
-                await animateProgress(30, 70, 500);
-
                 if (json.success && json.data) {
                     currentData = json.data;
 
-                    // 阶段3：计算中
-                    banner.textContent = '计算中，您的全球排名是...';
-                    await animateProgress(70, 90, 400);
+                    // 运行数据轮播
+                    await runDataCarousel(json.data);
 
-                    // 更新UI
+                    // 短暂停留
+                    await new Promise(r => setTimeout(r, 500));
+
+                    // 更新UI（先更新，这样关闭闪电层后直接显示）
                     updateUI(json.data);
 
-                    // 阶段4：完成
-                    banner.textContent = '收集完成！';
-                    await animateProgress(90, 100, 300);
+                    // 闪电揭示（会停留等待用户点击）
+                    await showLightningReveal(json.data);
 
-                    // 隐藏加载层
-                    setTimeout(() => {
-                        document.getElementById('loading-overlay').classList.add('hidden');
-                    }, 300);
+                    // 注意：不在这里隐藏加载层，而是在 closeLightningReveal 中处理
                 }
             } catch (e) {
-                banner.textContent = '数据加载失败';
-                progressBar.style.background = '#ff6b6b';
+                console.error('数据加载失败:', e);
                 showToast('❌ 数据加载失败');
+
+                // 即使失败也隐藏加载层
+                setTimeout(() => {
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                }, 2000);
             }
-        }
-
-        async function animateProgress(from, to, duration) {
-            const progressBar = document.getElementById('loading-progress-bar');
-            const percentEl = document.getElementById('loading-percent');
-            const startTime = Date.now();
-
-            return new Promise(resolve => {
-                function update() {
-                    const elapsed = Date.now() - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const current = from + (to - from) * progress;
-
-                    progressBar.style.width = current + '%';
-                    percentEl.textContent = Math.round(current) + '%';
-
-                    if (progress < 1) {
-                        requestAnimationFrame(update);
-                    } else {
-                        resolve();
-                    }
-                }
-                update();
-            });
         }
 
         // ========== UI 更新 ==========
@@ -1391,22 +1977,33 @@
         }
 
         // ========== Mock 数据选择 ==========
-        function selectMockLevel(level) {
+        async function selectMockLevel(level) {
             if (level === 'real') {
-                fetchData();
+                await fetchData();
             } else {
                 const mockData = MOCK_DATA[parseInt(level)];
                 if (mockData) {
-                    // 先显示加载动画
+                    // 重新显示加载动画
                     const overlay = document.getElementById('loading-overlay');
                     overlay.classList.remove('hidden');
 
-                    setTimeout(() => {
-                        updateUI(mockData);
-                        currentData = mockData;
-                        overlay.classList.add('hidden');
-                        showToast(`✅ 已切换到「${LEVELS[level].title}」示例数据`);
-                    }, 500);
+                    // 清空粒子重新创建
+                    document.getElementById('loading-particles').innerHTML = '';
+                    createParticles();
+
+                    // 运行数据轮播
+                    await runDataCarousel(mockData);
+
+                    // 更新UI（先更新）
+                    updateUI(mockData);
+                    currentData = mockData;
+
+                    // 闪电揭示（会停留等待用户点击）
+                    await showLightningReveal(mockData);
+
+                    // 注意：不在这里隐藏加载层，而是在 closeLightningReveal 中处理
+
+                    showToast(`✅ 已切换到「${LEVELS[level].title}」示例数据`);
                 }
             }
         }
@@ -1479,9 +2076,15 @@
 
         // ========== 功能按钮 ==========
         async function refreshData() {
-            showToast('🔄 刷新中...');
+            // 重新显示加载动画
+            const overlay = document.getElementById('loading-overlay');
+            overlay.classList.remove('hidden');
+
+            // 清空粒子重新创建
+            document.getElementById('loading-particles').innerHTML = '';
+
             await fetchData();
-            showToast('✅ 数据已刷新！');
+            // 注意：toast 在关闭闪电层后显示
         }
 
 
