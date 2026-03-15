@@ -8,7 +8,7 @@
     <script src="html2canvas.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         :root {
             --bg-primary: #171a1f;
             --bg-secondary: #1e2228;
@@ -23,7 +23,7 @@
             --radius: 1rem;
             --shadow: 0 4px 24px rgba(0,0,0,0.2);
         }
-        
+
         /* Neo-Brutalist 变量覆盖 */
         [data-theme="neo-brutalist"] {
             --bg-primary: #ffe17c;
@@ -39,7 +39,7 @@
             --radius: 0.75rem;
             --shadow: 4px 4px 0px 0px #000000;
         }
-        
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
@@ -47,8 +47,16 @@
             min-height: 100vh;
             line-height: 1.4;
             font-size: 14px;
+            user-select: none;
+            -webkit-user-select: none;
         }
         
+        /* 允许输入框选中 */
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
         /* ========== 加载动画 ========== */
         .loading-overlay {
             position: fixed;
@@ -109,7 +117,7 @@
             font-weight: 700;
             color: var(--accent-secondary);
         }
-        
+
         /* ========== 主题定义 ========== */
         [data-theme="deep-sea"] { --bg-primary: #0f0f23; --accent: #ff6b6b; --accent-secondary: #4facfe; --border: rgba(255,255,255,0.1); --bg-card: rgba(255,255,255,0.03); }
         [data-theme="fresh-garden"] { --bg-secondary: #e8f5e8; --bg-primary: #f0f9f0; --text-primary: #1a1a1a; --text-secondary: #666; --accent: #43e97b; --border: rgba(0,100,0,0.15); --bg-card: rgba(255,255,255,0.8); }
@@ -164,10 +172,10 @@
         [data-theme="neo-brutalist"] .hero-avatar {
             box-shadow: 8px 8px 0px 0px #000;
         }
-        
+
         /* ========== 布局 ========== */
         .container { max-width: 900px; margin: 0 auto; padding: 12px; }
-        
+
         .header {
             display: flex;
             align-items: center;
@@ -178,11 +186,11 @@
             border-radius: 16px;
             margin-bottom: 15px;
         }
-        
+
         .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; }
         .logo-icon { font-size: 1.8rem; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        
+
         .header-actions { display: flex; gap: 8px; }
         .icon-btn {
             width: 36px; height: 36px; border-radius: 10px;
@@ -192,7 +200,7 @@
             transition: all 0.2s;
         }
         .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
-        
+
         /* ========== 网格布局 ========== */
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card {
@@ -204,8 +212,8 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(12px);
         }
-        .card:hover { 
-            border-color: #6b7280; 
+        .card:hover {
+            border-color: #6b7280;
             transform: translateY(-2px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
@@ -224,7 +232,7 @@
         .card.span-2 { grid-column: span 2; }
         .card.span-3 { grid-column: span 3; }
         .card-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-        
+
         /* ========== Hero Section ========== */
         .hero { display: flex; align-items: center; gap: 20px; }
         .hero-avatar {
@@ -237,10 +245,10 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .hero-info h1 { font-size: 2rem; font-weight: 800; }
         .hero-info .subtitle { font-size: 1rem; color: var(--text-secondary); }
-        .hero-info .roast { 
-            font-size: 0.85rem; 
-            color: var(--warning); 
-            font-style: italic; 
+        .hero-info .roast {
+            font-size: 0.85rem;
+            color: var(--warning);
+            font-style: italic;
             margin-top: 8px;
             max-width: 600px;
             overflow: hidden;
@@ -251,16 +259,16 @@
             white-space: normal;
             line-height: 1.6;
         }
-        
+
         /* ========== Stats ========== */
         .stat-value { font-size: 1.8rem; font-weight: 700; }
         .stat-sub { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
-        
+
         /* ========== Progress ========== */
         .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 8px; }
         .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
         .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); }
-        
+
         /* ========== Scores ========== */
         .score-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
         .score-item:last-child { border-bottom: none; }
@@ -268,19 +276,19 @@
         .score-bar { width: 80px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
         .score-fill { height: 100%; border-radius: 3px; }
         .score-value { font-size: 0.85rem; font-weight: 600; width: 35px; text-align: right; }
-        
+
         /* ========== Achievements ========== */
         .achievement-section { margin-top: 12px; }
-        .achievement-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-            gap: 10px; 
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
         }
         .achievement-card {
-            padding: 12px; 
-            border-radius: 12px; 
+            padding: 12px;
+            border-radius: 12px;
             font-size: 0.85rem;
-            background: rgba(254,202,87,0.1); 
+            background: rgba(254,202,87,0.1);
             border: 1px solid rgba(254,202,87,0.2);
             display: flex;
             align-items: center;
@@ -295,8 +303,8 @@
             opacity: 0.4;
             filter: grayscale(0.8);
         }
-        .achievement-icon { 
-            font-size: 1.8rem; 
+        .achievement-icon {
+            font-size: 1.8rem;
             width: 40px;
             height: 40px;
             display: flex;
@@ -334,36 +342,36 @@
             background: #b7c6c2;
             border: 2px solid #000;
         }
-        
+
         /* ========== Depth Breakdown ========== */
         .breakdown-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
         .breakdown-level { width: 24px; height: 24px; border-radius: 6px; background: rgba(102,126,234,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; }
         .breakdown-name { flex: 1; font-size: 0.85rem; }
         .breakdown-count { font-weight: 600; }
-        
+
         /* ========== Log Stats ========== */
         .log-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .log-stat { text-align: center; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; }
         .log-stat-value { font-size: 1.2rem; font-weight: 700; }
         .log-stat-label { font-size: 0.65rem; color: var(--text-secondary); }
-        
+
         /* ========== Roast Section ========== */
         .roast-card { background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(255,142,83,0.1)); border-color: rgba(255,107,107,0.2); }
         .roast-text { font-size: 0.95rem; line-height: 1.6; }
-        
+
         /* ========== Actions ========== */
         .actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn {
             padding: 12px 20px; border-radius: 0.75rem; font-size: 0.85rem;
             font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none;
         }
-        .btn-primary { 
-            background: linear-gradient(135deg, var(--accent), #ff8c42); 
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #ff8c42);
             color: white;
             box-shadow: 0 4px 16px rgba(255,107,107,0.3);
         }
-        .btn-primary:hover { 
-            transform: translateY(-3px); 
+        .btn-primary:hover {
+            transform: translateY(-3px);
             box-shadow: 0 8px 28px rgba(255,107,107,0.4);
         }
         /* Neo-Brutalist 按钮 */
@@ -430,7 +438,7 @@
         }
         .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-primary); }
         .btn-secondary:hover { background: rgba(255,255,255,0.1); }
-        
+
         /* ========== Theme Panel ========== */
         .theme-panel {
             position: fixed; top: 0; right: -320px; width: 300px; height: 100vh;
@@ -496,17 +504,17 @@
         .theme-type-badge.dark { background: rgba(0,0,0,0.3); }
         .theme-type-badge.light { background: rgba(255,255,255,0.2); }
         .theme-type-badge.special { background: linear-gradient(135deg, rgba(255,0,255,0.3), rgba(0,255,255,0.3)); }
-        
+
         /* ========== Modal ========== */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--bg-secondary); border-radius: 20px; padding: 24px; max-width: 90vw; position: relative; }
         .modal-close { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px; }
-        
+
         /* ========== Toast ========== */
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.9); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 0.85rem; z-index: 3000; transition: transform 0.3s; }
         [data-theme="neo-brutalist"] .toast { background: #000; border: 2px solid #000; color: #fff; }
         .toast.show { transform: translateX(-50%) translateY(0); }
-        
+
         /* ========== Responsive ========== */
         @media (max-width: 768px) {
             .grid { grid-template-columns: 1fr; }
@@ -549,7 +557,7 @@
                 <button class="icon-btn" onclick="showHelp()" title="帮助">❓</button>
             </div>
         </div>
-        
+
         <!-- Main Grid -->
         <div class="grid">
             <!-- Hero Card -->
@@ -570,28 +578,28 @@
                     <span id="progress-text">40% - 距下一级还需 60 分</span>
                 </div>
             </div>
-            
+
             <!-- 价值估算 -->
             <div class="card">
                 <div class="card-label">💰 龙虾估值</div>
                 <div class="stat-value" id="value-amount" style="background: linear-gradient(135deg, var(--success), #43e97b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">¥2,000</div>
                 <div class="stat-sub" id="value-sub">预估年度节省成本</div>
             </div>
-            
+
             <!-- 技能统计 -->
             <div class="card">
                 <div class="card-label">🛠️ 技能统计</div>
                 <div class="stat-value"><span id="skill-total">8</span> <span style="font-size:0.8rem;color:var(--text-secondary)">/ <span id="skill-custom">8</span> 自定义</span></div>
                 <div class="stat-sub" id="skill-cats">Media, Tools...</div>
             </div>
-            
+
             <!-- 会话统计 -->
             <div class="card">
                 <div class="card-label">💬 会话强度</div>
                 <div class="stat-value"><span id="log-total">11.7k</span></div>
                 <div class="stat-sub">活跃 <span id="active-days">4</span> 天</div>
             </div>
-            
+
             <!-- 评分详情 -->
             <div class="card">
                 <div class="card-label">🎯 能力评分</div>
@@ -611,7 +619,7 @@
                     <span class="score-value" id="int-score">30</span>
                 </div>
             </div>
-            
+
             <!-- 深度分布 -->
             <div class="card">
                 <div class="card-label">📊 深度分布</div>
@@ -622,7 +630,7 @@
                     <div class="breakdown-item"><span class="breakdown-level">4</span><span class="breakdown-name">Agent数量</span><span class="breakdown-count" id="bd-agent">1</span></div>
                 </div>
             </div>
-            
+
             <!-- 日志统计 -->
             <div class="card">
                 <div class="card-label">📝 日志详情</div>
@@ -632,8 +640,18 @@
                     <div class="log-stat"><div class="log-stat-value" style="color: var(--accent)" id="log-error">131</div><div class="log-stat-label">ERROR</div></div>
                     <div class="log-stat"><div class="log-stat-value" style="color: var(--accent-secondary)" id="log-tools">27</div><div class="log-stat-label">工具调用</div></div>
                 </div>
+                <!-- Token 使用统计 -->
+                <div id="token-stats-section" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">💰 Token 用量</span>
+                        <span style="font-size: 0.85rem; font-weight: 600;" id="token-total">0</span>
+                    </div>
+                    <div id="token-models" style="display: flex; flex-direction: column; gap: 4px;">
+                        <!-- Top 模型会动态填充 -->
+                    </div>
+                </div>
             </div>
-            
+
             <!-- 成就 -->
             <div class="card span-2">
                 <div class="card-label">🏆 成就徽章 <span id="achievement-count" style="opacity:0.6;font-size:0.75rem"></span></div>
@@ -649,13 +667,13 @@
                     点击下方生成
                 </div>
             </div>
-            
+
             <!-- 调侃话术 -->
             <div class="card span-3 roast-card">
                 <div class="card-label">🔥 龙虾锐评</div>
                 <div class="roast-text" id="roast-full">加载中...</div>
             </div>
-            
+
             <!-- 操作按钮 -->
             <div class="card span-3">
                 <div class="actions">
@@ -666,13 +684,13 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Theme Panel -->
     <div class="theme-panel" id="theme-panel">
         <div class="theme-panel-title">🎨 选择主题风格</div>
         <div id="theme-categories"></div>
     </div>
-    
+
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
@@ -696,16 +714,16 @@
             'music-rhythm': { name: '音乐律动', icon: '🎵', desc: '音乐可视化风', type: 'dark', colors: ['#0d0d0d', '#e63946', '#a8dadc', '#f1faee'] },
             'snow-peak': { name: '雪山之巅', icon: '🏔️', desc: '极地纯净风', type: 'light', colors: ['#e8f4f8', '#2e86de', '#54a0ff', '#feca57'] }
         };
-        
+
         const themeCategories = {
             dark: { name: '深色系', icon: '🌙' },
             light: { name: '浅色系', icon: '☀️' },
             special: { name: '特色系', icon: '✨' }
         };
-        
+
         // ========== 趣味文案 ==========
         const ROASTS = {
-                   
+
           "1": [
             "🐣 哟，接个模型就觉得自己是黑客了？你的 OpenClaw 开发度连 0.1% 都不到，连 `sudo make me a sandwich` 都敲不利索，还敢来这儿显摆？",
             "恭喜！您成功点亮了幼儿园级别的 'Hello World' 技能。下一步建议先学会怎么不让 AI 把你当智障，再想什么'驯龙师'的事吧。",
@@ -802,7 +820,7 @@
                 '这价值，可以开培训班了'
             ]
         };
-        
+
         const LEVELS = {
             1: { emoji: '🐣', title: '入门小白' },
             2: { emoji: '🎮', title: '初级玩家' },
@@ -810,7 +828,7 @@
             4: { emoji: '🚀', title: '高级工程师' },
             5: { emoji: '🦞', title: '龙虾大师' }
         };
-        
+
         // ========== Mock 数据 ==========
         const MOCK_DATA = {
             1: {
@@ -826,6 +844,15 @@
                     { name: 'Agent数量', count: 1 }
                 ],
                 log_stats: { info_count: 120, warn_count: 20, error_count: 10, tool_calls: 5 },
+                token_usage: {
+                    total_tokens: 50000,
+                    total_cost: 0.5,
+                    daily_tokens: 25000,
+                    top_models: [
+                        { model: 'qwen3.5-plus', total_tokens: 40000, cost: 0.4 },
+                        { model: 'glm-5', total_tokens: 10000, cost: 0.1 }
+                    ]
+                },
                 achievements: []
             },
             2: {
@@ -841,6 +868,16 @@
                     { name: 'Agent数量', count: 1 }
                 ],
                 log_stats: { info_count: 700, warn_count: 60, error_count: 40, tool_calls: 15 },
+                token_usage: {
+                    total_tokens: 200000,
+                    total_cost: 2.5,
+                    daily_tokens: 40000,
+                    top_models: [
+                        { model: 'qwen3.5-plus', total_tokens: 150000, cost: 2.0 },
+                        { model: 'minimax-m2.5', total_tokens: 30000, cost: 0.3 },
+                        { model: 'glm-5', total_tokens: 20000, cost: 0.2 }
+                    ]
+                },
                 achievements: ['自定义创造者']
             },
             3: {
@@ -856,6 +893,16 @@
                     { name: 'Agent数量', count: 2 }
                 ],
                 log_stats: { info_count: 4500, warn_count: 300, error_count: 200, tool_calls: 80 },
+                token_usage: {
+                    total_tokens: 1500000,
+                    total_cost: 15.0,
+                    daily_tokens: 100000,
+                    top_models: [
+                        { model: 'qwen3.5-plus', total_tokens: 1200000, cost: 12.0 },
+                        { model: 'minimax-m2.5', total_tokens: 200000, cost: 2.0 },
+                        { model: 'glm-5', total_tokens: 100000, cost: 1.0 }
+                    ]
+                },
                 achievements: ['技能收藏家', '自定义大师']
             },
             4: {
@@ -871,6 +918,16 @@
                     { name: 'Agent数量', count: 3 }
                 ],
                 log_stats: { info_count: 22000, warn_count: 1800, error_count: 1200, tool_calls: 350 },
+                token_usage: {
+                    total_tokens: 8000000,
+                    total_cost: 80.0,
+                    daily_tokens: 178000,
+                    top_models: [
+                        { model: 'qwen3.5-plus', total_tokens: 6000000, cost: 60.0 },
+                        { model: 'minimax-m2.5', total_tokens: 1500000, cost: 15.0 },
+                        { model: 'glm-5', total_tokens: 500000, cost: 5.0 }
+                    ]
+                },
                 achievements: ['技能大师', '自动化达人', '多渠道运营', '超级用户']
             },
             5: {
@@ -886,12 +943,22 @@
                     { name: 'Agent数量', count: 5 }
                 ],
                 log_stats: { info_count: 90000, warn_count: 6000, error_count: 4000, tool_calls: 2000 },
+                token_usage: {
+                    total_tokens: 50000000,
+                    total_cost: 500.0,
+                    daily_tokens: 278000,
+                    top_models: [
+                        { model: 'qwen3.5-plus', total_tokens: 40000000, cost: 400.0 },
+                        { model: 'minimax-m2.5', total_tokens: 8000000, cost: 80.0 },
+                        { model: 'glm-5', total_tokens: 2000000, cost: 20.0 }
+                    ]
+                },
                 achievements: ['技能传奇', '龙虾宗师', '自动化之神', '渠道大师', 'Token百万富翁', '早期采用者']
             }
         };
-        
+
         // ========== 全局变量 ==========
-        
+
         // 成就图标映射
         const ACHIEVEMENT_ICONS = {
             'skill_master': 'skill_master.png',
@@ -919,7 +986,7 @@
             'secret_lobster': 'secret_lobster.png',
             'perfectionist': 'perfectionist.png',
         };
-        
+
         // 成就信息
         const ACHIEVEMENTS_INFO = {
             'skill_master': { name: '技能大师', desc: '自定义技能≥5个' },
@@ -947,31 +1014,31 @@
             'secret_lobster': { name: '龙虾宗师', desc: '解锁隐藏成就' },
             'perfectionist': { name: '完美主义者', desc: '所有指标优秀' },
         };
-        
+
         let currentData = {};
         let currentLevel = 1;
         let currentAchievements = [];
-        
+
         // ========== 初始化 ==========
         document.addEventListener('DOMContentLoaded', () => {
             initThemePanel();
             fetchData();
         });
-        
+
         // ========== 主题面板 ==========
         function initThemePanel() {
             const container = document.getElementById('theme-categories');
             const savedTheme = localStorage.getItem('clawvalue-theme') || 'neo-brutalist';
-            
+
             document.documentElement.setAttribute('data-theme', savedTheme);
-            
+
             const categorized = {};
             Object.entries(themes).forEach(([id, t]) => {
                 const type = t.type || 'dark';
                 if (!categorized[type]) categorized[type] = [];
                 categorized[type].push({ id, ...t });
             });
-            
+
             container.innerHTML = Object.entries(themeCategories).map(([type, catInfo]) => {
                 const list = categorized[type] || [];
                 if (list.length === 0) return '';
@@ -989,11 +1056,11 @@
                 `;
             }).join('');
         }
-        
+
         function toggleThemePanel() {
             document.getElementById('theme-panel').classList.toggle('show');
         }
-        
+
         function setTheme(id) {
             document.documentElement.setAttribute('data-theme', id);
             localStorage.setItem('clawvalue-theme', id);
@@ -1002,39 +1069,39 @@
             showToast(`✅ 已切换到「${themes[id].name}」主题`);
             document.getElementById('theme-panel').classList.remove('show');
         }
-        
+
         // ========== 数据获取 ==========
         async function fetchData() {
             const banner = document.getElementById('loading-banner');
             const progressBar = document.getElementById('loading-progress-bar');
             const percentEl = document.getElementById('loading-percent');
-            
+
             // 阶段1：数据收集中
             banner.textContent = '数据收集中...';
             await animateProgress(0, 30, 800);
-            
+
             try {
                 const res = await fetch('/api/');
                 const json = await res.json();
-                
+
                 // 阶段2：快好了
                 banner.textContent = '快好了...';
                 await animateProgress(30, 70, 500);
-                
+
                 if (json.success && json.data) {
                     currentData = json.data;
-                    
+
                     // 阶段3：计算中
                     banner.textContent = '计算中，您的全球排名是...';
                     await animateProgress(70, 90, 400);
-                    
+
                     // 更新UI
                     updateUI(json.data);
-                    
+
                     // 阶段4：完成
                     banner.textContent = '收集完成！';
                     await animateProgress(90, 100, 300);
-                    
+
                     // 隐藏加载层
                     setTimeout(() => {
                         document.getElementById('loading-overlay').classList.add('hidden');
@@ -1046,21 +1113,21 @@
                 showToast('❌ 数据加载失败');
             }
         }
-        
+
         async function animateProgress(from, to, duration) {
             const progressBar = document.getElementById('loading-progress-bar');
             const percentEl = document.getElementById('loading-percent');
             const startTime = Date.now();
-            
+
             return new Promise(resolve => {
                 function update() {
                     const elapsed = Date.now() - startTime;
                     const progress = Math.min(elapsed / duration, 1);
                     const current = from + (to - from) * progress;
-                    
+
                     progressBar.style.width = current + '%';
                     percentEl.textContent = Math.round(current) + '%';
-                    
+
                     if (progress < 1) {
                         requestAnimationFrame(update);
                     } else {
@@ -1070,29 +1137,29 @@
                 update();
             });
         }
-        
+
         // ========== UI 更新 ==========
         function updateUI(data) {
             currentLevel = data.depth_level || 1;
             currentAchievements = data.achievements || [];
             const level = LEVELS[currentLevel];
-            
+
             // Hero - 带动画
             animateValue('hero-avatar', level.emoji, true);
             animateText('hero-title', `Lv.${currentLevel} ${level.title}`);
-            
+
             // 排名进度条动画
             const targetProgress = currentLevel * 20;
             animateProgressBar('hero-progress', 0, targetProgress, 1000);
             document.getElementById('progress-text').textContent = `${targetProgress}% - 距下一级还需 ${100 - targetProgress} 分`;
-            
+
             // 排名动画
             const targetRank = Math.min(99, Math.max(1, 100 - currentLevel * 15 - Math.floor(Math.random() * 10)));
             animateRank(targetRank);
-            
+
             // 价值动画
             animateNumber('value-amount', 0, data.value_estimation?.amount || 0, 1000, '¥');
-            
+
             // 更新价值文案和颜色
             const amount = data.value_estimation?.amount || 0;
             let valueCategory;
@@ -1113,44 +1180,77 @@
             const valueComments = VALUE_COMMENTS[valueCategory];
             const randomComment = valueComments[Math.floor(Math.random() * valueComments.length)];
             document.getElementById('value-sub').textContent = randomComment;
-            
+
             // 更新价值颜色
             const valueEl = document.getElementById('value-amount');
             valueEl.style.background = gradientColors;
             valueEl.style.webkitBackgroundClip = 'text';
             valueEl.style.webkitTextFillColor = 'transparent';
-            
+
             // 技能
             animateNumber('skill-total', 0, data.skills?.total || 0, 800);
             animateNumber('skill-custom', 0, data.skills?.custom || 0, 800);
             const cats = Object.keys(data.skills?.categories || {}).slice(0, 3).join(', ');
             document.getElementById('skill-cats').textContent = cats || '暂无分类';
-            
+
             // 会话
             const logs = data.sessions?.total || 0;
             document.getElementById('log-total').textContent = logs >= 1000 ? `${(logs/1000).toFixed(1)}k` : logs;
             document.getElementById('active-days').textContent = data.sessions?.active_days || 1;
-            
+
             // 评分 - 带动画
             const eval = data.evaluation || {};
             animateScore('skill', eval.skill_score || 0);
             animateScore('auto', eval.automation_score || 0);
             animateScore('int', eval.integration_score || 0);
-            
+
             // 深度分布
             const bd = data.depth_breakdown || [];
             if (bd[0]) document.getElementById('bd-skill').textContent = bd[0].count || 0;
             if (bd[1]) document.getElementById('bd-custom').textContent = bd[1].count || 0;
             if (bd[2]) document.getElementById('bd-logs').textContent = bd[2].count >= 1000 ? `${(bd[2].count/1000).toFixed(1)}k` : bd[2].count;
             if (bd[3]) document.getElementById('bd-agent').textContent = bd[3].count || 1;
-            
+
             // 日志统计
             const logStats = data.log_stats || {};
             document.getElementById('log-info').textContent = logStats.info_count >= 1000 ? `${(logStats.info_count/1000).toFixed(0)}k` : logStats.info_count || 0;
             document.getElementById('log-warn').textContent = logStats.warn_count || 0;
             document.getElementById('log-error').textContent = logStats.error_count || 0;
             document.getElementById('log-tools').textContent = logStats.tool_calls || 0;
-            
+
+            // Token 使用统计（新增）
+            const tokenUsage = data.token_usage || {};
+            const totalTokens = tokenUsage.total_tokens || 0;
+            const totalCost = tokenUsage.total_cost || 0;
+
+            // 格式化 token 数量
+            const formatTokens = (num) => {
+                if (num >= 1000000) return `${(num/1000000).toFixed(1)}M`;
+                if (num >= 1000) return `${(num/1000).toFixed(0)}k`;
+                return num.toString();
+            };
+
+            // 更新总 token
+            document.getElementById('token-total').textContent = `${formatTokens(totalTokens)} (¥${totalCost.toFixed(2)})`;
+
+            // 更新 top 模型
+            const topModels = tokenUsage.top_models || [];
+            const tokenModelsEl = document.getElementById('token-models');
+
+            if (topModels.length > 0) {
+                tokenModelsEl.innerHTML = topModels.slice(0, 3).map(m => {
+                    const percent = totalTokens > 0 ? (m.total_tokens / totalTokens * 100).toFixed(0) : 0;
+                    return `
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem;">
+                            <span style="color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px;">${m.model}</span>
+                            <span style="font-weight: 500;">${formatTokens(m.total_tokens)} (${percent}%)</span>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                tokenModelsEl.innerHTML = '<div style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6;">暂无数据</div>';
+            }
+
             // 成就
             const achHtml = currentAchievements.map(a => {
                 // 解析成就名称，获取key - 精确匹配名称
@@ -1162,16 +1262,16 @@
                         break;
                     }
                 }
-                
+
                 const iconFile = ACHIEVEMENT_ICONS[key] || '';
-                const iconHtml = iconFile 
+                const iconHtml = iconFile
                     ? `<img src="/images/achievements/${iconFile}" alt="${a}" onerror="this.parentElement.textContent='🏅'">`
                     : '🏅';
-                
+
                 const parts = a.split('：');
                 const name = parts[0] || a;
                 const desc = parts[1] || '';
-                
+
                 return `<div class="achievement-card">
                     <div class="achievement-icon">${iconHtml}</div>
                     <div class="achievement-info">
@@ -1182,11 +1282,11 @@
             }).join('');
             document.getElementById('achievement-list').innerHTML = achHtml || '<div class="achievement-tag" style="opacity:0.5">暂无成就，继续努力！</div>';
             document.getElementById('achievement-count').textContent = `(${currentAchievements.length}个)`;
-            
+
             // 锐评 - 支持 URL 参数传入
             const urlParams = new URLSearchParams(window.location.search);
             const clawJudgeParam = urlParams.get('clawJudge');
-            
+
             let fullRoast;
             if (clawJudgeParam) {
                 // 使用 URL 参数传入的锐评内容
@@ -1204,71 +1304,71 @@
             // 底部完整显示
             document.getElementById('roast-full').textContent = fullRoast;
         }
-        
+
         // ========== 动画函数 ==========
         function animateProgressBar(id, from, to, duration) {
             const bar = document.getElementById(id);
             const startTime = Date.now();
-            
+
             function update() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
                 const current = from + (to - from) * eased;
-                
+
                 bar.style.width = current + '%';
-                
+
                 if (progress < 1) {
                     requestAnimationFrame(update);
                 }
             }
             update();
         }
-        
+
         function animateNumber(id, from, to, duration, prefix = '') {
             const el = document.getElementById(id);
             const startTime = Date.now();
-            
+
             function update() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const eased = 1 - Math.pow(1 - progress, 3);
                 const current = Math.round(from + (to - from) * eased);
-                
+
                 el.textContent = prefix + current.toLocaleString();
-                
+
                 if (progress < 1) {
                     requestAnimationFrame(update);
                 }
             }
             update();
         }
-        
+
         function animateScore(prefix, targetValue) {
             const scoreEl = document.getElementById(prefix + '-score');
             const barEl = document.getElementById(prefix + '-bar');
-            
+
             // 数字动画
             animateNumber(prefix + '-score', 0, Math.round(targetValue), 800);
-            
+
             // 进度条动画
             setTimeout(() => {
                 barEl.style.transition = 'width 0.8s ease-out';
                 barEl.style.width = targetValue + '%';
             }, 100);
         }
-        
+
         function animateRank(targetRank) {
             const el = document.getElementById('hero-subtitle');
             const displayRank = 100 - targetRank;
             el.textContent = `全球排名: Top ${displayRank}%`;
         }
-        
+
         function animateValue(id, value, isEmoji = false) {
             const el = document.getElementById(id);
             el.style.transform = 'scale(0.8)';
             el.style.opacity = '0.5';
-            
+
             setTimeout(() => {
                 el.textContent = value;
                 el.style.transition = 'all 0.3s ease-out';
@@ -1276,12 +1376,12 @@
                 el.style.opacity = '1';
             }, 100);
         }
-        
+
         function animateText(id, text) {
             const el = document.getElementById(id);
             el.style.opacity = '0';
             el.style.transform = 'translateY(-10px)';
-            
+
             setTimeout(() => {
                 el.textContent = text;
                 el.style.transition = 'all 0.3s ease-out';
@@ -1289,7 +1389,7 @@
                 el.style.transform = 'translateY(0)';
             }, 100);
         }
-        
+
         // ========== Mock 数据选择 ==========
         function selectMockLevel(level) {
             if (level === 'real') {
@@ -1300,7 +1400,7 @@
                     // 先显示加载动画
                     const overlay = document.getElementById('loading-overlay');
                     overlay.classList.remove('hidden');
-                    
+
                     setTimeout(() => {
                         updateUI(mockData);
                         currentData = mockData;
@@ -1310,19 +1410,19 @@
                 }
             }
         }
-        
+
         // ========== 图片生成 ==========
         async function generateImage() {
             showToast('🎨 正在生成龙虾海报...');
-            
+
             // 构建更丰富的提示词参数
             const skillCats = Object.keys(currentData.skills?.categories || {}).join('、') || '通用';
             const promptExtras = [];
-            
+
             if (currentAchievements.length > 0) {
                 promptExtras.push(`成就: ${currentAchievements.map(a => a.split(' ')[1]).join('、')}`);
             }
-            
+
             try {
                 const res = await fetch('/api/generate-image', {
                     method: 'POST',
@@ -1334,7 +1434,7 @@
                         custom_prompt: `卡通可爱风格, Q版角色, 圆润线条, 鲜艳色彩, 暖色调背景, 数字艺术, 插画风格, 不需要真实感, 必须是卡通龙虾形象, 可爱的大眼睛, 拟人化表情, 颜色鲜艳的红色外壳, 举着工具或科技设备`
                     })
                 });
-                
+
                 const json = await res.json();
                 if (json.success) {
                     showImageInCard(json.data);
@@ -1347,14 +1447,14 @@
                 showToast('❌ 生成失败，请检查 API 配置');
             }
         }
-        
+
 // 存储生成的图片路径
         let generatedImageUrl = null;
 
         function showImageInCard(data) {
             const container = document.getElementById('generated-image-container');
             generatedImageUrl = data.image_url;
-            
+
             container.innerHTML = `<img src="${data.image_url}" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="showImageModal('${data.image_url}')" alt="我的龙虾">`;
             container.style.minHeight = 'auto';
             container.style.opacity = '1';
@@ -1376,47 +1476,75 @@
             `;
             document.body.appendChild(modal);
         }
-        
+
         // ========== 功能按钮 ==========
         async function refreshData() {
             showToast('🔄 刷新中...');
             await fetchData();
             showToast('✅ 数据已刷新！');
         }
-        
-        
+
+
         async function exportData() {
             // 先隐藏toast
             const toast = document.getElementById('toast');
             toast.classList.remove('show');
-            
+
             try {
                 // 隐藏不需要截图的元素
-                const header = document.querySelector('.header');
                 const mockSelector = document.getElementById('mock-selector');
-                const originalHeaderDisplay = header.style.display;
                 const originalMockDisplay = mockSelector.style.display;
-                header.style.display = 'none';
                 mockSelector.style.display = 'none';
+
+                // 清除文字选中状态
+                window.getSelection().removeAllRanges();
+
+                // 处理渐变文字 - 截图前临时改为纯色
+                const valueEl = document.getElementById('value-amount');
+                const textContent = valueEl.textContent;
+                const amount = parseInt(textContent.replace(/[^0-9]/g, '')) || 0;
                 
-                // 生成截图
-                const canvas = await html2canvas(document.body, {
-                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#0f0f23',
+                // 根据金额确定颜色
+                let solidColor;
+                if (amount < 1000) {
+                    solidColor = '#6b7280'; // 灰色
+                } else if (amount < 5000) {
+                    solidColor = '#3b82f6'; // 蓝色
+                } else if (amount < 20000) {
+                    solidColor = '#8b5cf6'; // 紫色
+                } else {
+                    solidColor = '#f59e0b'; // 金色
+                }
+                
+                // 保存原始样式
+                const originalStyle = valueEl.getAttribute('style') || '';
+                
+                // 设置纯色样式
+                valueEl.setAttribute('style', 'color: ' + solidColor + '; background: none; -webkit-background-clip: unset; -webkit-text-fill-color: ' + solidColor + ';');
+
+                // 只截图主内容区域
+                const container = document.querySelector('.container');
+                const canvas = await html2canvas(container, {
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#ffe17c',
                     scale: 2,
                     useCORS: true,
-                    logging: false
+                    logging: false,
+                    windowWidth: container.scrollWidth,
+                    windowHeight: container.scrollHeight
                 });
-                
+
+                // 恢复原始样式
+                valueEl.setAttribute('style', originalStyle);
+
                 // 恢复隐藏的元素
-                header.style.display = originalHeaderDisplay;
                 mockSelector.style.display = originalMockDisplay;
-                
+
                 // 下载图片
                 const link = document.createElement('a');
                 link.download = `clawvalue-${new Date().toISOString().slice(0,10)}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                
+
                 // 截图完成后再显示提示
                 setTimeout(() => showToast('✅ 截图已保存'), 100);
             } catch (error) {
@@ -1424,17 +1552,18 @@
                 showToast('❌ 截图失败');
             }
         }
-        
+
+
         function showHelp() {
             document.getElementById('help-modal').classList.add('show');
         }
-        
+
         function closeHelp(e) {
             if (!e || e.target === e.currentTarget) {
                 document.getElementById('help-modal').classList.remove('show');
             }
         }
-        
+
         // ========== Easter Egg ==========
         function showEasterEgg() {
             const hint = document.getElementById('easter-egg-hint');
@@ -1448,7 +1577,7 @@
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
-        
+
         // ========== 快捷键 ==========
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return;
@@ -1460,7 +1589,7 @@
                 selector.style.display = selector.style.display === 'none' ? 'inline-block' : 'none';
             }
         });
-        
+
         // 点击外部关闭主题面板
         document.addEventListener('click', (e) => {
             const panel = document.getElementById('theme-panel');

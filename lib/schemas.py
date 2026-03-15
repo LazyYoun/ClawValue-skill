@@ -118,11 +118,15 @@ class LogEntry:
         Returns:
             LogEntry 实例
         """
-        # 提取消息
+        # 提取消息（确保是字符串）
         message = data.get('0', '') or data.get('message', '')
+        if not isinstance(message, str):
+            message = str(message) if message else ''
         
         # 提取元数据
         meta = data.get('_meta', {})
+        if not isinstance(meta, dict):
+            meta = {}
         level = meta.get('logLevelName', LogLevel.INFO)
         
         # 提取子系统
@@ -131,10 +135,15 @@ class LogEntry:
         # 分类日志类型
         log_type = cls._classify_message(message)
         
+        # 提取时间戳
+        timestamp = data.get('time', '')
+        if not isinstance(timestamp, str):
+            timestamp = str(timestamp) if timestamp else ''
+        
         return cls(
             message=message,
             level=level,
-            timestamp=data.get('time', ''),
+            timestamp=timestamp,
             subsystem=subsystem,
             log_type=log_type,
             raw_data=data
@@ -151,23 +160,41 @@ class LogEntry:
     
     @staticmethod
     def _classify_message(message: str) -> str:
-        """分类日志消息类型"""
+        """
+        分类日志消息类型
+        
+        优化：更精确的关键词匹配，避免误判
+        """
         msg_lower = message.lower()
         
-        if 'error' in msg_lower or 'failed' in msg_lower:
-            return LogType.ERROR
-        elif 'session' in msg_lower:
-            return LogType.SESSION
-        elif 'tool' in msg_lower or 'skill' in msg_lower:
+        # 优先级 1: 工具调用（最具体）
+        if '[tools]' in msg_lower or 'tool called' in msg_lower or 'skill called' in msg_lower:
             return LogType.TOOL
-        elif 'model' in msg_lower or 'token' in msg_lower:
+        
+        # 优先级 2: 会话相关
+        if '[session' in msg_lower or 'session:' in msg_lower or 'session_id' in msg_lower:
+            return LogType.SESSION
+        
+        # 优先级 3: 模型调用
+        if '[model]' in msg_lower or 'model changed' in msg_lower or 'model:' in msg_lower:
             return LogType.MODEL
-        elif 'webhook' in msg_lower or 'message' in msg_lower:
-            return LogType.MESSAGE
-        elif 'connected' in msg_lower or 'disconnected' in msg_lower:
+        
+        # 优先级 4: 连接状态
+        if 'connected' in msg_lower or 'disconnected' in msg_lower or 'connection' in msg_lower:
             return LogType.CONNECTION
-        else:
-            return LogType.OTHER
+        
+        # 优先级 5: 消息/Webhook
+        if '[webhook]' in msg_lower or '[message]' in msg_lower or 'webhook:' in msg_lower:
+            return LogType.MESSAGE
+        
+        # 优先级 6: 真正的错误（需要同时包含错误关键词和上下文）
+        error_keywords = ['error', 'failed', 'exception', 'traceback', 'crash']
+        if any(kw in msg_lower for kw in error_keywords):
+            # 进一步确认是真正的错误，而不是包含这些词的普通消息
+            if any(prefix in msg_lower for prefix in ['[error]', 'error:', 'failed:', 'exception:']):
+                return LogType.ERROR
+        
+        return LogType.OTHER
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式"""
@@ -196,6 +223,13 @@ class LogStats:
     connections: int = 0
     errors: int = 0
     
+    # 增强统计字段
+    tool_calls_by_type: Dict[str, int] = field(default_factory=dict)  # 按工具类型统计
+    model_usage: Dict[str, Any] = field(default_factory=dict)  # 模型使用情况 {model_name: {input_tokens, output_tokens, cost}}
+    session_count: int = 0  # 会话数量
+    cron_executions: int = 0  # Cron 任务执行次数
+    gateway_status: str = 'unknown'  # Gateway 运行状态
+    
     def add_entry(self, entry: LogEntry) -> None:
         """添加日志条目到统计"""
         self.total_entries += 1
@@ -213,12 +247,52 @@ class LogStats:
             self.errors += 1
         elif entry.log_type == LogType.TOOL:
             self.tool_calls += 1
+            # 提取工具类型
+            tool_type = self._extract_tool_type(entry.message)
+            if tool_type:
+                self.tool_calls_by_type[tool_type] = self.tool_calls_by_type.get(tool_type, 0) + 1
         elif entry.log_type == LogType.MODEL:
             self.model_calls += 1
+            # 提取模型使用信息
+            self._extract_model_usage(entry.message)
         elif entry.log_type == LogType.CONNECTION:
             self.connections += 1
     
-    def to_dict(self) -> Dict[str, int]:
+    @staticmethod
+    def _extract_tool_type(message: str) -> Optional[str]:
+        """从消息中提取工具类型"""
+        import re
+        # 匹配 [tools] xxx 或 tool: xxx 格式
+        match = re.search(r'\[tools\]\s+(\w+)', message, re.IGNORECASE)
+        if match:
+            return match.group(1)
+        match = re.search(r'tool:\s*(\w+)', message, re.IGNORECASE)
+        if match:
+            return match.group(1)
+        return None
+    
+    def _extract_model_usage(self, message: str) -> None:
+        """从消息中提取模型使用信息"""
+        import re
+        # 匹配 token 使用信息
+        token_match = re.search(r'(\d+)\s*tokens?[:\s]', message, re.IGNORECASE)
+        if token_match:
+            tokens = int(token_match.group(1))
+            self.model_usage['total_tokens'] = self.model_usage.get('total_tokens', 0) + tokens
+        
+        # 匹配成本信息（更严格的正则，避免匹配到单独的 '.'）
+        cost_match = re.search(r'\$?(\d+\.?\d*)\s*(?:USD|CNY|元|cost)?', message, re.IGNORECASE)
+        if cost_match:
+            try:
+                cost_str = cost_match.group(1)
+                if cost_str and cost_str != '.':
+                    cost = float(cost_str)
+                    self.model_usage['total_cost'] = self.model_usage.get('total_cost', 0.0) + cost
+            except ValueError:
+                # 忽略无法转换的值
+                pass
+    
+    def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式"""
         return {
             'total_entries': self.total_entries,
@@ -228,7 +302,12 @@ class LogStats:
             'tool_calls': self.tool_calls,
             'model_calls': self.model_calls,
             'connections': self.connections,
-            'errors': self.errors
+            'errors': self.errors,
+            'tool_calls_by_type': self.tool_calls_by_type,
+            'model_usage': self.model_usage,
+            'session_count': self.session_count,
+            'cron_executions': self.cron_executions,
+            'gateway_status': self.gateway_status
         }
 
 
@@ -449,7 +528,11 @@ class OpenClawConfig:
     @classmethod
     def from_json_file(cls, filepath: str) -> Optional['OpenClawConfig']:
         """
-       从 JSON 文件解析配置
+        从 JSON 文件解析配置
+        
+        策略：
+        1. 先尝试直接解析（标准 JSON）
+        2. 失败时尝试移除注释（JSON5 格式）
         
         Args:
             filepath: openclaw.json 文件路径
@@ -464,29 +547,192 @@ class OpenClawConfig:
             with open(filepath, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # 移除注释（支持 JSON5）
-            content = re.sub(r'//.*$', '', content, flags=re.MULTILINE)
-            content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+            # 尝试 1: 直接解析（标准 JSON）
+            try:
+                config = json.loads(content)
+                return cls._extract_from_config(config)
+            except json.JSONDecodeError:
+                pass
             
-            config = json.loads(content)
+            # 尝试 2: 移除注释后解析（JSON5 格式）
+            # 智能移除注释：避免破坏 URL 中的 //
+            cleaned = cls._remove_json_comments(content)
+            config = json.loads(cleaned)
             return cls._extract_from_config(config)
-        except (FileNotFoundError, json.JSONDecodeError):
+            
+        except FileNotFoundError:
             return None
+        except json.JSONDecodeError as e:
+            print(f"[OpenClawConfig] JSON 解析失败 {filepath}: {e}")
+            return None
+        except Exception as e:
+            print(f"[OpenClawConfig] 配置解析失败 {filepath}: {e}")
+            return None
+    
+    @staticmethod
+    def _remove_json_comments(content: str) -> str:
+        """
+        智能移除 JSON 注释，保留字符串内容
+        
+        策略：
+        - 跟踪是否在字符串内
+        - 只移除字符串外的 // 和 /* */ 注释
+        """
+        result = []
+        in_string = False
+        escape = False
+        i = 0
+        
+        while i < len(content):
+            char = content[i]
+            
+            # 处理转义字符
+            if escape:
+                result.append(char)
+                escape = False
+                i += 1
+                continue
+            
+            if char == '\\':
+                result.append(char)
+                escape = True
+                i += 1
+                continue
+            
+            # 处理字符串边界
+            if char == '"':
+                in_string = not in_string
+                result.append(char)
+                i += 1
+                continue
+            
+            # 在字符串内，保留所有字符
+            if in_string:
+                result.append(char)
+                i += 1
+                continue
+            
+            # 在字符串外，检查注释
+            if char == '/' and i + 1 < len(content):
+                next_char = content[i + 1]
+                
+                # 单行注释 //
+                if next_char == '/':
+                    # 跳过直到行尾
+                    while i < len(content) and content[i] != '\n':
+                        i += 1
+                    continue
+                
+                # 多行注释 /*
+                if next_char == '*':
+                    i += 2
+                    while i + 1 < len(content):
+                        if content[i] == '*' and content[i + 1] == '/':
+                            i += 2
+                            break
+                        i += 1
+                    continue
+            
+            result.append(char)
+            i += 1
+        
+        return ''.join(result)
     
     @classmethod
     def _extract_from_config(cls, config: Dict[str, Any]) -> 'OpenClawConfig':
-        """从配置字典提取关键信息"""
+        """
+        从配置字典提取关键信息
+        
+        支持多种配置格式：
+        - 新版：agents.defaults.model.primary
+        - 旧版：models.primary
+        - heartbeat: 支持字符串（'1h'）和数字（3600），可从 defaults 或 agent list 提取
+        """
         agents_config = config.get('agents', {})
         defaults = agents_config.get('defaults', {})
         
-        return cls(
-            primary_model=defaults.get('model', {}).get('primary', 'unknown'),
-            heartbeat_interval=defaults.get('heartbeat', {}).get('every', 0),
-            sandbox_enabled=config.get('sandbox', {}).get('enabled', False),
-            tools_profile=config.get('tools', {}).get('profile', 'default'),
-            agent_count=len(agents_config.get('instances', [])) or 1,
-            channels=list(config.get('channels', {}).keys())
+        # 提取主模型（支持多路径）
+        primary_model = (
+            defaults.get('model', {}).get('primary', 'unknown') or
+            config.get('models', {}).get('primary', 'unknown')
         )
+        
+        # 提取心跳间隔（支持多路径：defaults → agent list → 0）
+        heartbeat_raw = defaults.get('heartbeat', {}).get('every', 0)
+        if not heartbeat_raw:
+            # 从 agent list 中查找
+            agent_list = agents_config.get('list', [])
+            for agent in agent_list:
+                agent_heartbeat = agent.get('heartbeat', {}).get('every', 0)
+                if agent_heartbeat:
+                    heartbeat_raw = agent_heartbeat
+                    break
+        heartbeat_interval = cls._parse_heartbeat_interval(heartbeat_raw)
+        
+        # 提取沙箱配置（支持多路径）
+        sandbox_enabled = (
+            config.get('sandbox', {}).get('enabled', False) or
+            defaults.get('sandbox', {}).get('enabled', False)
+        )
+        
+        # 提取工具配置（优先使用 defaults，其次从 main agent 获取）
+        tools_profile = defaults.get('tools', {}).get('profile', 'default')
+        if tools_profile == 'default':
+            agent_list = agents_config.get('list', [])
+            for agent in agent_list:
+                agent_tools = agent.get('tools', {}).get('profile', '')
+                if agent_tools:
+                    tools_profile = agent_tools
+                    break
+        
+        # 计算 Agent 数量（instances + list）
+        instances = agents_config.get('instances', [])
+        agent_list = agents_config.get('list', [])
+        agent_count = len(instances) or len(agent_list) or 1
+        
+        # 提取渠道列表
+        channels = list(config.get('channels', {}).keys())
+        
+        return cls(
+            primary_model=primary_model,
+            heartbeat_interval=heartbeat_interval,
+            sandbox_enabled=sandbox_enabled,
+            tools_profile=tools_profile,
+            agent_count=agent_count,
+            channels=channels
+        )
+    
+    @staticmethod
+    def _parse_heartbeat_interval(value: Any) -> int:
+        """
+        解析心跳间隔为秒数
+        
+        支持格式：
+        - 数字：3600 → 3600
+        - 字符串：'1h' → 3600, '30m' → 1800, '1d' → 86400
+        """
+        if isinstance(value, (int, float)):
+            return int(value)
+        
+        if isinstance(value, str):
+            value = value.lower().strip()
+            try:
+                # 解析带单位的字符串
+                if value.endswith('h'):
+                    return int(float(value[:-1]) * 3600)
+                elif value.endswith('m'):
+                    return int(float(value[:-1]) * 60)
+                elif value.endswith('d'):
+                    return int(float(value[:-1]) * 86400)
+                elif value.endswith('s'):
+                    return int(float(value[:-1]))
+                else:
+                    # 纯数字字符串
+                    return int(float(value))
+            except ValueError:
+                pass
+        
+        return 0
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式"""
@@ -596,11 +842,22 @@ class CollectionData:
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式"""
+        # 计算 total_tokens 从 model_usage
+        total_tokens = 0
+        total_cost = 0.0
+        if self.log_stats.model_usage:
+            for model, stats in self.log_stats.model_usage.items():
+                if isinstance(stats, dict):
+                    total_tokens += stats.get('total_tokens', 0)
+                    total_cost += stats.get('cost', 0.0)
+
         return {
             'collected_at': self.collected_at,
             'total_skills': self.total_skills,
             'custom_skills': self.custom_skills,
             'usage_days': self.usage_days,
+            'total_tokens': total_tokens,
+            'total_cost': round(total_cost, 2),
             'skills': [s.to_dict() for s in self.skills],
             'config': self.config.to_dict() if self.config else None,
             'log_stats': self.log_stats.to_dict(),

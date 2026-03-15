@@ -42,6 +42,7 @@ _db_instance = None
 _cache = {}
 _CACHE_TTL = 60  # 缓存有效期（秒）
 
+
 def get_cache(key):
     """获取缓存"""
     if key in _cache:
@@ -52,17 +53,21 @@ def get_cache(key):
             del _cache[key]
     return None
 
+
 def set_cache(key, data):
     """设置缓存"""
     _cache[key] = (data, time.time())
+
 
 def clear_cache():
     """清空缓存"""
     global _cache
     _cache = {}
 
+
 def cached(timeout=_CACHE_TTL):
     """缓存装饰器"""
+
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -82,8 +87,11 @@ def cached(timeout=_CACHE_TTL):
                 except:
                     pass
             return result
+
         return decorated_function
+
     return decorator
+
 
 def get_db():
     """获取数据库实例（单例模式）"""
@@ -92,9 +100,10 @@ def get_db():
         _db_instance = ClawValueDB()
     return _db_instance
 
+
 # 创建 Flask 应用
-app = Flask(__name__,
-            static_folder=os.path.join(os.path.dirname(__file__), '..', 'web'))
+web_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'web'))
+app = Flask(__name__, static_folder=web_dir)
 
 
 @app.route('/')
@@ -362,7 +371,7 @@ def refresh_data():
     try:
         # 清除缓存
         clear_cache()
-        
+
         collector = DataCollector()
         data = collector.collect()
         data_dict = data.to_dict()
@@ -620,10 +629,10 @@ def generate_image():
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 filename = f'lobster_{level}_{timestamp}.png'
                 save_path = os.path.join(app.static_folder, 'images', 'generated', filename)
-                
+
                 with open(save_path, 'wb') as f:
                     f.write(response.content)
-                
+
                 # 返回本地路径
                 local_url = f'/images/generated/{filename}'
                 return jsonify({
@@ -659,21 +668,21 @@ def generate_image():
 def get_image_styles():
     """
     获取可用的图片风格列表
-    
+
     Returns:
         - styles: 风格列表
     """
     try:
         sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib'))
         from image_generator import LobsterPromptTemplates
-        
+
         styles = []
         for key, info in LobsterPromptTemplates.STYLES.items():
             styles.append({
                 'id': key,
                 'name': info['name']
             })
-        
+
         return jsonify({
             'success': True,
             'data': {'styles': styles}
@@ -689,12 +698,12 @@ def get_image_styles():
 def generate_share_card():
     """
     生成分享卡片数据
-    
+
     返回用于生成分享海报的所有数据，包括：
     - 用户等级和评估结果
     - 趣味文案
     - 推荐的分享格式
-    
+
     Returns:
         - share_card: 分享卡片数据
     """
@@ -703,17 +712,17 @@ def generate_share_card():
         collector = DataCollector()
         data = collector.collect()
         data_dict = data.to_dict()
-        
+
         engine = EvaluationEngine()
         evaluation = engine.generate_full_evaluation(data_dict)
-        
+
         # 计算等级
         total_score = evaluation.get('total_score', 0)
         level = 1
         for lvl, threshold in sorted(DepthLevel.SCORE_THRESHOLDS.items()):
             if total_score >= threshold:
                 level = lvl
-        
+
         # 等级信息
         level_names = {
             1: ('🐣', '入门小白', '刚刚接触 OpenClaw'),
@@ -722,9 +731,9 @@ def generate_share_card():
             4: ('🚀', '高级工程师', '自定义技能，深度集成'),
             5: ('🦞', '龙虾大师', '达到专家级别')
         }
-        
+
         emoji, name, desc = level_names.get(level, level_names[1])
-        
+
         # 趣味文案
         fun_messages = [
             f"我用 OpenClaw 省了 ¥{(data.log_stats.tool_calls * 10):,}！",
@@ -732,7 +741,7 @@ def generate_share_card():
             f"🦞 龙虾能力 Lv.{level}，来挑战我吧！",
             f"解锁了 {len(evaluation.get('achievements', []))} 个成就，你呢？"
         ]
-        
+
         # 生成分享卡片数据
         share_card = {
             'level': level,
@@ -752,12 +761,12 @@ def generate_share_card():
             'share_text': f"🦞 我的 OpenClaw 龙虾等级：{emoji} Lv.{level} {name}\n\n{evaluation.get('rank_title', '')}\n💰 价值估算：{evaluation.get('value_estimate', '0元')}\n🛠️ 技能数量：{data.total_skills} 个\n🏆 成就：{len(evaluation.get('achievements', []))} 个已解锁\n\n来测测你的「龙虾能力」吧！",
             'generated_at': datetime.now().isoformat()
         }
-        
+
         return jsonify({
             'success': True,
             'data': share_card
         })
-        
+
     except Exception as e:
         import traceback
         return jsonify({
@@ -786,7 +795,7 @@ def get_dashboard():
         # 使用新的数据采集模块
         collector = DataCollector()
         data = collector.collect()  # 返回 CollectionData 对象
-        
+
         # 评估
         engine = EvaluationEngine()
         # 转换为字典格式供评估引擎使用
@@ -816,7 +825,7 @@ def get_dashboard():
             value_amount = int(value_str.replace(',', '').replace('元', '').strip())
         except ValueError:
             value_amount = 0
-            
+
         value_estimation = {
             'amount': value_amount,
             'description': evaluation.get('value_level', '基础价值级'),
@@ -852,6 +861,38 @@ def get_dashboard():
         # 成就列表
         achievements = evaluation.get('achievements', [])
 
+        # Token 使用统计（新增）
+        model_usage = data.log_stats.model_usage or {}
+        total_tokens = 0
+        total_cost = 0.0
+        token_by_model = []
+
+        for model, stats in model_usage.items():
+            if isinstance(stats, dict):
+                model_tokens = stats.get('total_tokens', 0)
+                model_cost = stats.get('cost', 0.0)
+                total_tokens += model_tokens
+                total_cost += model_cost
+                token_by_model.append({
+                    'model': model,
+                    'total_tokens': model_tokens,
+                    'input_tokens': stats.get('input_tokens', 0),
+                    'output_tokens': stats.get('output_tokens', 0),
+                    'cost': round(model_cost, 2),
+                    'call_count': stats.get('call_count', 0)
+                })
+
+        # 按总 token 排序
+        token_by_model.sort(key=lambda x: x['total_tokens'], reverse=True)
+
+        token_usage = {
+            'total_tokens': total_tokens,
+            'total_cost': round(total_cost, 2),
+            'daily_tokens': int(total_tokens / max(data.usage_days, 1)),
+            'models': token_by_model,
+            'top_models': token_by_model[:3]  # Top 3 模型
+        }
+
         response_data = {
             'depth_level': depth_level,
             'depth_breakdown': depth_breakdown,
@@ -860,6 +901,7 @@ def get_dashboard():
             'sessions': sessions,
             'trends': trends,
             'evaluation': evaluation,
+            'token_usage': token_usage,  # 新增：token 使用统计
             'achievements': achievements,
             'log_stats': {
                 'total_entries': data.log_stats.total_entries,
@@ -879,7 +921,7 @@ def get_dashboard():
         import traceback
         error_msg = str(e)
         traceback_str = traceback.format_exc()
-        
+
         # 生产环境不应该暴露详细错误
         return jsonify({
             'success': False,
