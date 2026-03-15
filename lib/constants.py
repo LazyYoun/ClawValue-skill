@@ -22,12 +22,26 @@ OPENCLAW_CONFIG_FILE = 'openclaw.json'
 LOG_DIR = '/tmp/openclaw'
 LOG_FILE_PATTERN = 'openclaw-YYYY-MM-DD.log'
 
+# 会话日志路径（支持新旧版本）
+SESSIONS_DIR_NEW = 'agents/main/sessions'      # 新版本：~/.openclaw/agents/main/sessions/
+SESSIONS_DIR_OLD = 'sessions'                   # 老版本：~/.openclaw/sessions/
+BACKUPS_DIR = 'backups'                         # 历史备份：~/.openclaw/backups/
+
 # 技能目录
 SKILLS_DIR = 'skills'
 SKILL_FILE = 'SKILL.md'
 
 # 数据库路径
 DEFAULT_DB_PATH = '~/.openclaw/workspace/data/clawvalue.db'
+
+# Cron 任务配置路径
+CRON_CONFIG_FILE = 'cron.json'                  # Cron 任务配置文件
+
+# 扫描配置常量
+MAX_SCAN_DEPTH = 3                              # 最大扫描深度
+MAX_FILE_SIZE_MB = 50                           # 单个文件最大大小（MB）
+MAX_FILES_PER_DIR = 100                         # 单目录最大文件数
+SKIP_DIRS = {'node_modules', '.git', '__pycache__', '.venv', 'venv', '.pytest_cache', '.mypy_cache'}
 
 # =============================================================================
 # 日志字段常量 (Log Field Constants)
